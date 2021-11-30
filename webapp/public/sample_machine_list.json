@@ -1,10 +1,42 @@
 [
     {
         "id": 0,
-        "cpu": "",
-        "gpu": "",
-        "ram": "",
-        "disk": "",
-        "os": ""
+        "cpu": "Intel Core i5-10400 2.9 GHz 6-Core",
+        "gpu": "MSI GeForce RTX 2070 SUPER 8 GB",
+        "ram": "16 GB",
+        "disk": "Samsung 970 Evo Plus 500 GB SSD",
+        "os": "Windows 10"
+    },
+    {
+        "id": 1,
+        "cpu": "AMD Ryzen 5 3600 3.6 GHz 6-Core",
+        "gpu": "Gigabyte Radeon RX 5600 XT 6 GB WINDFORCE OC",
+        "ram": "16 GB",
+        "disk": "ADATA XPG SX8200 Pro 500 SSD",
+        "os": "Windows 11"
+    },
+    {
+        "id": 2,
+        "cpu": "AMD Ryzen 3 2200G",
+        "gpu": "Radeon Vega 8",
+        "ram": "8 GB",
+        "disk": "Klevv CRAS C710 512 GB M.2-2280 NVME Solid State Drive",
+        "os": "Windows 10"
+    },
+    {
+        "id": 3,
+        "cpu": "Intel Core i3-4330 3.5 GHz 2-Core",
+        "gpu": "Intel HD Graphics 4600",
+        "ram": "8 GB",
+        "disk": "Intel 545s 256 GB",
+        "os": "Ubuntu 20.04"
+    },
+    {
+        "id": 4,
+        "cpu": "AMD Ryzen 9 5950X 3.4 GHz 16-Core",
+        "gpu": "NVIDIA GeForce RTX 3090 24 GB",
+        "ram": "32 GB",
+        "disk": "Samsung 980 Pro 1 TB M.2-2280 NVME SSD",
+        "os": "Windows 11"
     }
 ]
