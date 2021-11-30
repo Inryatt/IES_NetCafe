@@ -1,0 +1,17 @@
+[
+    {
+        "machine_id": 0,
+        "user_id": 0,
+        "timestamp": 1234567,
+        "cpu_usage": "",
+        "gpu_usage": "",
+        "disk_usage": "",
+        "memory_usage": "",
+        "cpu_temperature": 40,
+        "gpu_temperature": 35,
+        "network_usage": "",
+        "power_usage": "",
+        "uptime": 83873,
+        "software_usage": [2, 1]
+    }
+]
