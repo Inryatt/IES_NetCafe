@@ -2,16 +2,16 @@
     {
         "machine_id": 0,
         "user_id": 0,
-        "timestamp": 1234567,
-        "cpu_usage": "",
-        "gpu_usage": "",
-        "disk_usage": "",
-        "memory_usage": "",
-        "cpu_temperature": 40,
-        "gpu_temperature": 35,
-        "network_usage": "",
-        "power_usage": "",
-        "uptime": 83873,
+        "timestamp": 1638285420,
+        "cpu_usage": 0.7,
+        "gpu_usage": 0.95,
+        "disk_usage": 0.3,
+        "memory_usage": 0.6,
+        "cpu_temperature": 70,
+        "gpu_temperature": 86,
+        "network_usage": 35,
+        "power_usage": 400,
+        "uptime": 3600,
         "software_usage": [2, 1]
     }
 ]
