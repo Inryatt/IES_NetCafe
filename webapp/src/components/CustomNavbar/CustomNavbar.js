@@ -9,6 +9,11 @@ const CustomNavbar = () => {
             <Container>
                 <Navbar.Brand href="/dashboard" className="text-white" >NetCafé</Navbar.Brand>
                 <Navbar.Toggle aria-controls="custom-navbar" />
+                <Navbar.Collapse id="custom-navbar">
+                    <Nav>
+                        <Nav.Link href="/dashboard" className="text-white">Dashboard</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     )
