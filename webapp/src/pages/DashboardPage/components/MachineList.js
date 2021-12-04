@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Card from 'react-bootstrap/Card'
 import styled from "styled-components";
 import { Row, Col } from "react-bootstrap";
@@ -17,45 +17,13 @@ const ActiveCircle = styled.div`
 }
 `
 
-const MachineListPage = () => {
-
-    const [machineData, setMachineData] = useState([])
-    const [machineUsage, setMachineUsage] = useState([])
-    const [selMachine, setSelMachine] = useState() // Provavelmente serao states do pai que chamara a lista de maquinas
-
-    const loadSampleMachines = () => {
-        fetch(`${process.env.PUBLIC_URL}/sample_machine_list.json`)
-        .then(response => response.json())
-        .then(data => setMachineData(data))
-    }
-
-    const getMachineUsage = (machineId) => {
-        // Future API --> Just get usage from machineID, 
-        // instead of returning everything and filtering
-
-        fetch(`${process.env.PUBLIC_URL}/machine_usage_sample.json`)
-        .then(response => response.json())
-        .then(data => setMachineUsage(data))
-
-        // const response = await (await fetch(`${process.env.PUBLIC_URL}/sample_machine_list.json`)).json()
-        // for (let i = 0; i < response.length; i++) {
-        //     const machine = response[i]
-        //     console.log("machine", machine)
-        //     if (machine.id == machineId) return machine
-        // }
-        // return null
-    }
-
-    useEffect(() => {
-        loadSampleMachines()
-        getMachineUsage()
-    }, [])
+const MachineList = ({machinesData ,machinesUsage, selMachine, setSelMachine}) => {
 
     return (
         <div>
             {
-                machineData.map(machine => {
-                    const machine_usage = machineUsage.filter(usage => usage.machine_id == machine.id)
+                machinesData.map(machine => {
+                    const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
                         <Card 
                             key={machine.id}
@@ -81,4 +49,4 @@ const MachineListPage = () => {
     )
 }
 
-export default MachineListPage
+export default MachineList

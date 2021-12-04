@@ -4,8 +4,6 @@ import { Routes, Route } from 'react-router';
 import { Container } from 'react-bootstrap';
 import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
-import MachineListPage from './pages/MachineListPage/MachineListPage';
-
 
 function App() {
   return (
@@ -23,7 +21,6 @@ function App() {
           <Routes>
             <Route path="/" >
               <Route path="dashboard/" element={<DashboardPage />} />
-              <Route path="machines/" element={<MachineListPage />} />
             </Route>
           </Routes>
         </Container>
