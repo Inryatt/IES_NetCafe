@@ -12,7 +12,8 @@
         "network_usage": 35,
         "power_usage": 400,
         "uptime": 3600,
-        "software_usage": [0, 7, 9]
+        "software_usage": [0, 7, 9],
+        "current_user": 1
     },
     {
         "machine_id": 1,
@@ -27,7 +28,8 @@
         "network_usage": 70,
         "power_usage": 380,
         "uptime": 5439,
-        "software_usage": [1, 8, 10]
+        "software_usage": [1, 8, 10],
+        "current_user": -1
     },
     {
         "machine_id": 2,
@@ -42,6 +44,7 @@
         "network_usage": 70,
         "power_usage": 300,
         "uptime": 2684,
-        "software_usage": [3, 5]
+        "software_usage": [3, 5],
+        "current_user": 4
     }
 ]
