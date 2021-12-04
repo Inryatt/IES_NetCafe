@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-
-import MachineListPage from './pages/MachineListPage/MachineListPage';
-import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import { Routes, Route } from 'react-router';
+import { Container } from 'react-bootstrap';
+import CustomNavbar from './components/CustomNavbar/CustomNavbar';
+import DashboardPage from './pages/DashboardPage/DashboardPage';
+import MachineListPage from './pages/MachineListPage/MachineListPage';
+
 
 function App() {
   return (
@@ -17,10 +19,14 @@ function App() {
 
       <div className="App">
         <CustomNavbar />
-
-        <Routes>
-          <Route path="/" element={<MachineListPage />} />
-        </Routes>
+        <Container>
+          <Routes>
+            <Route path="/" >
+              <Route path="dashboard/" element={<DashboardPage />} />
+              <Route path="machines/" element={<MachineListPage />} />
+            </Route>
+          </Routes>
+        </Container>
       </div>
     </div>
   );
