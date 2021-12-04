@@ -1,0 +1,62 @@
+[
+    {
+        "id": 0,
+        "name": "Chrome",
+        "type": "Web"
+    },
+    {
+        "id": 1,
+        "name": "Firefox",
+        "type": "Web"
+    },
+    {
+        "id": 2,
+        "name": "Edge",
+        "type": "Web"
+    },
+    {
+        "id": 3,
+        "name": "Netflix",
+        "type": "Entertainment"
+    },
+    {
+        "id": 4,
+        "name": "Films & TV",
+        "type": "Entertainment"
+    },
+    {
+        "id": 5,
+        "name": "Microsoft Word",
+        "type": "Productivity"
+    },
+    {
+        "id": 6,
+        "name": "Microsoft PowerPoint",
+        "type": "Productivity"
+    },
+    {
+        "id": 7,
+        "name": "Discord",
+        "type": "Communication"
+    },
+    {
+        "id": 8,
+        "name": "Telegram",
+        "type": "Communication"
+    },
+    {
+        "id": 9,
+        "name": "Dead by Daylight",
+        "type": "Gaming"
+    },
+    {
+        "id": 10,
+        "name": "Minecraft",
+        "type": "Gaming"
+    },
+    {
+        "id": 11,
+        "name": "Counter-Strike: Global Offensive",
+        "type": "Gaming"
+    }
+]
