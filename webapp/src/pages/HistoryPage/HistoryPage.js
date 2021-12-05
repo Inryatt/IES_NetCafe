@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Col, Dropdown, Form, Row } from "react-bootstrap";
 import LocationList from "../../components/LocationList/LocationList";
 import MachineUse from "./components/MachineUse";
+import Profits from "./components/Profits";
 
 const HistoryPage = () => {
 
@@ -62,6 +63,7 @@ const HistoryPage = () => {
             <Row>
                 <Col xs={3}>
                     <LocationList 
+                        style={{marginTop: "1em"}}
                         list={locations}
                         selElem={selLocation}
                         selHandler={setSelLocation}
@@ -77,7 +79,7 @@ const HistoryPage = () => {
                     </Form.Select>
                     {
                         selOption == "Profit" &&
-                        <p>profit</p>
+                        <Profits />
                     }
                     {
                         selOption == "Machine Use" &&
