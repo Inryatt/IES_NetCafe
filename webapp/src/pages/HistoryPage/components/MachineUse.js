@@ -10,9 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { Form } from "react-bootstrap";
-// import faker from 'faker';
-
+import { Col, Form, Row } from "react-bootstrap";
 
 ChartJS.register(
   CategoryScale,
@@ -37,47 +35,65 @@ export const options = {
   },
 };
 
-
-// export function App() {
-//   return <Line options={options} data={data} />;
-// }
-
-
-
 const MachineUse = ({machineData, machineUsage}) => {
 
     const [selMachine, setSelMachine] = useState(-1)
     const [data, setData] = useState()
+    const [dateFrom, setDateFrom] = useState()
+    const [dateTo, setDateTo] = useState()
 
 
     const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
-
-    console.log("usage", machineUsage)
-    console.log("data", machineData)
+    // colors need to have the syntax rgb(x,y,z) (used for inserting the alpha channel later)
+    // colors will loop if doesn't have enough colors for all machines
 
     const convertTimestamp = (timestamp) => {
         const date = new Date(timestamp * 1000)
-        return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`
+        // console.log("convert timestamp", timestamp)
+        // console.log("convert timestamp date", date)
+        // console.log("sus", `${date.getDate()}`)
+        // console.log("sus", `${date.getUTCDay()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`)
+        return `${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
     }
 
-    const getUsagesById = (machineId) => {
+    const convertDate = (date) => {
+        const newDate = new Date(date)
+        return newDate.getTime()/1000
+    }
+
+    const getUsagesById = (machineId, dateFrom, dateTo) => {
         const temp = []
         for (let usage of machineUsage) {
             if (usage.machine_id == machineId) {
-                temp.push(usage)
+                console.log("dateFrom", dateFrom)
+                const dateFromDate = new Date(dateFrom * 1000)
+                console.log("dateFrom to date", dateFromDate)
+                const timestampDate = new Date(usage.timestamp * 1000)
+                console.log("timestamp", usage.timestamp)
+                console.log("timestamp to date", timestampDate.getDay() + "/" + timestampDate.getMonth())
+
             }
+            if (usage.machine_id != machineId 
+                || (dateFrom && usage.timestamp < dateFrom)
+                || (dateTo && usage.timestamp > dateTo)
+            ) continue
+
+            
+            temp.push(usage)
         }
         return temp
     }
 
     useEffect(() => {
+        // calculate visible labels and filter graphs when selected
+        // machine changes its value
         const labels = [];
         let tempUsage
         let dataset
         if (selMachine == -1) { // all machines
             tempUsage = machineUsage
             dataset = machineData.map((machine, idx) => {
-                const usages = getUsagesById(machine.id)
+                const usages = getUsagesById(machine.id, dateFrom, dateTo)
                 const color = colors[idx%colors.length]
                 console.log(color.substring(0, color.length-1) + ", 0.5)")
                 return (
@@ -93,11 +109,9 @@ const MachineUse = ({machineData, machineUsage}) => {
                 )
             })
         }
-        else {
+        else { // specific machine
             const machine = machineData[selMachine]
-            console.log("machineData else", machineData)
-            console.log("sel idx", selMachine)
-            tempUsage = getUsagesById(machine.id)
+            tempUsage = getUsagesById(machine.id, dateFrom, dateTo)
             const color = colors[selMachine%colors.length]
             dataset = [{
                 label: machine.name,
@@ -111,18 +125,29 @@ const MachineUse = ({machineData, machineUsage}) => {
         }
 
         for (let usage of tempUsage) {
-            if (!labels.includes(convertTimestamp(usage.timestamp)))
+            // for each used usage, create a label for it
+            if (!labels.includes(convertTimestamp(usage.timestamp))
+            && (!dateFrom || dateFrom < usage.timestamp)
+            && (!dateTo || usage.timestamp <= dateTo)
+            )
                 labels.push(convertTimestamp(usage.timestamp))
         } 
           
     
-        labels.sort()
+        labels.sort((a,b) => {
+            let arrayA = a.split("/")
+            let arrayB = b.split("/")
+            const dateA = new Date(arrayA[2]+"/"+arrayA[1]+"/"+arrayA[0])
+            const dateB = new Date(arrayB[2]+"/"+arrayB[1]+"/"+arrayB[0])
+            return dateA > dateB
+        })
+        console.log("labels", labels)
     
         setData({
             labels,
             datasets: dataset
         })
-    }, [selMachine])
+    }, [selMachine, dateFrom, dateTo])
 
     return (
         <>
@@ -138,6 +163,14 @@ const MachineUse = ({machineData, machineUsage}) => {
                     ))
                 }
             </Form.Select>
+            <Row>
+                <Col sm={6} style={{marginTop: "1em"}}>
+                    From <Form.Control type="date" name="from" onChange={(e) => setDateFrom(convertDate(e.target.value))}/>
+                </Col>
+                <Col sm={6} style={{marginTop: "1em"}}>
+                    To <Form.Control type="date" name="to" onChange={(e) => setDateTo(convertDate(e.target.value))}/>
+                </Col>
+            </Row>
         </>
     )
 }
