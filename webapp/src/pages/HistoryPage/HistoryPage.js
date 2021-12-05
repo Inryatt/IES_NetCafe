@@ -62,14 +62,15 @@ const HistoryPage = () => {
         <div>
             <Row>
                 <Col xs={3}>
+                    <br/>
                     <LocationList 
-                        style={{marginTop: "1em"}}
                         list={locations}
                         selElem={selLocation}
                         selHandler={setSelLocation}
                     />
                 </Col>
                 <Col xs={9}>
+                    <br/>
                     <Form.Select onChange={(e) => setSelOption(options[e.target.value])}>
                         {
                             options.map((opt, idx) => (

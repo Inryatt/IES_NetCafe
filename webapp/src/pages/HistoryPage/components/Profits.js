@@ -63,7 +63,6 @@ const Profits = () => {
 
     useEffect(() => {
         const tempcoords = []
-        console.log("use effect foda")
 
         for (let coord of rootcoords) {
             let tempdate = coord.x.split("/")
@@ -74,7 +73,6 @@ const Profits = () => {
                 tempcoords.push(coord)
             }
         }
-        console.log("tempcoords", tempcoords)
         setContents(
             [{
                 label: "Profit",
