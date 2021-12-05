@@ -17,6 +17,7 @@ function App() {
 
       <div className="App">
         <CustomNavbar />
+        <br className="my-3" />
         <Container>
           <Routes>
             <Route path="/" >

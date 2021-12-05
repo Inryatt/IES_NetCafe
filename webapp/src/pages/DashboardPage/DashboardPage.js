@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import MachineCard from "./components/MachineCard/MachineCard";
 import MachineList from "./components/MachineList";
+import StatCard from "./components/StatCard/StatCard";
 
 const DashboardPage = () => {
 
@@ -29,12 +32,54 @@ const DashboardPage = () => {
     
     return (
         <div>
-            <MachineList 
-                machinesData={machineData}
-                machinesUsage={machineUsage}
-                selMachine={selMachine}
-                setSelMachine={setSelMachine}
-            />
+            <Row className="mt-4">
+                <Col xs={12} md={3}>
+                    locations go here
+                </Col>
+                <Col xs={12} md={9}>
+                    <Row className="my-3">
+                        <h2 className="mb-3">Location Name</h2>
+                        <Col xs={12} md={4}>
+                            <StatCard
+                                statName="Daily Income"
+                                value="384"
+                                unit="€"
+                                colorStyle="#00cc00"
+                            />
+                        </Col>
+                        <Col xs={12} md={4}>
+                            <StatCard
+                                statName="Daily Power Consumption"
+                                value="8200"
+                                unit="W"
+                                colorStyle="#e6e600"
+                            />
+                        </Col>
+                        <Col xs={12} md={4}>
+                            <StatCard
+                                statName="Some Other Stat"
+                                value="3"
+                                unit="Cookies"
+                                colorStyle="#0066ff"
+                            />
+                        </Col>
+                    </Row>
+                    <Row className="my-4">
+                        <h3 className="my-3">Machines</h3>
+                        <Col xs={12} md={6}>
+                            <MachineList 
+                                machinesData={machineData}
+                                machinesUsage={machineUsage}
+                                selMachine={selMachine}
+                                setSelMachine={setSelMachine}
+                            />
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <MachineCard machine={selMachine} />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
         </div>
     )
 }
