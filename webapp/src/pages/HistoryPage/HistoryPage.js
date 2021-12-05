@@ -30,8 +30,7 @@ const HistoryPage = () => {
     }
 
     const getMachineUsage = (machineId) => {
-        // Future API --> Just get usage from machineID, 
-        // instead of returning everything and filtering
+        // so adiciona usage das machines que estao sendo utilizadas nessa location
 
         fetch(`${process.env.PUBLIC_URL}/machine_usage_sample.json`)
         .then(response => response.json())

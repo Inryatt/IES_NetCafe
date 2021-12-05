@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { Form } from "react-bootstrap";
 // import faker from 'faker';
 
 
@@ -44,42 +45,20 @@ export const options = {
 
 
 const MachineUse = ({machineData, machineUsage}) => {
-    const labels = [];
-    // for (let i=0; i<2; i++) {
-    //     labels.push(String.fromCharCode(i+65))
-    // }
-    // const teste = [1,3,3,2,5,6,1,8,9]
-    // const teste2 = [9,8,7]
+
+    const [selMachine, setSelMachine] = useState(-1)
+    const [data, setData] = useState()
+
+
+    const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
 
     console.log("usage", machineUsage)
     console.log("data", machineData)
 
     const convertTimestamp = (timestamp) => {
         const date = new Date(timestamp * 1000)
-        return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`
     }
-
-    for (let usage of machineUsage) {
-        if (!labels.includes(convertTimestamp(usage.timestamp)))
-        labels.push(convertTimestamp(usage.timestamp))
-    }   
-
-    labels.sort()
-
-    const testeFunc = () => {
-        if (!machineUsage) return
-        console.log(machineUsage)
-        const time = machineUsage[0].timestamp
-        const date = new Date(time * 1000)
-        console.log("day", date.getDay())
-        console.log("month", date.getMonth())
-        console.log("year", date.getFullYear())
-        console.log("hours", date.getHours())
-        console.log("minutes", date.getMinutes())
-        console.log("sys", date.getUTCDay())
-    }
-
-
 
     const getUsagesById = (machineId) => {
         const temp = []
@@ -90,43 +69,75 @@ const MachineUse = ({machineData, machineUsage}) => {
         }
         return temp
     }
-    // testeFunc()
 
-    const data = {
-        labels,
-        datasets: machineData.map((machine, idx) => {
-            const usages = getUsagesById(machine.id)
-            return (
-                {
-                    label: "Teste" + idx,
-                    data: usages.map(usag => ({
-                        y: usag.power_usage,
-                        x: convertTimestamp(usag.timestamp)
-                    })),
-                    borderColor: `rgb(255, ${idx*33%255}, 132)`,
-                    backgroundColor: `rgb(255, ${idx*33%255}, 132)`,
-                }
-            )
-        }),
-    // datasets: [
-    //     {
-    //     label: 'Dataset 1',
-    //     data: teste,
-    //     borderColor: 'rgb(255, 99, 132)',
-    //     backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    //     },
-    //     {
-    //     label: 'Dataset 2',
-    //     data: teste2,
-    //     borderColor: 'rgb(53, 162, 235)',
-    //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    //     },
-    // ],
-    };
+    useEffect(() => {
+        const labels = [];
+        let tempUsage
+        let dataset
+        if (selMachine == -1) { // all machines
+            tempUsage = machineUsage
+            dataset = machineData.map((machine, idx) => {
+                const usages = getUsagesById(machine.id)
+                const color = colors[idx%colors.length]
+                console.log(color.substring(0, color.length-1) + ", 0.5)")
+                return (
+                    {
+                        label: machine.name,
+                        data: usages.map(usag => ({
+                            y: usag.power_usage,
+                            x: convertTimestamp(usag.timestamp)
+                        })),
+                        borderColor: color,
+                        backgroundColor: color.substring(0, color.length-1) + ", 0.5)",
+                    }
+                )
+            })
+        }
+        else {
+            const machine = machineData[selMachine]
+            console.log("machineData else", machineData)
+            console.log("sel idx", selMachine)
+            tempUsage = getUsagesById(machine.id)
+            const color = colors[selMachine%colors.length]
+            dataset = [{
+                label: machine.name,
+                data: tempUsage.map(usag => ({
+                    y: usag.power_usage,
+                    x: convertTimestamp(usag.timestamp)
+                })),
+                borderColor: color,
+                backgroundColor: color.substring(0, color.length-1) + ", 0.5)",
+            }]
+        }
+
+        for (let usage of tempUsage) {
+            if (!labels.includes(convertTimestamp(usage.timestamp)))
+                labels.push(convertTimestamp(usage.timestamp))
+        } 
+          
+    
+        labels.sort()
+    
+        setData({
+            labels,
+            datasets: dataset
+        })
+    }, [selMachine])
 
     return (
         <>
-            <Line options={options} data={data} />
+            {
+                data && 
+                <Line options={options} data={data} />
+            }
+            <Form.Select onChange={(e) => setSelMachine(e.target.value)}>
+                <option value={-1}>All</option>
+                {
+                    machineData.map((mach, idx) => (
+                        <option key={idx} value={idx}>{mach.name}</option>
+                    ))
+                }
+            </Form.Select>
         </>
     )
 }
