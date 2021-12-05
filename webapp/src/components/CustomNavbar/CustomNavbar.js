@@ -81,7 +81,7 @@ const CustomNavbar = () => {
     ]
 
     return (
-        <Navbar bg="dark" expand="md">
+        <Navbar bg="dark" expand="md" className="fixed-top">
             <Container>
                 <Navbar.Brand href="/dashboard" className="text-white" >NetCafé</Navbar.Brand>
                 <Navbar.Toggle aria-controls="custom-navbar" />
@@ -99,20 +99,10 @@ const CustomNavbar = () => {
                             delay={{show: 250,hide:800}}
                         >
                             <Nav.Link className="text-white">
-                                {/* <Row>
-                                    <Col xs={6}>
-                                        Alert
-                                    </Col>
-                                    <Col xs={6}>
-                                        <p className="text-danger">!</p>
-                                    </Col>
-                                </Row> */}
                                  Alert <span className="text-danger">!</span>
-                                
                             </Nav.Link>
                         </OverlayTrigger>
 
-                        {/* // <Nav.Link href="/dashboard" className="text-white">Alerts</Nav.Link> */}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

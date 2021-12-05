@@ -1,10 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import { Routes, Route } from 'react-router';
-import { Container } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import AlertsPage from './pages/AlertsPage/AlertsPage';
+import UsersPage from './pages/UsersPage/UsersPage';
 
 function App() {
   return (
@@ -18,14 +19,16 @@ function App() {
 
       <div className="App">
         <CustomNavbar />
-        <Container>
+        <br className="my-3" />
+        <Col xs={12} md={11} className="mx-auto">
           <Routes>
             <Route path="/" >
               <Route path="dashboard/" element={<DashboardPage />} />
               <Route path="notifications/" element={<AlertsPage />} />
+              <Route path="users/" element={<UsersPage />} />
             </Route>
           </Routes>
-        </Container>
+        </Col>
       </div>
     </div>
   );

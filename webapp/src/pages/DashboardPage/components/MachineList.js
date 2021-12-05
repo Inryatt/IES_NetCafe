@@ -1,7 +1,7 @@
 import React from "react";
 import Card from 'react-bootstrap/Card'
 import styled from "styled-components";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, ListGroup } from "react-bootstrap";
 
 
 const ActiveCircle = styled.div`
@@ -17,34 +17,33 @@ const ActiveCircle = styled.div`
 }
 `
 
-const MachineList = ({machinesData ,machinesUsage, selMachine, setSelMachine}) => {
+const MachineList = ({machinesData, machinesUsage, selMachine, setSelMachine}) => {
 
     return (
         <div>
+            <ListGroup>
             {
                 machinesData.map(machine => {
                     const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
-                        <Card 
+                        <ListGroup.Item
+                            className={machine == selMachine ? "active" : ""}
                             key={machine.id}
                             onClick={() => setSelMachine(machine)} 
-                            bg={selMachine && selMachine.id == machine.id ? "primary" : ""}
-                            text={selMachine && selMachine.id == machine.id ? "white" : "dark"}
                         >
-                            <Card.Body>
-                                <Row>
-                                    <Col sm={8}>
-                                        {machine.id} - {machine.name} 
-                                    </Col>
-                                    <Col sm={4}>
-                                        <ActiveCircle isActive={machine_usage.length > 0 && machine_usage[0].current_user != -1}/>
-                                    </Col>
-                                </Row>
-                            </Card.Body>
-                        </Card>
+                            <Row>
+                                <Col sm={10}>
+                                    {machine.id} - {machine.name} 
+                                </Col>
+                                <Col sm={2}>
+                                    <ActiveCircle isActive={machine_usage.length > 0 && machine_usage[0].current_user != -1}/>
+                                </Col>
+                            </Row>
+                        </ListGroup.Item>
                     )
                 })
             }
+            </ListGroup>
         </div>
     )
 }
