@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import LocationList from "../../components/LocationList/LocationList";
 import UserCard from "./components/UserCard";
+import UserMachineUsageCard from "./components/UserMachineUsageCard";
 
 const UsersPage = () => {
     const [usersData, setUsersData] = useState([])
     const [selUserIdx, setSelUser] = useState()
-    // const [curUser, setCurUser] = useState()
+    const [userHistory, setUserHistory] = useState([])
 
     const loadSampleUsers = (filter="") => {
         fetch(`${process.env.PUBLIC_URL}/sample_user_list.json`)
         .then(response => response.json())
         .then(data => setUsersData(data.filter(user => user.name.toLowerCase().includes(filter.toLowerCase()))))
+    }
+
+    const loadUserHistory = () => {
+        fetch(`${process.env.PUBLIC_URL}/machine_usage_sample.json`)
+        .then(response => response.json())
+        .then(data => setUserHistory(data.filter(usage => usage.user_id == usersData[selUserIdx].id)))
     }
 
     const filterUsers = () => {
@@ -24,13 +31,13 @@ const UsersPage = () => {
         loadSampleUsers()
     }, [])
 
-    // useEffect(() => {
-    //     if (selUserIdx != undefined)
-    //         setCurUser(usersData[selUserIdx])
-    // }, [selUserIdx])
+    useEffect(() => {
+        if (selUserIdx != undefined)
+            loadUserHistory()
+    }, [selUserIdx])
 
     return (
-        <>
+        <div className="text-start">
         <Row>
             <Col xs={3}>
                 <>
@@ -39,19 +46,34 @@ const UsersPage = () => {
                 </>
             </Col>
             <Col xs={9}>
-                {
-                    (selUserIdx == undefined)
+                {(selUserIdx == undefined)
                     ?
                     <h1>No user selected</h1>
                     :
+                    <>
                     <UserCard user={usersData[selUserIdx]}/>
+                    {
+                        (userHistory.length > 0 && 
+                            <>
+                            <h3 className="m-3">Usage History</h3>
+                            {userHistory.map(usage => <UserMachineUsageCard usage={usage}/>)}
+                            </>
+                        )
+                    }
+                    
+                    <h3 className="m-3">Most Used Software</h3>
+                    <p>
+                        Firefox - 5h 28min
+                        <br/>
+                        Minecraft - 4h 52min
+                        <br/>
+                        Photoshop - 2h 13min
+                    </p>
+                    </>
                 }
             </Col>
         </Row>
-            {/* {(selUser == undefined) && <h1>"no gamer selected"</h1>} */}
-            {/* {selUserIdx == undefined ? <h1>No one selected, estudasses</h1> : <h1>Selected {selUserIdx}</h1>} */}
-        </>
-        
+        </div>
     )
 }
 
