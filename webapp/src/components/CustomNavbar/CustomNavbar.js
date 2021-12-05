@@ -12,6 +12,7 @@ const CustomNavbar = () => {
                 <Navbar.Collapse id="custom-navbar">
                     <Nav>
                         <Nav.Link href="/dashboard" className="text-white">Dashboard</Nav.Link>
+                        <Nav.Link href="/users" className="text-white">Users</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
