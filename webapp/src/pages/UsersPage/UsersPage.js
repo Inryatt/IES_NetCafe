@@ -50,26 +50,26 @@ const UsersPage = () => {
                     ?
                     <h1>No user selected</h1>
                     :
-                    <>
-                    <UserCard user={usersData[selUserIdx]}/>
-                    {
-                        (userHistory.length > 0 && 
-                            <>
-                            <h3 className="m-3">Usage History</h3>
-                            {userHistory.map(usage => <UserMachineUsageCard usage={usage}/>)}
-                            </>
-                        )
-                    }
-                    
-                    <h3 className="m-3">Most Used Software</h3>
-                    <p>
-                        Firefox - 5h 28min
-                        <br/>
-                        Minecraft - 4h 52min
-                        <br/>
-                        Photoshop - 2h 13min
-                    </p>
-                    </>
+                    <div className="mt-2">
+                        <UserCard user={usersData[selUserIdx]}/>
+                        {
+                            (userHistory.length > 0 && 
+                                <>
+                                <h3 className="m-3">Usage History</h3>
+                                {userHistory.map(usage => <UserMachineUsageCard usage={usage}/>)}
+                                </>
+                            )
+                        }
+                        
+                        <h3 className="m-3">Most Used Software</h3>
+                        <p>
+                            Firefox - 5h 28min
+                            <br/>
+                            Minecraft - 4h 52min
+                            <br/>
+                            Photoshop - 2h 13min
+                        </p>
+                    </div>
                 }
             </Col>
         </Row>

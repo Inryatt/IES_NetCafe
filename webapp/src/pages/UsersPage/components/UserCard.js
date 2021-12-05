@@ -3,7 +3,7 @@ import React from "react";
 const UserCard = ({user}) => {
     return (
         <div className="p-2 border border-1 rounded text-start">
-            <h4 className="my-3">{user.name}</h4>
+            <h3 className="my-3">{user.name}</h3>
             <dl className="row">
                 <dt className="col-3">ID:</dt>
                 <dd className="col-9">{user.id}</dd>
