@@ -6,26 +6,26 @@ const MachineCard = ({machine}) => {
     // display latest usage stats instead of machine specs?
 
     return (
-        <div className="p-2 border border-1 rounded">
+        <div className="p-3 border border-1 rounded">
             {
             machine ?
             <div>
                 <h4 className="my-3">{machine.name}</h4>
-                <dl className="row">
-                    <dt className="col-3">CPU:</dt>
-                    <dd className="col-9 text-left">{machine.cpu}</dd>
+                <dl className="row text-start">
+                    <dt className="col-2">CPU:</dt>
+                    <dd className="col-10">{machine.cpu}</dd>
 
-                    <dt className="col-3">GPU:</dt>
-                    <dd className="col-9 text-left">{machine.gpu}</dd>
+                    <dt className="col-2">GPU:</dt>
+                    <dd className="col-10">{machine.gpu}</dd>
 
-                    <dt className="col-3">RAM:</dt>
-                    <dd className="col-9 text-left">{machine.ram}</dd>
+                    <dt className="col-2">RAM:</dt>
+                    <dd className="col-10">{machine.ram}</dd>
 
-                    <dt className="col-3">Disk:</dt>
-                    <dd className="col-9 text-left">{machine.disk}</dd>
+                    <dt className="col-2">Disk:</dt>
+                    <dd className="col-10">{machine.disk}</dd>
 
-                    <dt className="col-3">OS:</dt>
-                    <dd className="col-9 text-left">{machine.os}</dd>
+                    <dt className="col-2">OS:</dt>
+                    <dd className="col-10">{machine.os}</dd>
                 </dl>
             </div>
             :

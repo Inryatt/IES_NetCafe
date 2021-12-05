@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import LocationList from "../../components/LocationList/LocationList";
 import MachineCard from "./components/MachineCard/MachineCard";
 import MachineList from "./components/MachineList";
 import StatCard from "./components/StatCard/StatCard";
@@ -9,6 +10,22 @@ const DashboardPage = () => {
     const [machineData, setMachineData] = useState([])
     const [machineUsage, setMachineUsage] = useState([])
     const [selMachine, setSelMachine] = useState()
+    const [locations, setLocations] = useState(["Aveiro", "Leiria"])
+    const [selLocation, setSelLocation] = useState(0)
+
+    // static values for prototype
+    const locationStats = [
+        {
+            daily_income: 384,
+            daily_power_comp: 8200,
+            other_stat: 3
+        },
+        {
+            daily_income: 210,
+            daily_power_comp: 3720,
+            other_stat: 1
+        }
+    ]
 
     const loadSampleMachines = () => {
         fetch(`${process.env.PUBLIC_URL}/sample_machine_list.json`)
@@ -34,15 +51,16 @@ const DashboardPage = () => {
         <div>
             <Row className="mt-4">
                 <Col xs={12} md={3}>
-                    locations go here
+                    <h2 className="my-3">Locations</h2>
+                    <LocationList className="mt-4" list={locations} selElem={selLocation} selHandler={setSelLocation} />
                 </Col>
                 <Col xs={12} md={9}>
                     <Row className="my-3">
-                        <h2 className="mb-3">Location Name</h2>
+                        <h2 className="mb-3">{locations[selLocation]}</h2>
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Daily Income"
-                                value="384"
+                                value={locationStats[selLocation].daily_income}
                                 unit="€"
                                 colorStyle="#00cc00"
                             />
@@ -50,7 +68,7 @@ const DashboardPage = () => {
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Daily Power Consumption"
-                                value="8200"
+                                value={locationStats[selLocation].daily_power_comp}
                                 unit="W"
                                 colorStyle="#e6e600"
                             />
@@ -58,8 +76,8 @@ const DashboardPage = () => {
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Some Other Stat"
-                                value="3"
-                                unit="Cookies"
+                                value={locationStats[selLocation].other_stat}
+                                unit=" Cookies"
                                 colorStyle="#0066ff"
                             />
                         </Col>

@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { Routes, Route } from 'react-router';
-import { Container } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 
@@ -18,13 +18,13 @@ function App() {
       <div className="App">
         <CustomNavbar />
         <br className="my-3" />
-        <Container>
+        <Col xs={12} md={11} className="mx-auto">
           <Routes>
             <Route path="/" >
               <Route path="dashboard/" element={<DashboardPage />} />
             </Route>
           </Routes>
-        </Container>
+        </Col>
       </div>
     </div>
   );
