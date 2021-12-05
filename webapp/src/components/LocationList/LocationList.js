@@ -2,11 +2,11 @@ import React from "react";
 import { ListGroup } from "react-bootstrap";
 
 
-const LocationList = ({list, selElem, selHandler}) => {
+const LocationList = ({list, selElem, selHandler, className}) => {
 
     return (
         <>
-            <ListGroup>
+            <ListGroup className={className ? className : ""}>
             {
                 list.map((el, idx) => (
                     <ListGroup.Item
