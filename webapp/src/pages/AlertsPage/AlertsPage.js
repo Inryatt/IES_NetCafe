@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AlertNotif from "./AlertNotif/AlertNotif";
+import AlertNotif from "../../components/AlertNotif/AlertNotif";
 
 
 // static values for prototyping
