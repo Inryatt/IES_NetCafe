@@ -20,7 +20,7 @@
         "machine_id": 0,
         "user_id": 0,
         "timestamp": 1638385400,
-        "timestamp": 1638387500,
+        "timestamp_end": 1638390800,
         "cpu_usage": 0.7,
         "gpu_usage": 0.95,
         "disk_usage": 0.3,

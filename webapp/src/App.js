@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router';
 import { Col } from 'react-bootstrap';
 import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
+import AlertsPage from './pages/AlertsPage/AlertsPage';
 import HistoryPage from './pages/HistoryPage/HistoryPage';
 import UsersPage from './pages/UsersPage/UsersPage';
 
@@ -24,6 +25,7 @@ function App() {
           <Routes>
             <Route path="/" >
               <Route path="dashboard/" element={<DashboardPage />} />
+              <Route path="notifications/" element={<AlertsPage />} />
               <Route path="history/" element={<HistoryPage/>} />
               <Route path="users/" element={<UsersPage />} />
             </Route>
