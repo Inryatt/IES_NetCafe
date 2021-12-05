@@ -5,6 +5,7 @@ import { Col } from 'react-bootstrap';
 import CustomNavbar from './components/CustomNavbar/CustomNavbar';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import AlertsPage from './pages/AlertsPage/AlertsPage';
+import HistoryPage from './pages/HistoryPage/HistoryPage';
 import UsersPage from './pages/UsersPage/UsersPage';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" >
               <Route path="dashboard/" element={<DashboardPage />} />
               <Route path="notifications/" element={<AlertsPage />} />
+              <Route path="history/" element={<HistoryPage/>} />
               <Route path="users/" element={<UsersPage />} />
             </Route>
           </Routes>
