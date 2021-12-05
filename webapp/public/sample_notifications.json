@@ -1,0 +1,30 @@
+[
+    {
+        "location": "Aveiro",
+        "machine_id": 0,
+        "type": "danger",
+        "text": "Critical Hardware Failure",
+        "new": true
+    },
+    {
+        "location": "Leiria",
+        "machine_id": 1,
+        "type": "warning",
+        "text": "Underperforming",
+        "new": true
+    },
+    {
+        "location": "Aveiro",
+        "machine_id": 2,
+        "type": "warning",
+        "text": "Underperforming",
+        "new": false
+    },
+    {
+        "location": "Leiria",
+        "machine_id": 3,
+        "type": "info",
+        "text": "Maintenance Completed",
+        "new": false
+    }
+]

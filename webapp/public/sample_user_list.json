@@ -3,36 +3,54 @@
         "id": 0,
         "email": "adam_anderson@ies.com",
         "name": "Adam Anderson",
-        "birthdate": "1997-04-23"
+        "birthdate": "1997-04-23",
+        "registerDate": "2010-05-01",
+        "lastAccess": "2021-12-01",
+        "avgMonSpend": 12
     },
     {
         "id": 1,
         "email": "bob_baker@ies.com",
         "name": "Bob Baker",
-        "birthdate": "1978-11-27"
+        "birthdate": "1978-11-27",
+        "registerDate": "2013-11-11",
+        "lastAccess": "2021-11-27",
+        "avgMonSpend": 15
     },
     {
         "id": 2,
         "email": "carol_campbell@ies.com",
         "name": "Carol Campbell",
-        "birthdate": "2001-07-02"
+        "birthdate": "2001-07-02",
+        "registerDate": "2017-03-05",
+        "lastAccess": "2021-10-13",
+        "avgMonSpend": 7
     },
     {
         "id": 3,
         "email": "david_dawson@ies.com",
         "name": "David Dawson",
-        "birthdate": "2000-01-14"
+        "birthdate": "2000-01-14",
+        "registerDate": "2016-09-15",
+        "lastAccess": "2021-12-03",
+        "avgMonSpend": 19
     },
     {
         "id": 4,
         "email": "edward_evans@ies.com",
         "name": "Edward Evans",
-        "birthdate": "1984-02-19"
+        "birthdate": "1984-02-19",
+        "registerDate": "2020-02-14",
+        "lastAccess": "2021-12-04",
+        "avgMonSpend": 29
     },
     {
         "id": 5,
         "email": "francesca_freeman@ies.com",
         "name": "Francesca Freeman",
-        "birthdate": "2002-10-03"
+        "birthdate": "2002-10-03",
+        "registerDate": "2021-10-09",
+        "lastAccess": "2021-12-02",
+        "avgMonSpend": 43
     }
 ]
