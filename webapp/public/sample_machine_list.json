@@ -6,7 +6,8 @@
         "ram": "16 GB",
         "disk": "Samsung 970 Evo Plus 500 GB SSD",
         "os": "Windows 10",
-        "name": "Lenovo Legion 5"
+        "name": "Lenovo Legion 5",
+        "location": "Aveiro"
     },
     {
         "id": 1,
@@ -15,7 +16,8 @@
         "ram": "16 GB",
         "disk": "ADATA XPG SX8200 Pro 500 SSD",
         "os": "Windows 11",
-        "name": "Apple MacBook Air 13.3\""
+        "name": "Apple MacBook Air 13.3\"",
+        "location": "Leiria"
     },
     {
         "id": 2,
@@ -24,7 +26,8 @@
         "ram": "8 GB",
         "disk": "Klevv CRAS C710 512 GB M.2-2280 NVME Solid State Drive",
         "os": "Windows 10",
-        "name": "HP 15S-EQ2007NP 15.6\""
+        "name": "HP 15S-EQ2007NP 15.6\"",
+        "location": "Aveiro"
     },
     {
         "id": 3,
@@ -33,7 +36,8 @@
         "ram": "8 GB",
         "disk": "Intel 545s 256 GB",
         "os": "Ubuntu 20.04",
-        "name": "Asus Zenbook 14"
+        "name": "Asus Zenbook 14",
+        "location": "Leiria"
     },
     {
         "id": 4,
@@ -42,6 +46,7 @@
         "ram": "32 GB",
         "disk": "Samsung 980 Pro 1 TB M.2-2280 NVME SSD",
         "os": "Windows 11",
-        "name": "Huawei Matebook MateBook D15 15.6\""
+        "name": "Huawei Matebook MateBook D15 15.6\"",
+        "location": "Aveiro"
     }
 ]
