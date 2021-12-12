@@ -1,0 +1,13 @@
+#WIP-WIP-WIP-WIP!!!!!!!!!!!
+FROM maven as build
+ARG LOCAL_ENV=false
+COPY ./backendapp /app/
+RUN mkdir /backendapp/target/
+RUN touch /backendapp/target/<app>.war
+WORKDIR /backendapp
+
+#can be commented out for speedier
+RUN mvn clean install
+
+FROM tomcat
+COPY --from=build /app/target/app.war /usr/local/tomcat/webapps

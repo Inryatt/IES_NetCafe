@@ -1,0 +1,67 @@
+services:
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+        DB_SERVER_PORT: 3306
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_HOST: 'docker-mysql'
+        MYSQL_USER: 'root'
+        MYSQL_PASSWORD: 'root'
+        MYSQL_DB: 'users'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./.docker-volumes/mysql/db_data:/var/lib/mysql
+# Names our volume
+  alert_pub:
+    build: ./PUB_DOCKERFILE
+    command: python3 <NAME OF FILE>
+    #ports:
+    #  - "8000:8000"
+    #environment:
+    #  DATABASE_URL: postgres://todoapp@postgres/todos
+  pika_sv:
+    build: ./PIKA_DOCKERFILE
+    command: python3 <NAME OF FILE>
+  datagen:
+    build: ./DATAGEN_df
+    command: python3 <NAME OF FILE>
+  rabbitmq:
+    image: rabbitmq
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ./.docker-volumes/rabbitmq/data/:/var/lib/rabbitmq/
+        - ./.docker-volumes/rabbitmq/log/:/var/log/rabbitmq
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    volumes:
+    - ./.docker-volumes/mongodb/db:/data/db
+    ports:
+    - 27017:27017
+    restart: unless-stopped
+  mvn_app:
+    build:
+      context: ./MAVEN_DOCKERFILE
+      args:
+        LOCAL_ENV: true
+    volumes:
+      - ./target/<app>.war:/usr/local/tomcat/webapps/app.war
+
+  frontend:
+    build: ./Dockerfiles/REACT_DOCKERFILE
+    volumes:
+      - './.docker_volumes/react/:/app'
+      - '/app/node_modules'
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+    command: npm start
