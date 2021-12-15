@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Tab, Tabs } from "react-bootstrap";
 import LocationList from "../../components/LocationList/LocationList";
 import MachineCard from "./components/MachineCard/MachineCard";
 import MachineList from "./components/MachineList";
+import MachinePlanView from "./components/MachinePlanView/MachinePlanView";
 import StatCard from "./components/StatCard/StatCard";
 
 const DashboardPage = () => {
@@ -85,12 +86,25 @@ const DashboardPage = () => {
                     <Row className="my-4">
                         <h3 className="my-3">Machines</h3>
                         <Col xs={12} md={6}>
-                            <MachineList 
-                                machinesData={machineData}
-                                machinesUsage={machineUsage}
-                                selMachine={selMachine}
-                                setSelMachine={setSelMachine}
-                            />
+                            <Tabs defaultActiveKey="list">
+                                <Tab eventKey="list" title="List">
+                                    <MachineList 
+                                        machinesData={machineData}
+                                        machinesUsage={machineUsage}
+                                        selMachine={selMachine}
+                                        setSelMachine={setSelMachine}
+                                    />
+                                </Tab>
+                                <Tab eventKey="map" title="Map">
+                                    <MachinePlanView
+                                        plan_img_src={process.env.PUBLIC_URL + "/plan_aveiro.png"}
+                                        machinesData={machineData}
+                                        machinesUsage={machineUsage}
+                                        selMachine={selMachine}
+                                        setSelMachine={setSelMachine}
+                                    />
+                                </Tab>
+                            </Tabs>
                         </Col>
                         <Col xs={12} md={6}>
                             <MachineCard machine={selMachine} />
