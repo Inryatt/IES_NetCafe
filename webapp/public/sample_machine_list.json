@@ -19,7 +19,7 @@
         "os": "Windows 11",
         "name": "Apple MacBook Air 13.3\"",
         "location": "Leiria",
-        "position": [0.05, 0.1]
+        "position": [0.09, 0.1]
     },
     {
         "id": 2,
@@ -41,7 +41,7 @@
         "os": "Ubuntu 20.04",
         "name": "Asus Zenbook 14",
         "location": "Leiria",
-        "position": [0.05, 0.3]
+        "position": [0.09, 0.3]
     },
     {
         "id": 4,

@@ -96,8 +96,9 @@ const DashboardPage = () => {
                                     />
                                 </Tab>
                                 <Tab eventKey="map" title="Map">
+                                    { /* locations plans still hardcoded, change later */ }
                                     <MachinePlanView
-                                        plan_img_src={process.env.PUBLIC_URL + "/plan_aveiro.png"}
+                                        plan_img_src={process.env.PUBLIC_URL + (selLocation == 0 ? "/plan_aveiro.png" : "/plan_leiria.png")}
                                         machinesData={machineData.filter(machine => machine.location === locations[selLocation])}
                                         machinesUsage={machineUsage}
                                         selMachine={selMachine}
