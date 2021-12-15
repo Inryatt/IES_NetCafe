@@ -5,7 +5,7 @@ const MachinePlanView = ({plan_img_src, machinesData, machinesUsage, selMachine,
 
     return (
         <div className="position-relative">
-            <img src={plan_img_src} />
+            <img src={plan_img_src} className="w-100" />
             {
                 machinesData.map(machine => {
                     const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)

@@ -89,7 +89,7 @@ const DashboardPage = () => {
                             <Tabs defaultActiveKey="list">
                                 <Tab eventKey="list" title="List">
                                     <MachineList 
-                                        machinesData={machineData}
+                                        machinesData={machineData.filter(machine => machine.location === locations[selLocation])}
                                         machinesUsage={machineUsage}
                                         selMachine={selMachine}
                                         setSelMachine={setSelMachine}
@@ -98,7 +98,7 @@ const DashboardPage = () => {
                                 <Tab eventKey="map" title="Map">
                                     <MachinePlanView
                                         plan_img_src={process.env.PUBLIC_URL + "/plan_aveiro.png"}
-                                        machinesData={machineData}
+                                        machinesData={machineData.filter(machine => machine.location === locations[selLocation])}
                                         machinesUsage={machineUsage}
                                         selMachine={selMachine}
                                         setSelMachine={setSelMachine}
