@@ -26,6 +26,7 @@ const MachineList = ({machinesData, machinesUsage, selMachine, setSelMachine}) =
                     const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
                         <ListGroup.Item
+                            role="button"
                             className={machine == selMachine ? "active" : ""}
                             key={machine.id}
                             onClick={() => setSelMachine(machine)} 
