@@ -217,14 +217,17 @@ class Machine():
                 'disk':self.usage['disk'],
                 'network_up':self.usage['network_up'],
                 'network_down':self.usage['network_down'],
-                'temp':self.usage['temp'],
-                'programs':self.programs
+                'temp':round(self.usage['temp'],2),
+                'programs':self.programs,
+                'status':self.status
             }
         }
         
-        channel.basic_publish(exchange='',
-                      routing_key='datagen',
-                      body=json.dumps(obj))
+        return obj
+        #channel.basic_publish(exchange='',
+        #              routing_key='datagen',
+        #              body=json.dumps(obj))
+        #print(json.dumps(obj))
 
 
 
@@ -257,12 +260,11 @@ def main():
     machineList = get_machines()
     while True:
         for machine in machineList:
-            print(machine.status)
             machine.machine_loop()
-
+            machine.export_data()
             channel.basic_publish(exchange='',
                       routing_key='datagen',
-                      body='Hello World!')
+                      body=machine.export_data())
         
         time.sleep(3)
 
