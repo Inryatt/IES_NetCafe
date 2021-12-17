@@ -1,7 +1,15 @@
 package ua.ies.group3.netcafe.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.ies.group3.netcafe.api.exception.ResourceNotFoundException;
 import ua.ies.group3.netcafe.api.model.Location;
 import ua.ies.group3.netcafe.api.model.Machine;
 import ua.ies.group3.netcafe.api.model.Software;
@@ -12,9 +20,7 @@ import ua.ies.group3.netcafe.api.service.SoftwareService;
 import ua.ies.group3.netcafe.api.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -31,6 +37,7 @@ public class Controller {
     @Autowired
     private UserService userService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // Location
 
@@ -52,20 +59,42 @@ public class Controller {
         return machineService.findAllMachines();
     }
 
+    @GetMapping("/machines/{id}")
+    public ResponseEntity<Machine> findMachineById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        Machine machine = machineService.findMachineById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
+        return ResponseEntity.ok(machine);
+    }
+
     @PostMapping("/machines")
     public Machine addMachine(@Valid @RequestBody Machine machine) {
         return machineService.saveMachine(machine);
     }
-    
+
+    @PatchMapping(path = "/machines/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<Machine> updateMachine(@PathVariable Long id, @RequestBody JsonPatch patch) throws ResourceNotFoundException {
+        Machine machine = machineService.findMachineById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
+        try {
+            Machine machinePatched = applyPatchToMachine(patch, machine);
+            machineService.saveMachine(machinePatched);
+            return ResponseEntity.ok(machinePatched);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private Machine applyPatchToMachine(JsonPatch patch, Machine targetMachine) throws JsonPatchException, JsonProcessingException {
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetMachine, JsonNode.class));
+        return objectMapper.treeToValue(patched, Machine.class);
+    }
+
 
     @GetMapping("/locations/{id}/machines")
-    public List<Machine> findLocationMachines(@PathVariable(value = "id") Long id) {
-        Optional<Location> locationOptional = locationService.findLocationById(id);
-        if (locationOptional.isPresent()) {
-            Location location = locationOptional.get();
-            return machineService.findMachinesByLocation(location);
-        }
-        return new ArrayList<>();
+    public List<Machine> findLocationMachines(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        Location location = locationService.findLocationById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Location not found for this id: " + id));
+        return machineService.findMachinesByLocation(location);
     }
 
 
