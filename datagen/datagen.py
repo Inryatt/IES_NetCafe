@@ -1,9 +1,14 @@
-import os
 import numpy as np
 import random as rm
 import json
 import time
-from MarkovChain import MarkovChain
+import pika
+
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+channel.queue_declare(queue='datagen')
+
 
 with open("programlist.json") as f:
     program_list = json.load(f)
@@ -14,7 +19,6 @@ class program():
         self.name = name
         self.id = id
         self.type = type
-
 
 class Machine():
     def __init__(self, specs, id, location, base_temp, name):
@@ -154,7 +158,7 @@ class Machine():
                     self.status=2
                 else:
                     self.usage[spec] = 100
-                    
+
 
     def machine_loop(self):
         if not self.status:
@@ -203,6 +207,27 @@ class Machine():
         ongoing events: {self.event_status}
         """)
 
+
+    def export_data(self):
+        obj = {
+            'usage':{
+                'cpu':self.usage['cpu'],
+                'gpu':self.usage['gpu'],
+                'ram':self.usage['ram'],
+                'disk':self.usage['disk'],
+                'network_up':self.usage['network_up'],
+                'network_down':self.usage['network_down'],
+                'temp':self.usage['temp'],
+                'programs':self.programs
+            }
+        }
+        
+        channel.basic_publish(exchange='',
+                      routing_key='datagen',
+                      body=json.dumps(obj))
+
+
+
     def test_loop(self):
         print(self.event_status)
 
@@ -234,7 +259,12 @@ def main():
         for machine in machineList:
             print(machine.status)
             machine.machine_loop()
-        time.sleep(1)
+
+            channel.basic_publish(exchange='',
+                      routing_key='datagen',
+                      body='Hello World!')
+        
+        time.sleep(3)
 
     # For testing purposes
     # machineList[0].test_loop()
