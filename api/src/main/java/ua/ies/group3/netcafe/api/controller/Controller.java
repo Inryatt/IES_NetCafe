@@ -106,7 +106,7 @@ public class Controller {
     }
 
     @PostMapping("/softwares")
-    public Software addSoftware(Software software) {
+    public Software addSoftware(@Valid @RequestBody Software software) {
         return softwareService.saveSoftware(software);
     }
 
