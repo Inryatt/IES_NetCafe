@@ -177,14 +177,12 @@ class Machine():
             close_p = 0.1
             if rng < pass_p:                 # Pass
                 return
-            else:
+            elif rng < pass_p+open_p:         # Open Program
+                self.open_program()
+            elif rng < pass_p+open_p+close_p:  # Close Program
+                self.close_program()
+            else:                           # EVENT
                 self.event()
-            #elif rng < pass_p+open_p:         # Open Program
-            #    self.open_program()
-            #elif rng < pass_p+open_p+close_p:  # Close Program
-            #    self.close_program()
-            #else:                           # EVENT
-            #    self.event()
 
     def print_usage(self):
         print(f"""
