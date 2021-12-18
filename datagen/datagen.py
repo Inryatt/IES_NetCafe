@@ -9,9 +9,9 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='machine_usage')
 
-users = { i:True for i in range(5)}
+users = {i:True for i in range(1, 6)}
 
-with open("programlist.json") as f:
+with open("../db_initializer/software_list.json") as f:
     program_list = json.load(f)
 
 
