@@ -18,6 +18,7 @@ public class MachineService {
         return machineRepository.save(machine);
     }
 
+
     public List<Machine> saveMachines(List<Machine> machines) {
         return machineRepository.saveAll(machines);
     }

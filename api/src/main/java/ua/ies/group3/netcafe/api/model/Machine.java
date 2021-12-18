@@ -1,5 +1,7 @@
 package ua.ies.group3.netcafe.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class Machine {
     // Location and position
     @ManyToOne(optional = false)
     @JoinColumn(name = "locationId", nullable = false)
+    @JsonIgnoreProperties({"name", "map"})
     private Location location;
 
     @Column(name = "xCoord", nullable = false)
@@ -42,10 +45,12 @@ public class Machine {
 
     // Current Usage Information
     @OneToOne
+    @JsonIgnoreProperties({"name", "email", "birthdate", "registerDate"})
     // @JoinColumn(name = "currentUserId")
     private User currentUser;
 
     @OneToMany
+    @JsonIgnoreProperties({"name", "type"})
     // @JoinColumn(name = "softwareId")
     private List<Software> softwares;
 
@@ -64,8 +69,14 @@ public class Machine {
     @Column(name = "ramUsage")
     private double ramUsage;
 
-    @Column(name = "networkUsage")
-    private double networkUsage;
+//    @Column(name = "networkUsage")
+//    private double networkUsage;
+
+    @Column(name = "networkDownUsage")
+    private double networkDownUsage;
+
+    @Column(name = "networkUpUsage")
+    private double networkUpUsage;
 
     @Column(name = "powerUsage")
     private double powerUsage;
@@ -217,12 +228,20 @@ public class Machine {
         this.ramUsage = ramUsage;
     }
 
-    public double getNetworkUsage() {
-        return networkUsage;
+    public double getNetworkDownUsage() {
+        return networkDownUsage;
     }
 
-    public void setNetworkUsage(double networkUsage) {
-        this.networkUsage = networkUsage;
+    public void setNetworkDownUsage(double networkDownUsage) {
+        this.networkDownUsage = networkDownUsage;
+    }
+
+    public double getNetworkUpUsage() {
+        return networkUpUsage;
+    }
+
+    public void setNetworkUpUsage(double networkUpUsage) {
+        this.networkUpUsage = networkUpUsage;
     }
 
     public double getPowerUsage() {
@@ -256,4 +275,12 @@ public class Machine {
     public void setUptime(int uptime) {
         this.uptime = uptime;
     }
+
+//    public double getNetworkUsage() {
+//        return networkUsage;
+//    }
+//
+//    public void setNetworkUsage(double networkUsage) {
+//        this.networkUsage = networkUsage;
+//    }
 }

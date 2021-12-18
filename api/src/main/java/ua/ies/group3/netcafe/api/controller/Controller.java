@@ -46,6 +46,13 @@ public class Controller {
         return locationService.findAllLocations();
     }
 
+    @GetMapping("/locations/{id}")
+    public ResponseEntity<Location> findLocationById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        Location location = locationService.findLocationById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Location not found for this id: " + id));
+        return ResponseEntity.ok(location);
+    }
+
     @PostMapping("/locations")
     public Location addLocation(@Valid @RequestBody Location location) {
         return locationService.saveLocation(location);
@@ -65,6 +72,7 @@ public class Controller {
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
         return ResponseEntity.ok(machine);
     }
+
 
     @PostMapping("/machines")
     public Machine addMachine(@Valid @RequestBody Machine machine) {
@@ -105,6 +113,13 @@ public class Controller {
         return softwareService.findAllSoftwares();
     }
 
+    @GetMapping("/softwares/{id}")
+    public ResponseEntity<Software> findSoftwareById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        Software software = softwareService.findSoftwareById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Software not found for this id: " + id));
+        return ResponseEntity.ok(software);
+    }
+
     @PostMapping("/softwares")
     public Software addSoftware(@Valid @RequestBody Software software) {
         return softwareService.saveSoftware(software);
@@ -116,6 +131,13 @@ public class Controller {
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.findAllUsers();
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        User user = userService.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/users")
