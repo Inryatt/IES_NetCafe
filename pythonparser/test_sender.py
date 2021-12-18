@@ -1,6 +1,6 @@
 import pika, json
 
-static_machine = {"id": 1, "usage": {"cpu": 2.27, "gpu": 4.56, "ram": 5.01, "disk": 0, "network_up": 3.17, "network_down": 2.62, "temp": 21.22, "programs": [{"id": 1, "name": "Adobe Photoshop", "type": "work"}], "status": 1}}
+static_machine = {"id": 1, "timestamp": 1, "cpuUsage": 2.27, "gpuUsage": 4.56, "ramUsage": 5.01, "diskUsage": 0, "networkUpUsage": 3.17, "networkDownUsage": 2.62, "cpuTemp": 21.22, "gpuTemp": 22.23, "softwares": [{"id": 1}]}
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost'))
