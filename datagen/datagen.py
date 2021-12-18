@@ -277,10 +277,11 @@ class Machine():
 
 
 def get_machines():
-    with open("test_machinelist.json", "r") as f:
+    with open("../db_initializer/machine_list.json", "r") as f:
         json_machineList = json.load(f)
     machineList = []
-    id = 0
+    # TODO: Make it so that IDs are retrieved from the JSON file, and not calculated.
+    id = 16
     # Ambient temperature, can be changed according to place later (if time)
     base_temp = 20
     for machine in json_machineList:
