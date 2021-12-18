@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar, OverlayTrigger, Popover, Button, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import AlertNotif from "../AlertNotif/AlertNotif";
 
 const staticNewAlerts = [
@@ -18,24 +19,6 @@ const staticNewAlerts = [
         urgent: false
     }
 ]
-
-const popover = (
-    <Popover id="popover-basic">
-      {/* <Popover.Header as="h3">Popover right</Popover.Header> */}
-      <Popover.Body>
-        <AlertNotif 
-            alert={staticNewAlerts[0]}
-            isSmall={true}
-        />
-        <AlertNotif 
-            alert={staticNewAlerts[1]}
-            isSmall={true}
-        />
-        <br/>
-        <Button variant="success" href="/notifications">To Notifications Page</Button>
-      </Popover.Body>
-    </Popover>
-  );
 
 const CustomNavbar = () => {
 
@@ -80,16 +63,39 @@ const CustomNavbar = () => {
         }
     ]
 
+    const popover = (
+        <Popover id="popover-basic">
+          {/* <Popover.Header as="h3">Popover right</Popover.Header> */}
+          <Popover.Body>
+            <AlertNotif 
+                alert={staticNewAlerts[0]}
+                isSmall={true}
+            />
+            <AlertNotif 
+                alert={staticNewAlerts[1]}
+                isSmall={true}
+            />
+            <br/>
+            <Button variant="success" onClick={() => navigate("/notifications")}>To Notifications Page</Button>
+          </Popover.Body>
+        </Popover>
+    );
+    
+
+    // use this with 'onClick' arrow functions instead of 'href', for smoother navigations with react-router
+    // see Nav Links below for examples
+    const navigate = useNavigate();
+
     return (
         <Navbar bg="dark" expand="md" className="fixed-top">
             <Container>
-                <Navbar.Brand href="/dashboard" className="text-white" >NetCafé</Navbar.Brand>
+                <Navbar.Brand role="button" onClick={() => navigate("/dashboard")} className="text-white" >NetCafé</Navbar.Brand>
                 <Navbar.Toggle aria-controls="custom-navbar" />
                 <Navbar.Collapse id="custom-navbar">
                     <Nav>
-                        <Nav.Link href="/dashboard" className="text-white">Dashboard</Nav.Link>
-                        <Nav.Link href="/history" className="text-white">History</Nav.Link>
-                        <Nav.Link href="/users" className="text-white">Users</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/dashboard")} className="text-white">Dashboard</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/history")} className="text-white">History</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/users")} className="text-white">Users</Nav.Link>
                     </Nav>
                     <Nav className="ms-auto">
                         <OverlayTrigger 

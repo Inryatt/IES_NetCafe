@@ -295,7 +295,9 @@ def main():
     while True:
         for machine in machineList:
             machine.machine_loop()
+
             #machine.export_data()
+
             channel.basic_publish(exchange='',
                       routing_key='machine_usage',
                       body=machine.export_data())
