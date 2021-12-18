@@ -1,5 +1,4 @@
 import React from "react";
-import Card from 'react-bootstrap/Card'
 import styled from "styled-components";
 import { Row, Col, ListGroup } from "react-bootstrap";
 
@@ -27,6 +26,7 @@ const MachineList = ({machinesData, machinesUsage, selMachine, setSelMachine}) =
                     const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
                         <ListGroup.Item
+                            role="button"
                             className={machine == selMachine ? "active" : ""}
                             key={machine.id}
                             onClick={() => setSelMachine(machine)} 
