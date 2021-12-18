@@ -9,6 +9,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='datagen')
 
+users = { i:False for i in range(5)}
 
 with open("programlist.json") as f:
     program_list = json.load(f)
@@ -21,7 +22,7 @@ class program():
         self.type = type
 
 class Machine():
-    def __init__(self, specs, id, location, base_temp, name):
+    def __init__(self, specs, id, location, base_temp):
         # Internal Status Data
         self.status = 0  # 0 -> Off 1 ->On 2 -> Unavailable (temporarily)
         # [("cpu",+0.4)], for instance, will make cpu usage go up 0.4(%) by cycle
@@ -49,11 +50,12 @@ class Machine():
         self.usage["network_up"] = 0
 
         # Can be slightly above room temp
-        self.usage['temp'] = base_temp + rm.random()*3
+        self.usage['cpu_temp'] = base_temp + rm.random()*3
+        self.usage['gpu_temp'] = base_temp + rm.random()*3
+        self.start_time = time.time()
         self.programs = []
 
     def crash(self):
-
             self.usage = {}
             self.usage["cpu"] = 0
             self.usage["gpu"] = 0
@@ -61,7 +63,9 @@ class Machine():
             self.usage["disk"] = 0
             self.usage["network_down"] = 0
             self.usage["network_up"] = 0
-            self.usage['temp'] = 20 + rm.random()*3
+            self.usage['cpu_temp'] = 20 + rm.random()*3
+            self.usage['gpu_temp'] = 23 + rm.random()*3
+
             self.programs = []
             self.current_user = None
             self.event_status = []
@@ -74,7 +78,7 @@ class Machine():
         alert_p = 0.7
         sus_p = 0.1
         crash_p = 0.2
-        possible_events = ['cpu', 'gpu', 'ram', 'temp', 'disk']
+        possible_events = ['cpu', 'gpu', 'ram', 'cpu_temp','cpu_temp', 'disk']
         if rng < alert_p:
             self.event_status.append(
                 (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*30))
@@ -83,11 +87,16 @@ class Machine():
             #TODO: implement sus events
         else:
             self.crash()
+            
     def turn_on(self):
         if self.status:
             # already on
             pass
         else:
+            for user in users:
+                if users[user]:
+                    self.current_user = user
+                    break
             self.status = 1
 
     def turn_off(self):
@@ -137,7 +146,6 @@ class Machine():
             self.event_status = [
                 ev for ev in self.event_status if rm.random() < 0.8]
             for ev in self.event_status:
-                print(f"test: {ev}")
                 self.usage[ev[0]] += ev[1]
         else:
             return
@@ -153,7 +161,7 @@ class Machine():
             if self.usage[spec] > 100:
                 if spec == "network_down" or spec == "network_up":
                     pass
-                elif spec == "temp":
+                elif spec == "cpu_temp" or spec=="gpu_tmp":
                     self.turn_off()
                     self.status=2
                 else:
@@ -198,7 +206,9 @@ class Machine():
         cpu: {self.usage['cpu']}%
         gpu: {self.usage['gpu']}%
         ram: {self.usage['ram']}%
-        temp: {self.usage['temp']}ºC
+        cpu temp: {self.usage['cpu_temp']}ºC
+        gpu temp: {self.usage['gpu_temp']}ºC
+
         disk: {self.usage['disk']}%
         network (up): {self.usage['network_up']} MB/s
         network (down) {self.usage['network_down']} MB/s
@@ -207,20 +217,41 @@ class Machine():
         ongoing events: {self.event_status}
         """)
 
+ 
+
+#{
+# "id": 1,
+# "timestamp": 1, 
+# "cpuUsage": 2.27, 
+# "gpuUsage": 4.56, 
+# "ramUsage": 5.01, 
+# "diskUsage": 0, 
+# "networkUpUsage": 3.17, 
+# "networkDownUsage": 2.62, 
+# "cpuTemp": 21.22, 
+# "gpuTemp": 22.23, 
+# "softwares": [
+#   {
+#       "id": 1
+#   }
+#   ]
+# }
 
     def export_data(self):
         obj = {
-            'usage':{
-                'cpu':self.usage['cpu'],
-                'gpu':self.usage['gpu'],
-                'ram':self.usage['ram'],
-                'disk':self.usage['disk'],
-                'network_up':self.usage['network_up'],
-                'network_down':self.usage['network_down'],
-                'temp':round(self.usage['temp'],2),
-                'programs':self.programs,
-                'status':self.status
-            }
+            'id':self.id,
+            'timestamp':self.start_time,
+            'cpuUsage':self.usage['cpu'],
+            'gpuUsage':self.usage['gpu'],
+            'ramUsage':self.usage['ram'],
+            'diskUsage':self.usage['disk'],
+            'networkUpUsage':self.usage['network_up'],
+            'networkDownUsage':self.usage['network_down'],
+            'cpuTemp':round(self.usage['cpu_temp'],2),
+            'gpuTemp':round(self.usage['gpu_temp'],2),
+            'softwares':{ 'id':prog['id'] for prog in self.programs},
+            'status':self.status,
+            'user':{ 'id':self.current_user}
         }
         
         return obj
@@ -251,7 +282,7 @@ def get_machines():
     base_temp = 20
     for machine in json_machineList:
         machineList.append(Machine({"CPU": machine["cpu"], "GPU": machine['gpu'], "RAM": machine['ram'], "Disk": machine['disk'],
-                           "OS": machine['os'], "Name": machine['name']}, id, machine['location'], base_temp, machine['name']))
+                           "OS": machine['os'], "Name": machine['name']}, id, machine['location'], base_temp))
         id += 1
     return machineList
 
