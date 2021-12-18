@@ -252,7 +252,7 @@ class Machine():
             'networkDownUsage':self.usage['network_down'],
             'cpuTemp':round(self.usage['cpu_temp'],2),
             'gpuTemp':round(self.usage['gpu_temp'],2),
-            'softwares':{ 'id':prog['id'] for prog in self.programs},
+            'softwares':[{'id':prog['id']} for prog in self.programs],
             'status':self.status,
             'currentUser':{ 'id':self.current_user}
         }
