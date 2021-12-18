@@ -9,7 +9,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='machine_usage')
 
-users = { i:False for i in range(5)}
+users = { i:True for i in range(5)}
 
 with open("programlist.json") as f:
     program_list = json.load(f)
@@ -96,11 +96,14 @@ class Machine():
             for user in users:
                 if users[user]:
                     self.current_user = user
+                    users[user] = False
                     break
             self.status = 1
 
     def turn_off(self):
         if self.status:
+            users[self.current_user] = True
+            self.current_user= None
             self.status = 0
 
     def close_program(self):
@@ -251,7 +254,7 @@ class Machine():
             'gpuTemp':round(self.usage['gpu_temp'],2),
             'softwares':{ 'id':prog['id'] for prog in self.programs},
             'status':self.status,
-            'user':{ 'id':self.current_user}
+            'currentUser':{ 'id':self.current_user}
         }
         
         return json.dumps(obj)
@@ -292,7 +295,9 @@ def main():
     while True:
         for machine in machineList:
             machine.machine_loop()
-            # machine.export_data()
+
+            #machine.export_data()
+
             channel.basic_publish(exchange='',
                       routing_key='machine_usage',
                       body=machine.export_data())
