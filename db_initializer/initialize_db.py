@@ -3,7 +3,7 @@ import requests
 
 def main():
     api_url = 'http://localhost:8080/api/'
-    
+
     with open('user_list.json', 'rb') as user_list:
         users = json.loads(user_list.read())
         for user in users:
@@ -20,6 +20,7 @@ def main():
         locations = json.loads(location_list.read())
         for location in locations:
             with open(location['map'], 'rb') as img_map:
+                # TODO: check if the images show up as expected in the web app
                 foo = str(img_map.read())
                 foo = [ord(c) for c in foo]
                 location['map'] = foo
