@@ -90,6 +90,9 @@ public class Machine {
     @Column(name = "uptime")
     private int uptime; // In seconds
 
+    @Column(name = "status") // 0 - off, 1 - on, 2 - unavailable
+    private int status;
+
     // Getters and Setters
 
     public long getId() {
@@ -276,7 +279,15 @@ public class Machine {
         this.uptime = uptime;
     }
 
-//    public double getNetworkUsage() {
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    //    public double getNetworkUsage() {
 //        return networkUsage;
 //    }
 //
