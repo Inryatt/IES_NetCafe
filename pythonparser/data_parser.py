@@ -23,11 +23,6 @@ def main():
         lst = []
         # print("machine:", machine)
 
-        # Machine is something like this (Camila edition):
-        # {'id': 1, 'usage': {'cpu': 2.27, 'gpu': 4.56, 'ram': 5.01, 
-        # 'disk': 0, 'network_up': 3.17, 'network_down': 2.62, 'temp': 21.22, 
-        # 'programs': [{'id': 1, 'name': 'Adobe Photoshop', 'type': 'work'}], 'status': 1}}
-
         jspatch = generatePatch(machine, patches=lst)
         # print("jspatch:", jspatch)
 
