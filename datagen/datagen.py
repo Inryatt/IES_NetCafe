@@ -52,7 +52,7 @@ class Machine():
         # Can be slightly above room temp
         self.usage['cpu_temp'] = base_temp + rm.random()*3
         self.usage['gpu_temp'] = base_temp + rm.random()*3
-
+        self.start_time = time.time()
         self.programs = []
 
     def crash(self):
