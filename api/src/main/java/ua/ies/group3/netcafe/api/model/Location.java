@@ -12,9 +12,13 @@ public class Location {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob // I hope to god this works!
-    @Column(name = "map", nullable = false)
-    private byte[] map;
+//    @Lob // I hope to god this works!
+//    @Column(name = "map", nullable = false)
+//    private byte[] map;
+
+    @Lob
+    @Column(name = "map", nullable = false, length = 1000000)
+    private String map;
 
     public long getId() {
         return id;
@@ -32,11 +36,19 @@ public class Location {
         this.name = name;
     }
 
-    public byte[] getMap() {
+    public String getMap() {
         return map;
     }
 
-    public void setMap(byte[] map) {
+    public void setMap(String map) {
         this.map = map;
     }
+
+    //    public byte[] getMap() {
+//        return map;
+//    }
+//
+//    public void setMap(byte[] map) {
+//        this.map = map;
+//    }
 }
