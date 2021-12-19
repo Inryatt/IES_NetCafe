@@ -1,0 +1,42 @@
+[
+    {
+        "id": 6,
+        "name": "Minecraft",
+        "type": "Gaming"
+    },
+    {
+        "id": 7,
+        "name": "Dead by Daylight",
+        "type": "Gaming"
+    },
+    {
+        "id": 8,
+        "name": "Rocket League",
+        "type": "Gaming"
+    },
+    {
+        "id": 9,
+        "name": "Netflix",
+        "type": "Media"
+    },
+    {
+        "id": 10,
+        "name": "Spotify",
+        "type": "Media"
+    },
+    {
+        "id": 11,
+        "name": "Visual Studio Code",
+        "type": "Development"
+    },
+    {
+        "id": 12,
+        "name": "IntelliJ",
+        "type": "Development"
+    },
+    {
+        "id": 13,
+        "name": "PyCharm",
+        "type": "Development"
+    }
+]

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import LocationList from "../../components/LocationList/LocationList";
+import UserList from "./components/UserList";
 import UserCard from "./components/UserCard";
 import UserMachineUsageCard from "./components/UserMachineUsageCard";
 
@@ -42,7 +42,7 @@ const UsersPage = () => {
             <Col xs={3}>
                 <>
                 <input className="m-2" id="searchInput" type="text" placeholder="Search" onChange={filterUsers} />
-                <LocationList list={usersData.map(el => `${el.name} (${el.id})`)} selElem={selUserIdx} selHandler={setSelUser}/>
+                <UserList list={usersData.map(el => `${el.name} (${el.id})`)} selElem={selUserIdx} selHandler={setSelUser}/>
                 </>
             </Col>
             <Col xs={9}>

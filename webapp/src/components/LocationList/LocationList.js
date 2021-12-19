@@ -8,12 +8,12 @@ const LocationList = ({list, selElem, selHandler, className}) => {
         <>
             <ListGroup className={className ? className : ""}>
             {
-                list.map((el, idx) => (
+                list.map(el => (
                     <ListGroup.Item
-                        key={idx}
-                        className={idx == selElem ? "active" : ""}
-                        onClick={() => selHandler(idx)}
-                    >{el}</ListGroup.Item>
+                        role="button"
+                        className={el == selElem ? "active" : ""}
+                        onClick={() => selHandler(el)}
+                    >{el.name}</ListGroup.Item>
                 ))
             }
             </ListGroup>
