@@ -9,15 +9,13 @@ const StatusCircle = styled.div`
     height: 1.8em;
     width: 1.8em;
     border-radius: 100%;
-    background-color: ${({isActive}) => isActive ? "#0d0;" : "red;"}
-    
+    background-color: ${({color}) => color};
+    border: ${({selected}) => selected ? "5px solid #038cfc;" : "none;"}
 }`
 
-// this line wasn't working right for some reason
-// border: ${(selected) => selected ? "5px solid #038cfc;" : "none;"}
 
 
-const MachineBubble = ({position, machineName, machineAvailable, selected, onClick}) => {
+const MachineBubble = ({posX, posY, machineName, machineStatus, selected, onClick}) => {
 
     return (
         <div
@@ -26,8 +24,8 @@ const MachineBubble = ({position, machineName, machineAvailable, selected, onCli
             onClick={onClick}
             style={{
                 "position": "absolute",
-                "top": position[1]*100 + "%",
-                "left": position[0]*100 + "%",
+                "top": posX*100 + "%",
+                "left": posY*100 + "%",
                 "transform": "translate(-50%, -50%)",
                 "zIndex": selected ? 100 : 90
             }}
@@ -36,7 +34,7 @@ const MachineBubble = ({position, machineName, machineAvailable, selected, onCli
                 className={"machine-bubble-name border border-2 border-white p-2 rounded " + (selected ? "selected bg-primary text-white" : "bg-light")}
                 style={{"opacity": 0.85}}
             >{machineName}</div>
-            <StatusCircle isActive={machineAvailable} selected={selected} />
+            <StatusCircle color={machineStatus == 0 ? "green" : machineStatus == 1 ? "grey" : "red"} selected={selected} />
         </div>
     )
 }

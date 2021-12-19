@@ -1,21 +1,21 @@
 import React from "react";
 import MachineBubble from "./MachineBubble";
 
-const MachinePlanView = ({plan_img_src, machinesData, machinesUsage, selMachine, setSelMachine}) => {
+const MachinePlanView = ({plan_img_src, machinesData, selMachine, setSelMachine}) => {
 
     return (
         <div className="position-relative">
             <img src={plan_img_src} className="w-100" />
             {
                 machinesData.map(machine => {
-                    const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
                         <MachineBubble
-                            position={machine.position}
+                            posX={machine.xCoord}
+                            posY={machine.yCoord}
                             machineName={machine.name}
-                            selected={machine == selMachine}
+                            selected={selMachine ? (machine.id == selMachine.id) : false}
                             onClick={() => setSelMachine(machine)}
-                            machineAvailable={machine_usage.length > 0 && machine_usage[0].current_user != -1}
+                            machineStatus={machine.status}
                         />
                     )
                 })

@@ -8,35 +8,35 @@ const ActiveCircle = styled.div`
     content: " ";
     display: inline-block;
     color: "green";
-    height: 0.75em;
-    width: 0.75em;
+    height: 1em;
+    width: 1em;
     border-radius: 100%;
     margin-left: 1em;
-    background-color: ${({isActive}) => isActive ? "#0d0" : "red"}
+    border: 2px solid white;
+    background-color: ${({color}) => color}
 }
 `
 
-const MachineList = ({machinesData, machinesUsage, selMachine, setSelMachine}) => {
+const MachineList = ({machinesData, selMachine, setSelMachine}) => {
 
     return (
         <div>
             <ListGroup>
             {
                 machinesData.map(machine => {
-                    const machine_usage = machinesUsage.filter(usage => usage.machine_id == machine.id)
                     return (
                         <ListGroup.Item
                             role="button"
-                            className={machine == selMachine ? "active" : ""}
+                            className={selMachine && (machine.id == selMachine.id) ? "active" : ""}
                             key={machine.id}
                             onClick={() => setSelMachine(machine)} 
                         >
                             <Row>
                                 <Col sm={10}>
-                                    {machine.id} - {machine.name} 
+                                    ID:{machine.id} - {machine.name} 
                                 </Col>
                                 <Col sm={2}>
-                                    <ActiveCircle isActive={machine_usage.length > 0 && machine_usage[0].current_user != -1}/>
+                                    <ActiveCircle color={machine.status == 0 ? "green" : machine.status == 1 ? "grey" : "red"}/>
                                 </Col>
                             </Row>
                         </ListGroup.Item>
