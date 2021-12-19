@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Col, Row, Tab, Tabs } from "react-bootstrap";
 import LocationList from "../../components/LocationList/LocationList";
 import MachineCard from "./components/MachineCard/MachineCard";
@@ -10,8 +10,10 @@ const DashboardPage = () => {
 
     const [machineData, setMachineData] = useState([])
     const [selMachine, setSelMachine] = useState()
-    const [locations, setLocations] = useState(["Aveiro", "Leiria"])
+    const [locations, setLocations] = useState()
     const [selLocation, setSelLocation] = useState(0)
+    const [refreshFlag, setRefreshFlag] = useState(false)
+    const [prevLocation, setPrevLocation] = useState()
 
     // static values for prototype
     const locationStats = {
@@ -27,6 +29,25 @@ const DashboardPage = () => {
         }
     }
 
+    const fetchLocationMachines = async () => {
+        //console.log("fetching...")
+        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`, {
+            headers: {
+                "Origin": "localhost:3000",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setMachineData(data);
+            if (selMachine) {
+                setSelMachine(machineData.find(machine => machine.id == selMachine.id))
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     // get list of locations on page load
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/locations`, {
@@ -38,29 +59,26 @@ const DashboardPage = () => {
         .then(data => {
             setLocations(data);
             setSelLocation(data[0]);
-            //console.log(data)
         })
         .catch(err => {
             console.log(err)
         })
+
+        // a hack for getting periodic refreshes
+        setInterval(() => setRefreshFlag(prevVal => !prevVal), 3000);
     }, [])
 
-    // get selected location's machines
+    // get selected location's machines every refleshFlag update or when location changes
     useEffect(() => {
-        setMachineData([]);
-        setSelMachine();
-        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`, {
-            headers: {
-                "Origin": "localhost:3000",
-            }
-        })
-        .then(response => response.json())
-        .then(data => setMachineData(data))
-        .catch(err => {
-            console.log(err)
-        })
-    }, [selLocation])
-    
+        if (prevLocation != selLocation) {
+            setMachineData([]);
+            setSelMachine();
+        }
+        setPrevLocation(selLocation);
+        fetchLocationMachines();
+    }, [selLocation, refreshFlag])
+
+
     return (
         selLocation ?
         <div>
@@ -121,8 +139,6 @@ const DashboardPage = () => {
                                                 />
                                             </Tab>
                                         </Tabs>
-                                        :
-
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <MachineCard machine={selMachine} />

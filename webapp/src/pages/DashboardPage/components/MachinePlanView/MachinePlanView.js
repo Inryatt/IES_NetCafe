@@ -13,7 +13,7 @@ const MachinePlanView = ({plan_img_src, machinesData, selMachine, setSelMachine}
                             posX={machine.xCoord}
                             posY={machine.yCoord}
                             machineName={machine.name}
-                            selected={machine == selMachine}
+                            selected={selMachine ? (machine.id == selMachine.id) : false}
                             onClick={() => setSelMachine(machine)}
                             machineStatus={machine.status}
                         />
