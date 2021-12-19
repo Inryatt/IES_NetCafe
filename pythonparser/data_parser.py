@@ -1,15 +1,16 @@
+import time
 from typing import Dict, List
 import pika, sys, os, json, requests
 
 def generatePatch(dic : Dict, patches : List = [], prefix="") -> List:
     """Returns the JsonPatch of given dictionary."""
-    for key,val in dic.items():
-        if key == "id": continue
-        new_prefix = prefix+"/"+key
-        if isinstance(val, Dict):
-            generatePatch(val, patches=patches, prefix=new_prefix)
-        else:
-            patches.append({"op": "replace", "path": new_prefix, "value": val})
+    for key, val in dic.items():
+        if key == "id" and prefix == "": continue
+        new_prefix = prefix + "/" + key
+        # if isinstance(val, Dict):
+        #     generatePatch(val, patches=patches, prefix=new_prefix)
+        # else:
+        patches.append({"op": "replace", "path": new_prefix, "value": val})
     return patches
 
 def main():
@@ -24,13 +25,13 @@ def main():
         # print("machine:", machine)
 
         jspatch = generatePatch(machine, patches=lst)
-        # print("jspatch:", jspatch)
+        print(f"{jspatch = }")
 
-        base_url = "localhost:8080/api/machines/"
+        base_url = "http://localhost:8080/api/machines/"
         machine_id = machine.get("id")
         if machine_id is not None:
-            print("POST (not yet) sent to Machine",machine_id,"!")
-            #r = requests.patch(base_url + machine_id, data = jspatch)
+            print("POST sent to Machine",machine_id,"!")
+            r = requests.patch(base_url + str(machine_id), headers={'content-type': 'application/json-patch+json'}, json=jspatch)
 
     channel.basic_consume(queue='machine_usage', on_message_callback=machine_callback, auto_ack=True)
 

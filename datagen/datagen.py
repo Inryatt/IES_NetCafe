@@ -9,9 +9,9 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='machine_usage')
 
-users = { i:True for i in range(5)}
+users = {i:True for i in range(1, 6)}
 
-with open("programlist.json") as f:
+with open("../db_initializer/software_list.json") as f:
     program_list = json.load(f)
 
 
@@ -252,7 +252,7 @@ class Machine():
             'networkDownUsage':self.usage['network_down'],
             'cpuTemp':round(self.usage['cpu_temp'],2),
             'gpuTemp':round(self.usage['gpu_temp'],2),
-            'softwares':{ 'id':prog['id'] for prog in self.programs},
+            'softwares':[{'id':prog['id']} for prog in self.programs],
             'status':self.status,
             'currentUser':{ 'id':self.current_user}
         }
@@ -277,10 +277,11 @@ class Machine():
 
 
 def get_machines():
-    with open("test_machinelist.json", "r") as f:
+    with open("../db_initializer/machine_list.json", "r") as f:
         json_machineList = json.load(f)
     machineList = []
-    id = 0
+    # TODO: Make it so that IDs are retrieved from the JSON file, and not calculated.
+    id = 16
     # Ambient temperature, can be changed according to place later (if time)
     base_temp = 20
     for machine in json_machineList:
