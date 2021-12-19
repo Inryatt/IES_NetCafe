@@ -9,46 +9,61 @@ import StatCard from "./components/StatCard/StatCard";
 const DashboardPage = () => {
 
     const [machineData, setMachineData] = useState([])
-    const [machineUsage, setMachineUsage] = useState([])
     const [selMachine, setSelMachine] = useState()
     const [locations, setLocations] = useState(["Aveiro", "Leiria"])
     const [selLocation, setSelLocation] = useState(0)
 
     // static values for prototype
-    const locationStats = [
-        {
+    const locationStats = {
+        "Aveiro": {
             daily_income: 384,
             daily_power_comp: 8200,
             other_stat: 3
         },
-        {
+        "Leiria": {
             daily_income: 210,
             daily_power_comp: 3720,
             other_stat: 1
         }
-    ]
-
-    const loadSampleMachines = () => {
-        fetch(`${process.env.PUBLIC_URL}/sample_machine_list.json`)
-        .then(response => response.json())
-        .then(data => setMachineData(data))
-    }
-
-    const getMachineUsage = (machineId) => {
-        // Future API --> Just get usage from machineID, 
-        // instead of returning everything and filtering
-
-        fetch(`${process.env.PUBLIC_URL}/machine_usage_sample.json`)
-        .then(response => response.json())
-        .then(data => setMachineUsage(data))
     }
 
     useEffect(() => {
-        loadSampleMachines()
-        getMachineUsage()
+        //loadSampleMachines()
+        //getMachineUsage()
+
+        fetch(`${process.env.REACT_APP_API_URL}/locations`, {
+            headers: {
+                "Origin": "localhost:3000",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setLocations(data);
+            setSelLocation(data[0]);
+            //console.log(data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }, [])
+
+    // get selected location's machines
+    useEffect(() => {
+        setMachineData([]);
+        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`, {
+            headers: {
+                "Origin": "localhost:3000",
+            }
+        })
+        .then(response => response.json())
+        .then(data => setMachineData(data))
+        .catch(err => {
+            console.log(err)
+        })
+    }, [selLocation])
     
     return (
+        selLocation ?
         <div>
             <Row className="mt-4">
                 <Col xs={12} md={3}>
@@ -57,11 +72,11 @@ const DashboardPage = () => {
                 </Col>
                 <Col xs={12} md={9}>
                     <Row className="my-3">
-                        <h2 className="mb-3">{locations[selLocation]}</h2>
+                        <h2 className="mb-3">{selLocation.name}</h2>
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Daily Income"
-                                value={locationStats[selLocation].daily_income}
+                                value={locationStats[selLocation.name].daily_income}
                                 unit="€"
                                 colorStyle="#00cc00"
                             />
@@ -69,7 +84,7 @@ const DashboardPage = () => {
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Daily Power Consumption"
-                                value={locationStats[selLocation].daily_power_comp}
+                                value={locationStats[selLocation.name].daily_power_comp}
                                 unit="W"
                                 colorStyle="#e6e600"
                             />
@@ -77,7 +92,7 @@ const DashboardPage = () => {
                         <Col xs={12} md={4}>
                             <StatCard
                                 statName="Some Other Stat"
-                                value={locationStats[selLocation].other_stat}
+                                value={locationStats[selLocation.name].other_stat}
                                 unit=" Cookies"
                                 colorStyle="#0066ff"
                             />
@@ -85,34 +100,45 @@ const DashboardPage = () => {
                     </Row>
                     <Row className="my-4">
                         <h3 className="my-3">Machines</h3>
-                        <Col xs={12} md={6}>
-                            <Tabs defaultActiveKey="list">
-                                <Tab eventKey="list" title="List">
-                                    <MachineList 
-                                        machinesData={machineData.filter(machine => machine.location === locations[selLocation])}
-                                        machinesUsage={machineUsage}
-                                        selMachine={selMachine}
-                                        setSelMachine={setSelMachine}
-                                    />
-                                </Tab>
-                                <Tab eventKey="map" title="Map">
-                                    { /* locations plans still hardcoded, change later */ }
-                                    <MachinePlanView
-                                        plan_img_src={process.env.PUBLIC_URL + (selLocation == 0 ? "/plan_aveiro.png" : "/plan_leiria.png")}
-                                        machinesData={machineData.filter(machine => machine.location === locations[selLocation])}
-                                        machinesUsage={machineUsage}
-                                        selMachine={selMachine}
-                                        setSelMachine={setSelMachine}
-                                    />
-                                </Tab>
-                            </Tabs>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <MachineCard machine={selMachine} />
-                        </Col>
+                        {
+                            machineData.length > 0 ?
+                            <>
+                                <Col xs={12} md={6}>
+                                    
+                                        <Tabs defaultActiveKey="list">
+                                            <Tab eventKey="list" title="List">
+                                                <MachineList 
+                                                    machinesData={machineData}
+                                                    selMachine={selMachine}
+                                                    setSelMachine={setSelMachine}
+                                                />
+                                            </Tab>
+                                            <Tab eventKey="map" title="Map">
+                                                <MachinePlanView
+                                                    plan_img_src={selLocation.map}
+                                                    machinesData={machineData}
+                                                    selMachine={selMachine}
+                                                    setSelMachine={setSelMachine}
+                                                />
+                                            </Tab>
+                                        </Tabs>
+                                        :
+
+                                </Col>
+                                <Col xs={12} md={6}>
+                                    <MachineCard machine={selMachine} />
+                                </Col>
+                            </>
+                            :
+                            <h3 className="mt-3 text-center">Loading data...</h3>
+                        }
                     </Row>
                 </Col>
             </Row>
+        </div>
+        :
+        <div>
+            <h1 className="mt-5 text-center">Loading...</h1>
         </div>
     )
 }
