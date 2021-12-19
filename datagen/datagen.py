@@ -10,7 +10,7 @@ channel = connection.channel()
 channel.queue_declare(queue='machine_usage')
 
 users = { i:True for i in range(5)}
-
+program_list=[]
 with open("programlist.json") as f:
     program_list = json.load(f)
 
@@ -129,11 +129,14 @@ class Machine():
                         break
                 if add:
                     valid_prog.append(prog)
-
+            
             #valid_programs = [prog for prog in program_list if (
             #    (prog["type"] == ptype or ptype == None) and  not (prog["type"]  in used_types))]
-            rng = rm.randint(0, len(valid_prog)-1)
-            self.programs.append(valid_prog[rng])
+            if len(valid_prog)<2:
+                self.close_program()
+            else:
+                rng = rm.randint(0, len(valid_prog)-1)
+                self.programs.append(valid_prog[rng])
 
     def machine_off_loop(self):
         rng = rm.random()
