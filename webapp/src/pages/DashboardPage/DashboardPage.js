@@ -78,6 +78,10 @@ const DashboardPage = () => {
         fetchLocationMachines();
     }, [selLocation, refreshFlag])
 
+    const locationSelectHandler = (loc) => {
+        setSelMachine();
+        setSelLocation(loc);
+    }
 
     return (
         selLocation ?
@@ -85,7 +89,7 @@ const DashboardPage = () => {
             <Row className="mt-4">
                 <Col xs={12} md={3}>
                     <h2 className="my-3">Locations</h2>
-                    <LocationList className="mt-4" list={locations} selElem={selLocation} selHandler={setSelLocation} />
+                    <LocationList className="mt-4" list={locations} selElem={selLocation} selHandler={locationSelectHandler} />
                 </Col>
                 <Col xs={12} md={9}>
                     <Row className="my-3">
