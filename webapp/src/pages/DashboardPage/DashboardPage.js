@@ -27,10 +27,8 @@ const DashboardPage = () => {
         }
     }
 
+    // get list of locations on page load
     useEffect(() => {
-        //loadSampleMachines()
-        //getMachineUsage()
-
         fetch(`${process.env.REACT_APP_API_URL}/locations`, {
             headers: {
                 "Origin": "localhost:3000",
@@ -50,6 +48,7 @@ const DashboardPage = () => {
     // get selected location's machines
     useEffect(() => {
         setMachineData([]);
+        setSelMachine();
         fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`, {
             headers: {
                 "Origin": "localhost:3000",
@@ -115,7 +114,7 @@ const DashboardPage = () => {
                                             </Tab>
                                             <Tab eventKey="map" title="Map">
                                                 <MachinePlanView
-                                                    plan_img_src={selLocation.map}
+                                                    plan_img_src={"data:image/png;base64," + selLocation.map}
                                                     machinesData={machineData}
                                                     selMachine={selMachine}
                                                     setSelMachine={setSelMachine}

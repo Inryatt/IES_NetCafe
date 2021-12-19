@@ -8,11 +8,12 @@ const ActiveCircle = styled.div`
     content: " ";
     display: inline-block;
     color: "green";
-    height: 0.75em;
-    width: 0.75em;
+    height: 1em;
+    width: 1em;
     border-radius: 100%;
     margin-left: 1em;
-    background-color: ${(color) => color}
+    border: 2px solid white;
+    background-color: ${({color}) => color}
 }
 `
 

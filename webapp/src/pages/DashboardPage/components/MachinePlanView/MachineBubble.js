@@ -9,12 +9,10 @@ const StatusCircle = styled.div`
     height: 1.8em;
     width: 1.8em;
     border-radius: 100%;
-    background-color: ${(color) => color}
-    
+    background-color: ${({color}) => color};
+    border: ${({selected}) => selected ? "5px solid #038cfc;" : "none;"}
 }`
 
-// this line wasn't working right for some reason
-// border: ${(selected) => selected ? "5px solid #038cfc;" : "none;"}
 
 
 const MachineBubble = ({posX, posY, machineName, machineStatus, selected, onClick}) => {
