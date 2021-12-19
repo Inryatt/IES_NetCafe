@@ -1,3 +1,4 @@
+import base64
 import json
 import requests
 
@@ -21,9 +22,9 @@ def main():
         for location in locations:
             with open(location['map'], 'rb') as img_map:
                 # TODO: check if the images show up as expected in the web app
-                foo = str(img_map.read())
-                foo = [ord(c) for c in foo]
-                location['map'] = foo
+                img = img_map.read()
+                img64 = str(base64.b64encode(img))
+                location['map'] = img64[2:-1]
                 requests.post(api_url + 'locations', json=location)
 
     with open('machine_list.json', 'rb') as machine_list:
