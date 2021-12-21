@@ -1,7 +1,0 @@
-.machine-bubble:hover {
-    z-index: 110 !important;
-}
-
-.machine-bubble:hover .machine-bubble-name:not(.selected) {
-    background-color: rgb(139, 185, 255) !important;
-}
