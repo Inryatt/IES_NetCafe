@@ -5,6 +5,7 @@ import pika, sys, os, json, requests
 def generatePatch(dic : Dict, patches : List = [], prefix="") -> List:
     """Returns the JsonPatch of given dictionary."""
     for key, val in dic.items():
+        if key == "softwares": continue
         if key == "id" and prefix == "": continue
         new_prefix = prefix + "/" + key
         # if isinstance(val, Dict):
@@ -14,7 +15,7 @@ def generatePatch(dic : Dict, patches : List = [], prefix="") -> List:
     return patches
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
 
     channel.queue_declare(queue='machine_usage')
@@ -25,9 +26,12 @@ def main():
         # print("machine:", machine)
 
         jspatch = generatePatch(machine, patches=lst)
-        print(f"{jspatch = }")
+        #print(f"{jspatch = }")
 
-        base_url = "http://localhost:8080/api/machines/"
+        base_url = "http://api:8080/api/machines/"
+
+        test_req = requests.get("http://api:8080/api/machines")
+        print(test_req)
         machine_id = machine.get("id")
         if machine_id is not None:
             print("POST sent to Machine",machine_id,"!")

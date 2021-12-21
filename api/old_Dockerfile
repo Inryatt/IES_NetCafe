@@ -1,0 +1,13 @@
+#WIP-WIP-WIP-WIP!!!!!!!!!!!
+FROM maven as build
+ARG LOCAL_ENV=false
+COPY ./ /api/
+RUN mkdir /api/target/
+RUN touch /api/target/api.war
+WORKDIR /api
+
+#can be commented out for speedier
+#RUN mvn clean install
+
+FROM tomcat
+COPY --from=build /api/target/api.war /usr/local/tomcat/webapps/api.war

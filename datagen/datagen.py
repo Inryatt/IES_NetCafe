@@ -5,13 +5,13 @@ import time
 import pika
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
 channel = connection.channel()
 channel.queue_declare(queue='machine_usage')
-
+#
 users = {i:True for i in range(1, 6)}
 
-with open("../db_initializer/software_list.json") as f:
+with open("software_list.json") as f:
     program_list = json.load(f)
 
 
@@ -82,14 +82,15 @@ class Machine():
         if rng < alert_p:
             self.event_status.append(
                 (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*30))
-        if rng<alert_p+sus_p:
+        elif rng<alert_p+sus_p:
             pass
             #TODO: implement sus events
         else:
             self.crash()
-            
+
     def turn_on(self):
-        if self.status:
+        #print(f"current status: {self.status}")
+        if self.status==1:
             # already on
             pass
         else:
@@ -98,10 +99,12 @@ class Machine():
                     self.current_user = user
                     users[user] = False
                     break
+            #print("set status to 1")
             self.status = 1
+            #print(f"machine {self.id} status {self.status}")
 
     def turn_off(self):
-        if self.status:
+        if self.status==1:
             users[self.current_user] = True
             self.current_user= None
             self.status = 0
@@ -117,9 +120,8 @@ class Machine():
             self.close_program()
         else:
             used_types = [prog["type"] for prog in self.programs]
-            print(used_types)
+            #print(used_types)
             valid_prog=[]
-            add=True
             for prog in program_list:
                 add=True
                 for t in used_types:
@@ -130,10 +132,14 @@ class Machine():
                 if add:
                     valid_prog.append(prog)
 
+            #print(valid_prog)
             #valid_programs = [prog for prog in program_list if (
             #    (prog["type"] == ptype or ptype == None) and  not (prog["type"]  in used_types))]
-            rng = rm.randint(0, len(valid_prog)-1)
-            self.programs.append(valid_prog[rng])
+            if len(valid_prog)<2:
+                self.close_program()
+            else:
+                rng = rm.randint(0, len(valid_prog)-1)
+                self.programs.append(valid_prog[rng])
 
     def machine_off_loop(self):
         rng = rm.random()
@@ -170,9 +176,8 @@ class Machine():
                 else:
                     self.usage[spec] = 100
 
-
     def machine_loop(self):
-        if not self.status:
+        if self.status==0:
             self.machine_off_loop()
         elif self.status ==2:
             rng=rm.random()
@@ -183,7 +188,7 @@ class Machine():
 
             self.deal_with_ongoing_events()
             self.fluctuate_usage()
-            self.print_usage()
+            #self.print_usage()
             
             rng = rm.random()
             pass_p = 0.75
@@ -220,7 +225,7 @@ class Machine():
         ongoing events: {self.event_status}
         """)
 
- 
+
 
 #{
 # "id": 1,
@@ -265,19 +270,19 @@ class Machine():
 
 
 
-    def test_loop(self):
-        print(self.event_status)
-
-        self.event_status.append(("cpu", 5))
-        while self.usage['cpu'] < 100:
-            self.fluctuate_usage()
-            self.deal_with_ongoing_events()
-            self.print_usage()
-            time.sleep(3)
+#    def test_loop(self):
+#        print(self.event_status)
+#
+#        self.event_status.append(("cpu", 5))
+#        while self.usage['cpu'] < 100:
+#            self.fluctuate_usage()
+#            self.deal_with_ongoing_events()
+#            self.print_usage()
+#            time.sleep(3)
 
 
 def get_machines():
-    with open("../db_initializer/machine_list.json", "r") as f:
+    with open("machine_list.json", "r") as f:
         json_machineList = json.load(f)
     machineList = []
     # TODO: Make it so that IDs are retrieved from the JSON file, and not calculated.
@@ -296,14 +301,15 @@ def main():
     while True:
         for machine in machineList:
             machine.machine_loop()
-
-            #machine.export_data()
-
+            #print(f"machine {machine.id} status {machine.status}")
+            #machine.print_usage()
+            #if machine.status == 1:
+            #    machine.print_usage()
             channel.basic_publish(exchange='',
                       routing_key='machine_usage',
                       body=machine.export_data())
             print("sent machine")
-        time.sleep(3)
+        time.sleep(1)
 
     # For testing purposes
     # machineList[0].test_loop()

@@ -37,7 +37,7 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
 # Strategy to auto update the schemas (create, create-drop, validate, update)
 spring.jpa.hibernate.ddl-auto=update
 ```
-
+ 
 ## Data Generation
 
 ### Initial Data
