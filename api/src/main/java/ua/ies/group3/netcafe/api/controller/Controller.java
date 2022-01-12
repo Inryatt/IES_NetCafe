@@ -40,6 +40,8 @@ public class Controller {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+
+
     // Location
 
     @GetMapping("/locations")
