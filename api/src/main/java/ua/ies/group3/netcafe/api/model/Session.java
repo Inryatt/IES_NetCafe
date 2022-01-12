@@ -20,12 +20,11 @@ public class Session {
     private double avgNetDownUsage;
     private double avgNetUpUsage;
     private double avgPowerUsage;
-    private int duration;
     private List<Integer> softwareUsed;
 
     public Session(String id, long machineId, long userId, long timestampStart, long timestampEnd, int updateCount,
                    double avgCpuUsage, double avgGpuUsage, double avgNetDownUsage, double avgNetUpUsage,
-                   double avgPowerUsage, int duration, List<Integer> softwareUsed) {
+                   double avgPowerUsage, List<Integer> softwareUsed) {
         super();
         this.id = id;
         this.machineId = machineId;
@@ -38,7 +37,6 @@ public class Session {
         this.avgNetDownUsage = avgNetDownUsage;
         this.avgNetUpUsage = avgNetUpUsage;
         this.avgPowerUsage = avgPowerUsage;
-        this.duration = duration;
         this.softwareUsed = softwareUsed;
     }
 
@@ -128,14 +126,6 @@ public class Session {
 
     public void setAvgPowerUsage(double avgPowerUsage) {
         this.avgPowerUsage = avgPowerUsage;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public List<Integer> getSoftwareUsed() {

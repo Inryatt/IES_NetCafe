@@ -1,8 +1,17 @@
 package ua.ies.group3.netcafe.api.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ua.ies.group3.netcafe.api.model.Session;
+import ua.ies.group3.netcafe.api.model.MachineUsage;
 
-public interface MachineUsageRepository extends MongoRepository<Session, String> {
-    public long count();
+import java.util.List;
+
+public interface MachineUsageRepository extends MongoRepository<MachineUsage, String> {
+    List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampEndIsBefore(long timestampStart,
+                                                                                      long timestampEnd);
+
+    List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(long machineId,
+                                                                                                  long timestampStart,
+                                                                                                  long timestampEnd);
+
+    long count();
 }
