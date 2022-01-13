@@ -21,8 +21,9 @@ import ua.ies.group3.netcafe.api.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-
+@CrossOrigin    
 @RestController
+//@CrossOrigin(origins = "*")// "http://frontend:3000")
 @RequestMapping("/api")
 public class Controller {
     @Autowired

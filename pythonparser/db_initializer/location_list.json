@@ -1,0 +1,12 @@
+[
+    {
+        "id": 14,
+        "name": "Aveiro",
+        "map": "aveiro.png"
+    },
+    {
+        "id": 15,
+        "name": "Leiria",
+        "map": "leiria.png"
+    }
+]
