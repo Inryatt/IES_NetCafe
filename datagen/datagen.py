@@ -98,6 +98,8 @@ class Machine():
                     self.current_user = user
                     users[user] = False
                     break
+            self.start_time = time.time()
+
             self.status = 1
 
     def turn_off(self):
