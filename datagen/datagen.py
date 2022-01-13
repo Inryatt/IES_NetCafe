@@ -10,6 +10,7 @@ channel = connection.channel()
 channel.queue_declare(queue="machine-usage")
 #
 users = {i:True for i in range(1, 6)}
+base_url = "http://api:8080/api/machines/"
 
 with open("software_list.json") as f:
     program_list = json.load(f)
@@ -315,4 +316,5 @@ def main():
     # machineList[0].test_loop()
 
 
-main()
+if __name__ == "__main__":
+    main()
