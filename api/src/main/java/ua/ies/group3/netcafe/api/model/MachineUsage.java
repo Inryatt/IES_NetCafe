@@ -3,10 +3,14 @@ package ua.ies.group3.netcafe.api.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.List;
 
 @Document("machineUsages")
 public class MachineUsage {
+    @Transient
+    public static final String SEQUENCE_NAME = "usages_sequence";
+
     @Id
     private String id;
 
@@ -22,10 +26,10 @@ public class MachineUsage {
     private int uptime;
     private List<Integer> softwareUsage;
 
-    public MachineUsage(String id, long machineId, long userId, long timestampStart, long timestampEnd, double cpuUsage,
+    public MachineUsage(long machineId, long userId, long timestampStart, long timestampEnd, double cpuUsage,
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage, int uptime,
                         List<Integer> softwareUsage) {
-        this.id = id;
+        // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
         this.timestampStart = timestampStart;
@@ -133,5 +137,23 @@ public class MachineUsage {
 
     public void setSoftwareUsage(List<Integer> softwareUsage) {
         this.softwareUsage = softwareUsage;
+    }
+
+    @Override
+    public String toString() {
+        return "MachineUsage{" +
+                "id='" + id + '\'' +
+                ", machineId=" + machineId +
+                ", userId=" + userId +
+                ", timestampStart=" + timestampStart +
+                ", timestampEnd=" + timestampEnd +
+                ", cpuUsage=" + cpuUsage +
+                ", gpuUsage=" + gpuUsage +
+                ", networkUpUsage=" + networkUpUsage +
+                ", networkDownUsage=" + networkDownUsage +
+                ", powerUsage=" + powerUsage +
+                ", uptime=" + uptime +
+                ", softwareUsage=" + softwareUsage +
+                '}';
     }
 }

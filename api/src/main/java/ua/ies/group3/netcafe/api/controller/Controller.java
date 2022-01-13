@@ -173,7 +173,7 @@ public class Controller {
                                          @RequestParam(name = "ts-start", required = false) Long tsStart,
                                          @RequestParam(name = "ts-end", required = false) Long tsEnd) {
         if (tsStart == null)
-            tsStart = 0L;
+            tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
@@ -185,5 +185,10 @@ public class Controller {
     @PostMapping("/test-sessions")
     public Session addSession(@Valid @RequestBody Session session) {
         return sessionService.saveSession(session);
+    }
+
+    @PostMapping("/test-usages")
+    public MachineUsage addMachineUsage(@Valid @RequestBody MachineUsage machineUsage) {
+        return machineUsageService.saveMachineUsage(machineUsage);
     }
 }

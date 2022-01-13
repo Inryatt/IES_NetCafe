@@ -21,4 +21,12 @@ public class MachineUsageService {
     public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(long machineId, long timestampStart, long timestampEnd) {
         return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(machineId, timestampStart, timestampEnd);
     }
+
+    public List<MachineUsage> findAllMachineUsages() {
+        return machineUsageRepository.findAll();
+    }
+
+    public MachineUsage saveMachineUsage(MachineUsage machineUsage) {
+        return machineUsageRepository.save(machineUsage);
+    }
 }
