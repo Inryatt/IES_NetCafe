@@ -5,9 +5,9 @@ import time
 import pika
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
-channel.queue_declare(queue='machine_usage')
+channel.queue_declare(queue="machine-usage")
 #
 users = {i:True for i in range(1, 6)}
 
@@ -305,8 +305,8 @@ def main():
             #machine.print_usage()
             #if machine.status == 1:
             #    machine.print_usage()
-            channel.basic_publish(exchange='',
-                      routing_key='machine_usage',
+            channel.basic_publish(exchange='machine-usage-exchange',
+                      routing_key='machine-usage',
                       body=machine.export_data())
             print("sent machine")
         time.sleep(1)
