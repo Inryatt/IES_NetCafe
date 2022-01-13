@@ -3,6 +3,7 @@ package ua.ies.group3.netcafe.api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
+import ua.ies.group3.netcafe.api.model.MachineUsage;
 import ua.ies.group3.netcafe.api.model.Session;
 import ua.ies.group3.netcafe.api.repository.SessionRepository;
 
@@ -33,5 +34,9 @@ public class SessionService {
     // test
     public Session saveSession(Session session) {
         return sessionRepository.save(session);
+    }
+
+    public Session updateSession(MachineUsage machineUsage) {
+        return sessionRepository.updateSession(machineUsage);
     }
 }

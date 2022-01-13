@@ -6,15 +6,13 @@ import ua.ies.group3.netcafe.api.model.Session;
 
 import java.util.List;
 
-public interface SessionRepository extends MongoRepository<Session, String> {
+public interface SessionRepository extends MongoRepository<Session, String>, SessionRepositoryCustom {
     // @Query("{machineId: '?0'}")
     List<Session> findSessionsByMachineId(long machineId);
 
     List<Session> findSessionsByUserId(long userId);
 
     List<Session> findSessionsByMachineIdAndUserId(long machineId, long userId);
-
-
 
     long count();
 }
