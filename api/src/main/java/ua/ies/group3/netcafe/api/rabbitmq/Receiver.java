@@ -1,6 +1,10 @@
 package ua.ies.group3.netcafe.api.rabbitmq;
 
 import java.util.concurrent.CountDownLatch;
+
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
+
 import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +15,10 @@ public class Receiver {
 
   public void receiveMessage(byte[] message) {
     String msg = new String(message, StandardCharsets.UTF_8);
-    System.out.println("Received <" + msg + ">");
+    Gson g = new Gson();
+    Teste s = g.fromJson(msg, Teste.class);
+    // JSONPObject json = new JSONPObject(msg);
+    System.out.println("Received <" + s.getName() + ">");
     latch.countDown();
   }
 
