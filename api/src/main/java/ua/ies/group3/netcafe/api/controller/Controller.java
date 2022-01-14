@@ -177,8 +177,10 @@ public class Controller {
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
-            return machineUsageService.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(tsStart, tsEnd);
-        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, tsStart, tsEnd);
+            // return machineUsageService.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(tsStart, tsEnd);
+            return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
+        // return machineUsageService.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, tsStart, tsEnd);
+        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
     }
 
     // test session gets

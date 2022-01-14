@@ -14,13 +14,21 @@ public class MachineUsageService {
     @Autowired
     private MachineUsageRepository machineUsageRepository;
 
-    public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(timestampStart, timestampEnd);
+    public List<MachineUsage> findMachineUsageByTimestampStartBetween(long timestampStart, long timestampEnd) {
+        return machineUsageRepository.findMachineUsageByTimestampStartBetween(timestampStart, timestampEnd);
     }
 
-    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId, long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, timestampStart, timestampEnd);
+    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartBetween(long machineId, long timestampStart, long timestampEnd) {
+        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, timestampStart, timestampEnd);
     }
+
+//    public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart, long timestampEnd) {
+//        return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(timestampStart, timestampEnd);
+//    }
+//
+//    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId, long timestampStart, long timestampEnd) {
+//        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, timestampStart, timestampEnd);
+//    }
 
     public List<MachineUsage> findAllMachineUsages() {
         return machineUsageRepository.findAll();

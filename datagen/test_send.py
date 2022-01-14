@@ -9,15 +9,31 @@ channel.basic_publish(exchange='machine-usage-exchange',
                       body=json.dumps({
                           "machineId": 1,
                           "userId": 1,
-                          "timestampStart": 0,
+                          "timestampStart": 2,
                           # "timestampEnd": 1,
-                          "cpuUsage": 0.5,
-                          "gpuUsage": 0.6,
-                          "networkUpUsage": 10,
-                          "networkDownUsage": 25,
-                          "powerUsage": 300,
-                          "ramUsage": 0.7,
-                          "diskUsage": 0.25,
-                          "uptime": 1,
-                          "softwareUsage": [1, 2, 3]
+                          "cpuUsage": 1,
+                          "gpuUsage": 0.5,
+                          "networkUpUsage": 50,
+                          "networkDownUsage": 50,
+                          "powerUsage": 500,
+                          "ramUsage": 0.5,
+                          "diskUsage": 0.5,
+                          "uptime": 0,
+                          "softwareUsage": [2, 4]
                       }))
+
+# {
+#                           "machineId": 1,
+#                           "userId": 1,
+#                           "timestampStart": 1,
+#                           # "timestampEnd": 1,
+#                           "cpuUsage": 0.99,
+#                           "gpuUsage": 0.99,
+#                           "networkUpUsage": 100,
+#                           "networkDownUsage": 100,
+#                           "powerUsage": 300,
+#                           "ramUsage": 0.99,
+#                           "diskUsage": 0.99,
+#                           "uptime": 2,
+#                           "softwareUsage": [2, 4]
+#                       }

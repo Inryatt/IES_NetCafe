@@ -21,12 +21,13 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
         System.out.println("updateSession");
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("machineId").is(machineUsage.getId()));
+        query.addCriteria(Criteria.where("machineId").is(machineUsage.getMachineId()));
         query.addCriteria(Criteria.where("timestampEnd").is(null));
         List<Session> machineNullSessions = mongoTemplate.find(query, Session.class);
 
         // If there is no ongoing session, create a new one.
-        if (machineNullSessions.size() == 0) {
+        if (machineNullSessions.size() == 0 && machineUsage.getUserId() != 0) {
+            System.out.println("No ongoing machine session for machine with ID " + machineUsage.getId());
             Session newSession = new Session(
                     machineUsage.getMachineId(),
                     machineUsage.getUserId(),
@@ -46,13 +47,16 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
             return newSession;
         // If there is an ongoing session, update its values
         } else {
+            System.out.println("Ongoing machine session for machine with ID " + machineUsage.getMachineId());
             Session cur = machineNullSessions.get(0);  // In theory, there should only be one.
             Update update = new Update();
             // Machine turned off, previous session over.
             if (machineUsage.getUserId() == 0) {
+                System.out.println("Machine usage represents machine turned off (user ID: 0)");
                 update.set("timestampEnd", machineUsage.getTimestampStart());
             // User still using it
             } else {
+                System.out.println("Updating session with new machine usage information.");
                 update.set("updateCount", cur.getUpdateCount() + 1);
                 int count = cur.getUpdateCount() + 1;
                 update.set("avgCpuUsage", (cur.getAvgCpuUsage() * (count - 1) + machineUsage.getCpuUsage()) / count);
