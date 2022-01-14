@@ -26,8 +26,12 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
         List<Session> machineNullSessions = mongoTemplate.find(query, Session.class);
 
         // If there is no ongoing session, create a new one.
-        if (machineNullSessions.size() == 0 && machineUsage.getUserId() != 0) {
+        if (machineNullSessions.size() == 0) {
             System.out.println("No ongoing machine session for machine with ID " + machineUsage.getId());
+            if (machineUsage.getUserId() == 0) {
+                System.out.println("Disregarding machine usage with user ID 0, because there are no ongoing sessions.");
+                return null;
+            }
             Session newSession = new Session(
                     machineUsage.getMachineId(),
                     machineUsage.getUserId(),

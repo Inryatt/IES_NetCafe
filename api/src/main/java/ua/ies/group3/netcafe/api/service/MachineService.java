@@ -46,6 +46,7 @@ public class MachineService {
                 machineUsage.getNetworkUpUsage(),
                 machineUsage.getNetworkDownUsage(),
                 machineUsage.getPowerUsage()
+                // machineUsage.getSoftwareUsage()
         );
         return machineRepository.getById(machineUsage.getMachineId());
     }

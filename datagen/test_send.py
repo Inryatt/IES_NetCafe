@@ -9,7 +9,7 @@ channel.basic_publish(exchange='machine-usage-exchange',
                       body=json.dumps({
                           "machineId": 1,
                           "userId": 1,
-                          "timestampStart": 2,
+                          "timestampStart": 3,
                           # "timestampEnd": 1,
                           "cpuUsage": 1,
                           "gpuUsage": 0.5,

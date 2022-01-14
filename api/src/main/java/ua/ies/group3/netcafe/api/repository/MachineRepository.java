@@ -24,6 +24,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             "m.networkUpUsage = :networkUpUsage," +
             "m.networkDownUsage = :networkDownUsage," +
             "m.powerUsage = :powerUsage " +
+            // "m.softwares = :softwares " +
             "where m.id = :machineId")
     void updateMachine(
             @Param("machineId") long machineId,
@@ -36,5 +37,6 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             @Param("networkDownUsage") double networkDownUsage,
             @Param("powerUsage") double powerUsage
             // TODO: How to update software usage (list :( )?
+            // @Param("softwares") List<Integer> softwares
     );
 }
