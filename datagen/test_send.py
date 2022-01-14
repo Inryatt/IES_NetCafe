@@ -7,7 +7,7 @@ channel.queue_declare(queue="machine-usage")
 channel.basic_publish(exchange='machine-usage-exchange',
                       routing_key='routing.key',
                       body=json.dumps({
-                          "machineId": 1,
+                          "machineId": 16,
                           "userId": 1,
                           "timestampStart": 3,
                           # "timestampEnd": 1,
@@ -19,7 +19,9 @@ channel.basic_publish(exchange='machine-usage-exchange',
                           "ramUsage": 0.5,
                           "diskUsage": 0.5,
                           "uptime": 0,
-                          "softwareUsage": [2, 4]
+                          "softwareUsage": [6, 7, 8],
+                          "cpuTemp": 50,
+                          "gpuTemp": 50
                       }))
 
 # {

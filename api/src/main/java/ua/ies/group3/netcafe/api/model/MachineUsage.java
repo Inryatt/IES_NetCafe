@@ -22,10 +22,13 @@ public class MachineUsage {
     private double ramUsage;
     private int uptime;
     private List<Integer> softwareUsage;
+    private double cpuTemp;
+    private double gpuTemp;
 
     public MachineUsage(long machineId, long userId, long timestampStart, double cpuUsage,
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
-                        double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage) {
+                        double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage,
+                        double cpuTemp, double gpuTemp) {
         // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
@@ -39,6 +42,8 @@ public class MachineUsage {
         this.ramUsage = ramUsage;
         this.uptime = uptime;
         this.softwareUsage = softwareUsage;
+        this.cpuTemp = cpuTemp;
+        this.gpuTemp = gpuTemp;
     }
 
     public String getId() {
@@ -143,6 +148,22 @@ public class MachineUsage {
 
     public void setSoftwareUsage(List<Integer> softwareUsage) {
         this.softwareUsage = softwareUsage;
+    }
+
+    public double getCpuTemp() {
+        return cpuTemp;
+    }
+
+    public void setCpuTemp(double cpuTemp) {
+        this.cpuTemp = cpuTemp;
+    }
+
+    public double getGpuTemp() {
+        return gpuTemp;
+    }
+
+    public void setGpuTemp(double gpuTemp) {
+        this.gpuTemp = gpuTemp;
     }
 
     @Override

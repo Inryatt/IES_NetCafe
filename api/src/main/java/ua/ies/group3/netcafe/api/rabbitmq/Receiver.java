@@ -33,7 +33,7 @@ public class Receiver {
         System.out.println("Received Machine Usage\n" + machineUsage);
         machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
         sessionService.updateSession(machineUsage);         // MongoDB Session
-        machineService.updateMachine(machineUsage);         // MySQL   Machine
+        System.out.println("Saving machine MySQL\n" + machineService.updateMachine(machineUsage));         // MySQL   Machine
         latch.countDown();
     }
 
