@@ -14,11 +14,11 @@ public class MachineUsageService {
     @Autowired
     private MachineUsageRepository machineUsageRepository;
 
-    public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampEndIsBefore(long timestampStart, long timestampEnd) {
+    public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart, long timestampEnd) {
         return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampEndIsBefore(timestampStart, timestampEnd);
     }
 
-    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(long machineId, long timestampStart, long timestampEnd) {
+    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId, long timestampStart, long timestampEnd) {
         return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(machineId, timestampStart, timestampEnd);
     }
 

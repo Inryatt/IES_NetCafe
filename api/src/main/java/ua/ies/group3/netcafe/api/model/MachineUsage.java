@@ -13,7 +13,6 @@ public class MachineUsage {
     private long machineId;
     private long userId;
     private long timestampStart;
-    private long timestampEnd;
     private double cpuUsage;
     private double gpuUsage;
     private double networkUpUsage;
@@ -24,14 +23,13 @@ public class MachineUsage {
     private int uptime;
     private List<Integer> softwareUsage;
 
-    public MachineUsage(long machineId, long userId, long timestampStart, long timestampEnd, double cpuUsage,
+    public MachineUsage(long machineId, long userId, long timestampStart, double cpuUsage,
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
                         double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage) {
         // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
         this.timestampStart = timestampStart;
-        this.timestampEnd = timestampEnd;
         this.cpuUsage = cpuUsage;
         this.gpuUsage = gpuUsage;
         this.networkUpUsage = networkUpUsage;
@@ -73,14 +71,6 @@ public class MachineUsage {
 
     public void setTimestampStart(long timestampStart) {
         this.timestampStart = timestampStart;
-    }
-
-    public long getTimestampEnd() {
-        return timestampEnd;
-    }
-
-    public void setTimestampEnd(long timestampEnd) {
-        this.timestampEnd = timestampEnd;
     }
 
     public double getCpuUsage() {
@@ -162,7 +152,6 @@ public class MachineUsage {
                 ", machineId=" + machineId +
                 ", userId=" + userId +
                 ", timestampStart=" + timestampStart +
-                ", timestampEnd=" + timestampEnd +
                 ", cpuUsage=" + cpuUsage +
                 ", gpuUsage=" + gpuUsage +
                 ", networkUpUsage=" + networkUpUsage +
