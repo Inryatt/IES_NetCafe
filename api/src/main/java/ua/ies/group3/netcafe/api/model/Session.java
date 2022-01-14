@@ -13,20 +13,22 @@ public class Session {
     private long machineId;
     private long userId;
     private long timestampStart;
-    private long timestampEnd;
+    private Long timestampEnd;
     private int updateCount;
     private double avgCpuUsage;
     private double avgGpuUsage;
     private double avgNetDownUsage;
     private double avgNetUpUsage;
     private double avgPowerUsage;
+    private double avgDiskUsage;
+    private double avgRamUsage;
     private List<Integer> softwareUsed;
 
-    public Session(String id, long machineId, long userId, long timestampStart, long timestampEnd, int updateCount,
+    public Session(long machineId, long userId, long timestampStart, Long timestampEnd, int updateCount,
                    double avgCpuUsage, double avgGpuUsage, double avgNetDownUsage, double avgNetUpUsage,
-                   double avgPowerUsage, List<Integer> softwareUsed) {
+                   double avgPowerUsage, double avgDiskUsage, double avgRamUsage, List<Integer> softwareUsed) {
         super();
-        this.id = id;
+        // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
         this.timestampStart = timestampStart;
@@ -37,6 +39,8 @@ public class Session {
         this.avgNetDownUsage = avgNetDownUsage;
         this.avgNetUpUsage = avgNetUpUsage;
         this.avgPowerUsage = avgPowerUsage;
+        this.avgDiskUsage = avgDiskUsage;
+        this.avgRamUsage = avgRamUsage;
         this.softwareUsed = softwareUsed;
     }
 
@@ -72,11 +76,11 @@ public class Session {
         this.timestampStart = timestampStart;
     }
 
-    public long getTimestampEnd() {
+    public Long getTimestampEnd() {
         return timestampEnd;
     }
 
-    public void setTimestampEnd(long timestampEnd) {
+    public void setTimestampEnd(Long timestampEnd) {
         this.timestampEnd = timestampEnd;
     }
 
@@ -126,6 +130,22 @@ public class Session {
 
     public void setAvgPowerUsage(double avgPowerUsage) {
         this.avgPowerUsage = avgPowerUsage;
+    }
+
+    public double getAvgDiskUsage() {
+        return avgDiskUsage;
+    }
+
+    public void setAvgDiskUsage(double avgDiskUsage) {
+        this.avgDiskUsage = avgDiskUsage;
+    }
+
+    public double getAvgRamUsage() {
+        return avgRamUsage;
+    }
+
+    public void setAvgRamUsage(double avgRamUsage) {
+        this.avgRamUsage = avgRamUsage;
     }
 
     public List<Integer> getSoftwareUsed() {

@@ -3,14 +3,10 @@ package ua.ies.group3.netcafe.api.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import java.util.List;
 
 @Document("machineUsages")
 public class MachineUsage {
-    @Transient
-    public static final String SEQUENCE_NAME = "usages_sequence";
-
     @Id
     private String id;
 
@@ -23,12 +19,14 @@ public class MachineUsage {
     private double networkUpUsage;
     private double networkDownUsage;
     private double powerUsage;
+    private double diskUsage;
+    private double ramUsage;
     private int uptime;
     private List<Integer> softwareUsage;
 
     public MachineUsage(long machineId, long userId, long timestampStart, long timestampEnd, double cpuUsage,
-                        double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage, int uptime,
-                        List<Integer> softwareUsage) {
+                        double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
+                        double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage) {
         // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
@@ -39,6 +37,8 @@ public class MachineUsage {
         this.networkUpUsage = networkUpUsage;
         this.networkDownUsage = networkDownUsage;
         this.powerUsage = powerUsage;
+        this.diskUsage = diskUsage;
+        this.ramUsage = ramUsage;
         this.uptime = uptime;
         this.softwareUsage = softwareUsage;
     }
@@ -121,6 +121,22 @@ public class MachineUsage {
 
     public void setPowerUsage(double powerUsage) {
         this.powerUsage = powerUsage;
+    }
+
+    public double getDiskUsage() {
+        return diskUsage;
+    }
+
+    public void setDiskUsage(double diskUsage) {
+        this.diskUsage = diskUsage;
+    }
+
+    public double getRamUsage() {
+        return ramUsage;
+    }
+
+    public void setRamUsage(double ramUsage) {
+        this.ramUsage = ramUsage;
     }
 
     public int getUptime() {

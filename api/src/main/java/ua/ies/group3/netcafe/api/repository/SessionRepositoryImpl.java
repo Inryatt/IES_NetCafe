@@ -1,6 +1,9 @@
 package ua.ies.group3.netcafe.api.repository;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import ua.ies.group3.netcafe.api.model.MachineUsage;
 import ua.ies.group3.netcafe.api.model.Session;
 
@@ -16,9 +19,56 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
     @Override
     public Session updateSession(MachineUsage machineUsage) {
         System.out.println("updateSession");
-        List<Session> sessions = mongoTemplate.findAll(Session.class, "sessions");
-        for (Session session : sessions)
-            System.out.println("Session ID: " + session.getId());
-        return null;
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("machineId").is(machineUsage.getId()));
+        query.addCriteria(Criteria.where("timestampEnd").is(null));
+        List<Session> machineNullSessions = mongoTemplate.find(query, Session.class);
+
+        // If there is no ongoing session, create a new one.
+        if (machineNullSessions.size() == 0) {
+            Session newSession = new Session(
+                    machineUsage.getMachineId(),
+                    machineUsage.getUserId(),
+                    machineUsage.getTimestampStart(),
+                    null,
+                    1,
+                    machineUsage.getCpuUsage(),
+                    machineUsage.getGpuUsage(),
+                    machineUsage.getNetworkDownUsage(),
+                    machineUsage.getNetworkUpUsage(),
+                    machineUsage.getPowerUsage(),
+                    machineUsage.getDiskUsage(),
+                    machineUsage.getRamUsage(),
+                    machineUsage.getSoftwareUsage()
+            );
+            mongoTemplate.insert(newSession);
+            return newSession;
+        // If there is an ongoing session, update its values
+        } else {
+            Session cur = machineNullSessions.get(0);  // In theory, there should only be one.
+            Update update = new Update();
+            // Machine turned off, previous session over.
+            if (machineUsage.getUserId() == 0) {
+                update.set("timestampEnd", machineUsage.getTimestampStart());
+            // User still using it
+            } else {
+                update.set("updateCount", cur.getUpdateCount() + 1);
+                int count = cur.getUpdateCount() + 1;
+                update.set("avgCpuUsage", (cur.getAvgCpuUsage() * (count - 1) + machineUsage.getCpuUsage()) / count);
+                update.set("avgGpuUsage", (cur.getAvgGpuUsage() * (count - 1) + machineUsage.getGpuUsage()) / count);
+                update.set("avgNetDownUsage", (cur.getAvgNetDownUsage() * (count - 1) + machineUsage.getNetworkDownUsage()) / count);
+                update.set("avgNetUpUsage", (cur.getAvgNetUpUsage() * (count - 1) + machineUsage.getNetworkUpUsage()) / count);
+                update.set("avgPowerUsage", (cur.getAvgPowerUsage() * (count - 1) + machineUsage.getPowerUsage()) / count);
+                List<Integer> softwareIds = cur.getSoftwareUsed();
+                for (int softwareId : machineUsage.getSoftwareUsage()) {
+                    if (!softwareIds.contains(softwareId))
+                        softwareIds.add(softwareId);
+                update.set("softwareUsed", softwareIds);
+                }
+            }
+            mongoTemplate.updateMulti(query, update, Session.class);
+            return cur;
+        }
     }
 }
