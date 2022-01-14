@@ -15,11 +15,11 @@ public class MachineUsageService {
     private MachineUsageRepository machineUsageRepository;
 
     public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampEndIsBefore(timestampStart, timestampEnd);
+        return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(timestampStart, timestampEnd);
     }
 
     public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId, long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(machineId, timestampStart, timestampEnd);
+        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, timestampStart, timestampEnd);
     }
 
     public List<MachineUsage> findAllMachineUsages() {

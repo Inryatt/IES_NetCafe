@@ -6,10 +6,10 @@ import ua.ies.group3.netcafe.api.model.MachineUsage;
 import java.util.List;
 
 public interface MachineUsageRepository extends MongoRepository<MachineUsage, String> {
-    List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampEndIsBefore(long timestampStart,
+    List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart,
                                                                                       long timestampEnd);
 
-    List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampEndIsBefore(long machineId,
+    List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId,
                                                                                                   long timestampStart,
                                                                                                   long timestampEnd);
 
