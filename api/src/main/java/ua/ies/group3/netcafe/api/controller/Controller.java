@@ -10,18 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.ies.group3.netcafe.api.exception.ResourceNotFoundException;
-import ua.ies.group3.netcafe.api.model.Location;
-import ua.ies.group3.netcafe.api.model.Machine;
-import ua.ies.group3.netcafe.api.model.Software;
-import ua.ies.group3.netcafe.api.model.User;
-import ua.ies.group3.netcafe.api.service.LocationService;
-import ua.ies.group3.netcafe.api.service.MachineService;
-import ua.ies.group3.netcafe.api.service.SoftwareService;
-import ua.ies.group3.netcafe.api.service.UserService;
+import ua.ies.group3.netcafe.api.model.*;
+import ua.ies.group3.netcafe.api.repository.MachineUsageRepository;
+import ua.ies.group3.netcafe.api.service.*;
 
 import javax.validation.Valid;
 import java.util.List;
-@CrossOrigin    
+
+@CrossOrigin
 @RestController
 //@CrossOrigin(origins = "*")// "http://frontend:3000")
 @RequestMapping("/api")
@@ -39,6 +35,12 @@ public class Controller {
     private UserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private MachineUsageService machineUsageService;
 
     // Location
 
@@ -144,5 +146,51 @@ public class Controller {
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
         return userService.saveUser(user);
+    }
+
+
+    // Session
+
+    @GetMapping("/sessions")
+    public List<Session> findSessions(@RequestParam(name = "machine", required = false) Long machineId,
+                                      @RequestParam(name = "user", required = false) Long userId) {
+        // System.out.println("machineId: " + machineId + ", userId: " + userId);
+        if (machineId != null && userId != null)
+            return sessionService.findSessionsByMachineIdAndUserId(machineId, userId);
+        else if (machineId != null)
+            return sessionService.findSessionsByMachineId(machineId);
+        else if (userId != null)
+            return sessionService.findSessionsByUserId(userId);
+        else
+            return sessionService.findSessions();
+    }
+
+
+    // Machine Usage
+
+    @GetMapping("/usages")
+    public List<MachineUsage> findUsages(@RequestParam(name = "machine", required = false) Long machineId,
+                                         @RequestParam(name = "ts-start", required = false) Long tsStart,
+                                         @RequestParam(name = "ts-end", required = false) Long tsEnd) {
+        if (tsStart == null)
+            tsStart = -Long.MAX_VALUE;
+        if (tsEnd == null)
+            tsEnd = Long.MAX_VALUE;
+        if (machineId == null)
+            // return machineUsageService.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(tsStart, tsEnd);
+            return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
+        // return machineUsageService.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, tsStart, tsEnd);
+        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+    }
+
+    // test session gets
+    @PostMapping("/test-sessions")
+    public Session addSession(@Valid @RequestBody Session session) {
+        return sessionService.saveSession(session);
+    }
+
+    @PostMapping("/test-usages")
+    public MachineUsage addMachineUsage(@Valid @RequestBody MachineUsage machineUsage) {
+        return machineUsageService.saveMachineUsage(machineUsage);
     }
 }

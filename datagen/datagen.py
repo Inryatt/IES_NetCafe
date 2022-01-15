@@ -10,7 +10,9 @@ channel = connection.channel()
 channel.queue_declare(queue="machine-usage")
 #
 users = {i:True for i in range(1, 6)}
-base_url = "http://api:8080/api/machines/"
+# base_url = "http://api:8080/api/machines/"
+base_url = "http://localhost:8080/api/machines/"
+
 
 with open("software_list.json") as f:
     program_list = json.load(f)
@@ -307,7 +309,7 @@ def main():
             #if machine.status == 1:
             #    machine.print_usage()
             channel.basic_publish(exchange='machine-usage-exchange',
-                      routing_key='machine-usage',
+                      routing_key='routing.key',
                       body=machine.export_data())
             print("sent machine")
         time.sleep(1)

@@ -3,7 +3,8 @@ import json
 import requests
 
 def main():
-    api_url = 'http://172.19.0.3:8080/api/'
+    # api_url = 'http://172.19.0.3:8080/api/'
+    api_url = 'http://localhost:8080/api/'
 
     with open('user_list.json', 'rb') as user_list:
         users = json.loads(user_list.read())
