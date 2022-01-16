@@ -340,7 +340,7 @@ class Machine():
             'gpuTemp':round(self.usage['gpu_temp'],2),
             'softwares':[{'id':prog['id']} for prog in self.programs],
             'status':self.status,
-            'currentUser':self.current_user
+            'userId':self.current_user
         }
         
         return json.dumps(obj)
@@ -394,7 +394,7 @@ def main():
                           body=machine.export_data())
             print("sent machine")
             print(users)
-        time.sleep(0.3)
+        time.sleep(3)
 
     # For testing purposes
     # machineList[0].test_loop()
