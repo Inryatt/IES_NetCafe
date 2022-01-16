@@ -1,5 +1,6 @@
 package ua.ies.group3.netcafe.api.rabbitmq;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -66,7 +67,8 @@ public class Receiver {
             saveAlarm = true;
         }
         // List of unidentified software (software whose ID isn't in the MySQL DB)
-        List<Integer> unidentifiedSoftware = usage.getSoftwareUsage().stream().filter(
+        List<Integer> unidentifiedSoftware = usage.getSoftwareUsage() == null ? new ArrayList<>()
+                : usage.getSoftwareUsage().stream().filter(
                 id -> !softwareService.softwareIsKnown(id)
         ).collect(Collectors.toList());
         if (!unidentifiedSoftware.isEmpty()) {
