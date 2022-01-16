@@ -1,7 +1,12 @@
-package ua.ies.group3.netcafe.api.controller;
+package ua.ies.group3.netcafe.api.auxiliarymodel;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AlarmSeen {
+    @Schema(description = "Alarm ID")
     private String id;
+
+    @Schema(description = "Desired seen status")
     private boolean seen;
 
     public AlarmSeen(String id, boolean seen) {

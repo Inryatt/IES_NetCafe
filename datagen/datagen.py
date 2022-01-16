@@ -1,15 +1,18 @@
+import sys
 import numpy as np
 import random as rm
 import json
 import time
 import pika
 
+if len(sys.argv)>1 and sys.argv[1]=='test':
+    pass
+else:
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue="machine-usage")
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-channel = connection.channel()
-channel.queue_declare(queue="machine-usage")
-#
-users = {i:True for i in range(1, 6)}
+users = {i:True for i in range(0, 5)}
 # base_url = "http://api:8080/api/machines/"
 base_url = "http://localhost:8080/api/machines/"
 
@@ -31,6 +34,7 @@ class Machine():
         # [("cpu",+0.4)], for instance, will make cpu usage go up 0.4(%) by cycle
         self.event_status = []
 
+        self.sus_eventstatus = []
         # Data that will be sent along to the Broker
         self.id = id
         self.specs = {}
@@ -72,11 +76,10 @@ class Machine():
             self.programs = []
             self.current_user = None
             self.event_status = []
-
+            self.sus_eventstatus = []
             self.status=2 # Crash
 
     def event(self):
-        pass
         rng = rm.random()
         alert_p = 0.7
         sus_p = 0.1
@@ -84,10 +87,65 @@ class Machine():
         possible_events = ['cpu', 'gpu', 'ram', 'cpu_temp','cpu_temp', 'disk']
         if rng < alert_p:
             self.event_status.append(
-                (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*30))
+                (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*10))
         elif rng<alert_p+sus_p:
             pass
-            #TODO: implement sus events
+            possible_events=['torrent_up','torrent_down','crypto_mining','sus_program']
+            ev = rm.randint(0,3)
+            ev=possible_events[ev]
+            if ev=='torrent_up':
+                 self.event_status.append(
+                     ('network_up',rm.random()*100)
+                 )
+            if rng < alert_p:
+                # add a random event
+                possible_events = ['cpu', 'gpu', 'ram', 'cpu_temp','cpu_temp', 'disk']
+
+                self.event_status.append(
+                (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*30))
+            elif ev == 'torrent_down':
+                self.sus_eventstatus.append(
+                     ('network_down',rm.random()*100)
+                 )
+
+            elif ev == 'crypto_mining':
+                self.event_status = []
+                self.sus_eventstatus.append(
+                     ('gpu_temp',rm.random()*10)
+                 )
+                self.sus_eventstatus.append(
+                     ('cpu_temp',rm.random()*10)
+                 )
+                self.sus_eventstatus.append(
+                     ('gpu',rm.random()*40)
+                 )
+            else: #sus program open
+                sus_programs=[
+                    {
+                        "id":999,
+                        "name":"WannaCry",
+                        "type":"Malware"
+                    },
+                     {
+                        "id":998,
+                        "name":"MimiKatz",
+                        "type":"Malware"
+                    },
+                     {
+                        "id":997,
+                        "name":"Mirai Networks Ltd",
+                        "type":"Malware"
+                    },
+                     {
+                        "id":996,
+                        "name":"Async_RAT",
+                        "type":"Malware"
+                    }
+                ]
+                ev = rm.randint(0,len(sus_programs)-1)
+
+                self.programs.append(sus_programs[ev])
+                
         else:
             self.crash()
 
@@ -97,11 +155,17 @@ class Machine():
             # already on
             pass
         else:
+            found =False
             for user in users:
                 if users[user]:
                     self.current_user = user
                     users[user] = False
+                    found =True
                     break
+            if not found:
+                return     # no free users
+            self.start_time = time.time()
+
             #print("set status to 1")
             self.status = 1
             #print(f"machine {self.id} status {self.status}")
@@ -111,6 +175,9 @@ class Machine():
             users[self.current_user] = True
             self.current_user= None
             self.status = 0
+        elif self.status==2:
+            users[self.current_user] = True
+            self.current_user= None
 
     def close_program(self):
         if len(self.programs) < 2:
@@ -119,7 +186,7 @@ class Machine():
             self.programs.pop(0)  # close last running
 
     def open_program(self):
-        if len(self.programs) > 4:  # Too many programs running, replace event with close
+        if len([ p for p in self.programs if p['type']!= "malware"]) > 4:  # Too many programs running, replace event with close
             self.close_program()
         else:
             used_types = [prog["type"] for prog in self.programs]
@@ -153,13 +220,22 @@ class Machine():
     def deal_with_ongoing_events(self):
         if self.event_status:
             # Ongoing event:
-            pass 
             # Delete some randomly (30% chance)
             self.event_status = [
-                ev for ev in self.event_status if rm.random() < 0.8]
+                ev for ev in self.event_status if rm.random() < 1]
             for ev in self.event_status:
                 self.usage[ev[0]] += ev[1]
-        else:
+        
+        if self.sus_eventstatus:
+            for ev in self.sus_eventstatus:
+                self.usage[ev[0]] += ev[1]*np.log(self.usage[ev[0]]) if self.usage[ev[0]]> 1 else ev[1]
+        if not self.sus_eventstatus and not self.event_status:
+            for prog in self.programs:
+                if prog["type"]=="Malware":
+                    r = rm.random()
+                    if r < 0.3: # Detect Malware, set as off and unavailable
+                        self.status=2
+                        self.turn_off()
             return
 
     def fluctuate_usage(self):
@@ -225,7 +301,9 @@ class Machine():
         network (down) {self.usage['network_down']} MB/s
         running: {self.programs}
 
+        user: {self.current_user}
         ongoing events: {self.event_status}
+        sus ongoing events: {self.sus_eventstatus}
         """)
 
 
@@ -250,7 +328,7 @@ class Machine():
 
     def export_data(self):
         obj = {
-            'id':self.id,
+            'machine_id':self.id,
             'timestamp':self.start_time,
             'cpuUsage':self.usage['cpu'],
             'gpuUsage':self.usage['gpu'],
@@ -262,7 +340,7 @@ class Machine():
             'gpuTemp':round(self.usage['gpu_temp'],2),
             'softwares':[{'id':prog['id']} for prog in self.programs],
             'status':self.status,
-            'currentUser':{ 'id':self.current_user}
+            'currentUser':self.current_user
         }
         
         return json.dumps(obj)
@@ -308,11 +386,15 @@ def main():
             #machine.print_usage()
             #if machine.status == 1:
             #    machine.print_usage()
-            channel.basic_publish(exchange='machine-usage-exchange',
-                      routing_key='routing.key',
-                      body=machine.export_data())
+            if len(sys.argv)>1 and sys.argv[1]=='test':
+                machine.print_usage()
+            else:
+                channel.basic_publish(exchange='machine-usage-exchange',
+                          routing_key='routing.key',
+                          body=machine.export_data())
             print("sent machine")
-        time.sleep(1)
+            print(users)
+        time.sleep(0.3)
 
     # For testing purposes
     # machineList[0].test_loop()
