@@ -1,5 +1,9 @@
 package ua.ies.group3.netcafe.api.rabbitmq;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.Gson;
@@ -9,12 +13,11 @@ import org.springframework.stereotype.Component;
 import ua.ies.group3.netcafe.api.enums.AlarmTypes;
 import ua.ies.group3.netcafe.api.model.Alarm;
 import ua.ies.group3.netcafe.api.model.MachineUsage;
-import ua.ies.group3.netcafe.api.service.AlarmService;
-import ua.ies.group3.netcafe.api.service.MachineService;
-import ua.ies.group3.netcafe.api.service.MachineUsageService;
-import ua.ies.group3.netcafe.api.service.SessionService;
+import ua.ies.group3.netcafe.api.service.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class Receiver {
@@ -32,6 +35,9 @@ public class Receiver {
     @Autowired
     private AlarmService alarmService;
 
+    @Autowired
+    private SoftwareService softwareService;
+
     public void receiveMessage(byte[] message) {
         String msg = new String(message, StandardCharsets.UTF_8);
         Gson g = new Gson();
@@ -39,8 +45,8 @@ public class Receiver {
         System.out.println("Received Machine Usage\n" + machineUsage);
         machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
         sessionService.updateSession(machineUsage);         // MongoDB Session
-
-        System.out.println("Saving machine MySQL\n" + machineService.updateMachine(machineUsage));         // MySQL   Machine
+        System.out.println("Saving machine MySQL\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
+        createAlarmIfNeeded(machineUsage);
         latch.countDown();
     }
 
@@ -52,28 +58,39 @@ public class Receiver {
         StringBuilder message = new StringBuilder();
         AlarmTypes type = AlarmTypes.INFO;
         if (usage.getGpuTemp() > MAX_CPU_TEMP) {
-            message.append("CPU temperature above ").append(MAX_CPU_TEMP).append("ºC.");
+            message.append("CPU temperature above ").append(MAX_CPU_TEMP).append("ºC.\n");
             if (type.getSeverity() < AlarmTypes.WARNING.getSeverity())
                 type = AlarmTypes.WARNING;
             saveAlarm = true;
         }
         if (usage.getGpuTemp() > MAX_GPU_TEMP) {
-            message.append("GPU temperature above ").append(MAX_GPU_TEMP).append("ºC.");
+            message.append("GPU temperature above ").append(MAX_GPU_TEMP).append("ºC.\n");
             if (type.getSeverity() < AlarmTypes.WARNING.getSeverity())
                 type = AlarmTypes.WARNING;
             saveAlarm = true;
         }
-        if (saveAlarm) {
-            Alarm alarm = new Alarm(
+        // List of unidentified software (software whose ID isn't in the MySQL DB)
+        List<Integer> unidentifiedSoftware = usage.getSoftwareUsage().stream().filter(
+                id -> !softwareService.softwareIsKnown(id)
+        ).collect(Collectors.toList());
+        if (!unidentifiedSoftware.isEmpty()) {
+            message.append("Unidentified software running: [");
+            unidentifiedSoftware.forEach(id -> message.append(id).append(","));
+            message.setLength(message.length() - 1); // Remove last comma
+            message.append("].");
+            saveAlarm = true;
+        }
+
+        message.setLength(message.length() - 1); // Remove last newline
+        if (saveAlarm)
+            alarmService.saveAlarm(new Alarm(
                     usage.getMachineId(),
                     usage.getUserId(),
                     message.toString(),
-                    false,
                     type.toString(),
                     usage.getTimestampStart()
-            );
-            alarmService.saveAlarm(alarm);
-        }
+            ));
+
         return null;
     }
 

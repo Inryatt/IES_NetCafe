@@ -26,6 +26,16 @@ public class Alarm {
         this.timestamp = timestamp;
     }
 
+    public Alarm(long machineId, long userId, String message, String type, long timestamp) {
+        super();
+        this.machineId = machineId;
+        this.userId = userId;
+        this.message = message;
+        this.seen = false;
+        this.type = type;
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return "Alarm{" +
