@@ -1,6 +1,6 @@
 <Description of request>
 
-## Changes<name_of_repository>: 
+## Changes IES_NetCafe: 
 
 - Description of changes
 
@@ -19,4 +19,4 @@
 ## Checklist
 - [ ] Does the code run?
 - [ ] Does this break anything?
-- [ ] There's spelling errors?
+- [ ] There's no spelling errors?
