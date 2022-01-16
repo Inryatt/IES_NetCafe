@@ -42,6 +42,9 @@ public class Controller {
     @Autowired
     private MachineUsageService machineUsageService;
 
+    @Autowired
+    private AlarmService alarmService;
+
     // Location
 
     @GetMapping("/locations")
@@ -177,12 +180,30 @@ public class Controller {
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
-            // return machineUsageService.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(tsStart, tsEnd);
             return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
-        // return machineUsageService.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, tsStart, tsEnd);
         return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
     }
 
+
+    // Alarms
+
+    @GetMapping("/alarms")
+    public List<Alarm> getAlarms(@RequestParam(name = "machine", required = false) Long machineId,
+                                 @RequestParam(name = "ts-start", required = false) Long tsStart,
+                                 @RequestParam(name = "ts-end", required = false) Long tsEnd) {
+        if (tsStart == null)
+            tsStart = -Long.MAX_VALUE;
+        if (tsEnd == null)
+            tsEnd = Long.MAX_VALUE;
+        if (machineId == null)
+            return alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd);
+        return alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd);
+    }
+
+    @PostMapping("/alarms")
+    public Alarm setAlarmSeen(@Valid @RequestBody AlarmSeen alarmSeen) {
+        return alarmService.setAlarmSeen(alarmSeen.getId(), alarmSeen.isSeen());
+    }
     // test session gets
     @PostMapping("/test-sessions")
     public Session addSession(@Valid @RequestBody Session session) {
