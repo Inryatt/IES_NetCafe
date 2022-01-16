@@ -8,58 +8,43 @@ const HistoryPage = () => {
 
     const [machineData, setMachineData] = useState([])
     const [machineUsage, setMachineUsage] = useState([])
-    const [locations, setLocations] = useState(["Aveiro", "Leiria"])
-    const [selLocation, setSelLocation] = useState(0)
+    const [locations, setLocations] = useState()
+    const [selLocation, setSelLocation] = useState()
     const [selMachine, setSelMachine] = useState()
     const [selType, setSelType] = useState(0)
-    const [options, setOptions] = useState(["Profit", "Machine Use"])
+    const [options, setOptions] = useState(["Machine Use"])
     const [selOption, setSelOption] = useState(options[0])
 
-    const loadSampleMachines = () => {
-        fetch(`${process.env.PUBLIC_URL}/sample_machine_list.json`)
-        .then(response => response.json())
-        .then(data => {
-            const local = locations[selLocation]
-
-            const tempMachines = []
-
-            for (let machine of data) {
-                if (machine.location == local) tempMachines.push(machine)
-            }
-            setMachineData(tempMachines)
-        })
-    }
-
-    const getMachineUsage = (machineId) => {
-        // so adiciona usage das machines que estao sendo utilizadas nessa location
-
-        fetch(`${process.env.PUBLIC_URL}/machine_usage_sample.json`)
-        .then(response => response.json())
-        .then(data => {
-            const tempUsages = []
-
-            for (let usage of data) {
-                for (let machine of machineData) {
-                    if (usage.machine_id == machine.id) {
-                        tempUsages.push(usage)
-                        break
-                    }
-                }
-            }
-            setMachineUsage(tempUsages)
-        })
-    }
 
     useEffect(() => {
-        loadSampleMachines()
+        // get list of locations on page load
+        fetch(`${process.env.REACT_APP_API_URL}/locations`)
+        .then(response => response.json())
+        .then(data => {
+            setLocations(data);
+            setSelLocation(data[0]);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (selLocation)
+            fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`)
+            .then(response => response.json())
+            .then(data => {
+                setMachineData(data);
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }, [selLocation])
-
-    useEffect(() => {
-        getMachineUsage()        
-    }, [machineData])
     
     return (
         <div>
+        {    
+            selLocation ?
             <Row>
                 <Col xs={3}>
                     <br/>
@@ -84,13 +69,24 @@ const HistoryPage = () => {
                     }
                     {
                         selOption == "Machine Use" &&
-                        <MachineUse
-                            machineData={machineData}
-                            machineUsage={machineUsage}
-                        />
+                        <> {
+                            machineData.length > 0 ?
+                            <MachineUse
+                                machineData={machineData}
+                            />
+                            :
+                            <div>
+                                <h1 className="mt-5 text-center">Loading...</h1>
+                            </div>
+                        } </>
                     }
                 </Col>
             </Row>
+            :
+            <div>
+                <h1 className="mt-5 text-center">Loading...</h1>
+            </div>
+        }
         </div>
     )
 }

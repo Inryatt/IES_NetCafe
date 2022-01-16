@@ -36,7 +36,7 @@ export const options = {
   },
 };
 
-const MachineUse = ({machineData, machineUsage}) => {
+const MachineUse = ({machineData}) => {
 
     const [selMachine, setSelMachine] = useState(-1)
     const [data, setData] = useState()
@@ -46,8 +46,6 @@ const MachineUse = ({machineData, machineUsage}) => {
     const [datasets, setDatasets] = useState([])
     const [contents, setContents] = useState([])
     const [customColor, setCustomColor] = useState()
-
-
 
     const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
     // colors need to have the syntax rgb(x,y,z) (used for inserting the alpha channel later)
@@ -63,17 +61,17 @@ const MachineUse = ({machineData, machineUsage}) => {
         return newDate.getTime()/1000
     }
 
-    const getUsagesById = (machineId, dateFrom, dateTo) => {
-        const temp = []
-        for (let usage of machineUsage) {
-            if (usage.machine_id != machineId 
-                || (dateFrom && usage.timestamp < dateFrom)
-                || (dateTo && usage.timestamp > dateTo)
-            ) continue
-            
-            temp.push(usage)
-        }
-        return temp
+    const getUsagesById = async (machineId=null, dateFrom, dateTo) => {
+        let usages
+        await fetch(`${process.env.REACT_APP_API_URL}/usages?${machineId ? 'machine='+machineId+'&' :''}${dateFrom ? 'ts-start='+dateFrom+'&' :''}${dateTo ? 'ts-end='+dateTo:''}`)
+        .then(response => response.json())
+        .then(data => {
+            usages = data
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        return usages
     }
 
     const sortFunction = (a,b) => {
@@ -84,7 +82,7 @@ const MachineUse = ({machineData, machineUsage}) => {
         return dateA > dateB
     }
 
-    useEffect(() => {
+    useEffect( async () => {
         // calculate visible labels and filter graphs when selected
         // machine changes its value
         const templabels = [];
@@ -93,7 +91,7 @@ const MachineUse = ({machineData, machineUsage}) => {
         let tempdatasets
         if (selMachine == -1) { // all machines
             for (let machine of machineData) {
-                const usages = getUsagesById(machine.id, dateFrom, dateTo)
+                const usages = await getUsagesById(machine.id, dateFrom, dateTo)
                 tempcontents.push({
                     label: machine.name,
                     coords: usages.map(usage => ({
@@ -104,10 +102,9 @@ const MachineUse = ({machineData, machineUsage}) => {
             }
         }
         else { // specific machine
-            const machine = machineData[selMachine]
-            tempUsage = getUsagesById(machine.id, dateFrom, dateTo)
+            tempUsage = await getUsagesById(selMachine.id, dateFrom, dateTo)
             tempcontents.push({
-                label: machine.name,
+                label: selMachine.name,
                 coords: tempUsage.map(usage => ({
                     x: convertTimestamp(usage.timestamp),
                     y: usage.power_usage
@@ -115,7 +112,7 @@ const MachineUse = ({machineData, machineUsage}) => {
             })
         }
         setContents(tempcontents)
-    }, [selMachine, dateFrom, dateTo])
+    }, [machineData, selMachine, dateFrom, dateTo])
 
     useEffect(() => {
 

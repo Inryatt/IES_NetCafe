@@ -123,7 +123,7 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
                     <option value={-1}>All</option>
                     {
                         machineData.map((mach, idx) => (
-                            <option key={idx} value={idx}>{mach.name}</option>
+                            <option key={idx} value={mach.id}>ID:{mach.id} - {mach.name}</option>
                         ))
                     }
                 </Form.Select>
