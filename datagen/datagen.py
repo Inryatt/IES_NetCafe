@@ -175,6 +175,18 @@ class Machine():
             users[self.current_user] = True
             self.current_user= None
             self.status = 0
+            self.usage = {}
+            self.usage["cpu"] = 0
+            self.usage["gpu"] = 0
+            self.usage["ram"] = 0
+            self.usage["disk"] = 0
+            self.usage["network_down"] = 0
+            self.usage["network_up"] = 0
+            self.usage['cpu_temp'] = 20 + rm.random()*3
+            self.usage['gpu_temp'] = 23 + rm.random()*3
+            self.programs = []
+            self.event_status = []
+            self.sus_eventstatus = []
         elif self.status==2:
             users[self.current_user] = True
             self.current_user= None
@@ -328,8 +340,8 @@ class Machine():
 
     def export_data(self):
         obj = {
-            'machine_id':self.id,
-            'timestamp':self.start_time,
+            'machineId':self.id,
+            'timestampStart':int(time.time()),
             'cpuUsage':self.usage['cpu'],
             'gpuUsage':self.usage['gpu'],
             'ramUsage':self.usage['ram'],

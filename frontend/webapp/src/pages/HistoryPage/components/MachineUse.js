@@ -53,7 +53,8 @@ const MachineUse = ({machineData}) => {
 
     const convertTimestamp = (timestamp) => {
         const date = new Date(timestamp * 1000)
-        return `${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
+        return `${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
+        //return timestamp
     }
 
     const convertDate = (date) => {
@@ -75,10 +76,12 @@ const MachineUse = ({machineData}) => {
     }
 
     const sortFunction = (a,b) => {
-        let arrayA = a.split("/")
-        let arrayB = b.split("/")
-        const dateA = new Date(arrayA[2]+"/"+arrayA[1]+"/"+arrayA[0])
-        const dateB = new Date(arrayB[2]+"/"+arrayB[1]+"/"+arrayB[0])
+        //return a > b;
+
+        let arrayA = a.split("/| ")
+        let arrayB = b.split("/| ")
+        const dateA = new Date(arrayA[2]+"/"+arrayA[1]+"/"+arrayA[0]+" "+arrayA[3])
+        const dateB = new Date(arrayB[2]+"/"+arrayB[1]+"/"+arrayB[0]+" "+arrayB[3])
         return dateA > dateB
     }
 
@@ -95,19 +98,19 @@ const MachineUse = ({machineData}) => {
                 tempcontents.push({
                     label: machine.name,
                     coords: usages.map(usage => ({
-                        x: convertTimestamp(usage.timestamp),
-                        y: usage.power_usage
+                        x: convertTimestamp(usage.timestampStart),
+                        y: usage.cpuUsage
                     }))
                 })
             }
         }
         else { // specific machine
-            tempUsage = await getUsagesById(selMachine.id, dateFrom, dateTo)
+            tempUsage = await getUsagesById(selMachine, dateFrom, dateTo)
             tempcontents.push({
-                label: selMachine.name,
+                //label: selMachine.name,
                 coords: tempUsage.map(usage => ({
-                    x: convertTimestamp(usage.timestamp),
-                    y: usage.power_usage
+                    x: convertTimestamp(usage.timestampStart),
+                    y: usage.cpuUsage
                 }))
             })
         }

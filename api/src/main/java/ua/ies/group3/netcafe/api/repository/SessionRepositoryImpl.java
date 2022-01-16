@@ -69,11 +69,12 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
                 update.set("avgNetUpUsage", (cur.getAvgNetUpUsage() * (count - 1) + machineUsage.getNetworkUpUsage()) / count);
                 update.set("avgPowerUsage", (cur.getAvgPowerUsage() * (count - 1) + machineUsage.getPowerUsage()) / count);
                 List<Integer> softwareIds = cur.getSoftwareUsed();
-                for (int softwareId : machineUsage.getSoftwareUsage()) {
-                    if (!softwareIds.contains(softwareId))
-                        softwareIds.add(softwareId);
-                update.set("softwareUsed", softwareIds);
-                }
+                if ( machineUsage.getSoftwareUsage() != null )
+                    for (int softwareId : machineUsage.getSoftwareUsage()) {
+                        if (!softwareIds.contains(softwareId))
+                            softwareIds.add(softwareId);
+                        update.set("softwareUsed", softwareIds);
+                    }
             }
             mongoTemplate.updateMulti(query, update, Session.class);
             return cur;
