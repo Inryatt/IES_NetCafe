@@ -1,9 +1,6 @@
 package ua.ies.group3.netcafe.api.rabbitmq;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import com.google.gson.Gson;
@@ -17,7 +14,6 @@ import ua.ies.group3.netcafe.api.service.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class Receiver {
@@ -77,12 +73,12 @@ public class Receiver {
             message.append("Unidentified software running: [");
             unidentifiedSoftware.forEach(id -> message.append(id).append(","));
             message.setLength(message.length() - 1); // Remove last comma
-            message.append("].");
+            message.append("].\n");
             saveAlarm = true;
         }
 
-        message.setLength(message.length() - 1); // Remove last newline
-        if (saveAlarm)
+        if (saveAlarm) {
+            message.setLength(message.length() - 1); // Remove last newline
             alarmService.saveAlarm(new Alarm(
                     usage.getMachineId(),
                     usage.getUserId(),
@@ -90,7 +86,7 @@ public class Receiver {
                     type.toString(),
                     usage.getTimestampStart()
             ));
-
+        }
         return null;
     }
 

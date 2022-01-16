@@ -1,5 +1,6 @@
 package ua.ies.group3.netcafe.api.model;
 
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -16,8 +17,8 @@ public class Alarm {
     private String type;
     private long timestamp;
 
+    @PersistenceConstructor
     public Alarm(long machineId, long userId, String message, boolean seen, String type, long timestamp) {
-        super();
         this.machineId = machineId;
         this.userId = userId;
         this.message = message;
@@ -26,8 +27,8 @@ public class Alarm {
         this.timestamp = timestamp;
     }
 
+    @PersistenceConstructor
     public Alarm(long machineId, long userId, String message, String type, long timestamp) {
-        super();
         this.machineId = machineId;
         this.userId = userId;
         this.message = message;
