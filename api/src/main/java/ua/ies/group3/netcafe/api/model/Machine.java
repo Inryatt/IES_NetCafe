@@ -309,12 +309,4 @@ public class Machine {
     public void setStatus(int status) {
         this.status = status;
     }
-
-    //    public double getNetworkUsage() {
-//        return networkUsage;
-//    }
-//
-//    public void setNetworkUsage(double networkUsage) {
-//        this.networkUsage = networkUsage;
-//    }
 }

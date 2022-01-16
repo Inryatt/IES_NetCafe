@@ -250,7 +250,7 @@ public class Controller {
         return alarmService.setAlarmSeen(alarmSeen.getId(), alarmSeen.isSeen());
     }
 
-    // test session gets
+// test session gets
 //    @PostMapping("/test-sessions")
 //    public Session addSession(@Valid @RequestBody Session session) {
 //        return sessionService.saveSession(session);
@@ -259,23 +259,5 @@ public class Controller {
 //    @PostMapping("/test-usages")
 //    public MachineUsage addMachineUsage(@Valid @RequestBody MachineUsage machineUsage) {
 //        return machineUsageService.saveMachineUsage(machineUsage);
-//    }
-
-//    @PatchMapping(path = "/machines/{id}", consumes = "application/json-patch+json")
-//    public ResponseEntity<Machine> updateMachine(@PathVariable Long id, @RequestBody JsonPatch patch) throws ResourceNotFoundException {
-//        Machine machine = machineService.findMachineById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
-//        try {
-//            Machine machinePatched = applyPatchToMachine(patch, machine);
-//            machineService.saveMachine(machinePatched);
-//            return ResponseEntity.ok(machinePatched);
-//        } catch (JsonPatchException | JsonProcessingException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
-//    private Machine applyPatchToMachine(JsonPatch patch, Machine targetMachine) throws JsonPatchException, JsonProcessingException {
-//        JsonNode patched = patch.apply(objectMapper.convertValue(targetMachine, JsonNode.class));
-//        return objectMapper.treeToValue(patched, Machine.class);
 //    }
 }

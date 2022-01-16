@@ -58,7 +58,6 @@ public class MachineUsage {
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
                         double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage,
                         double cpuTemp, double gpuTemp) {
-        // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
         this.timestampStart = timestampStart;

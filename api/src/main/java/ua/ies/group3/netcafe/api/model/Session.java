@@ -55,7 +55,6 @@ public class Session {
                    double avgCpuUsage, double avgGpuUsage, double avgNetDownUsage, double avgNetUpUsage,
                    double avgPowerUsage, double avgDiskUsage, double avgRamUsage, List<Integer> softwareUsed) {
         super();
-        // this.id = id;
         this.machineId = machineId;
         this.userId = userId;
         this.timestampStart = timestampStart;

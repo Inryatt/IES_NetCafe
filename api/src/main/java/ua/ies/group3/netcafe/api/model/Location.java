@@ -44,12 +44,4 @@ public class Location {
     public void setMap(String map) {
         this.map = map;
     }
-
-    //    public byte[] getMap() {
-//        return map;
-//    }
-//
-//    public void setMap(byte[] map) {
-//        this.map = map;
-//    }
 }
