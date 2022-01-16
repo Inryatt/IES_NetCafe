@@ -28,4 +28,8 @@ public class SoftwareService {
     public List<Software> findAllSoftwares() {
         return softwareRepository.findAll();
     }
+
+    public boolean softwareIsKnown(long softwareId) {
+        return findSoftwareById(softwareId).isPresent();
+    }
 }
