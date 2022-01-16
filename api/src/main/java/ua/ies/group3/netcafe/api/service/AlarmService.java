@@ -32,6 +32,7 @@ public class AlarmService {
         if (alarmOptional.isPresent()) {
             Alarm alarm = alarmOptional.get();
             alarm.setSeen(bool);
+            saveAlarm(alarm);
             return alarm;
         }
         return null;
