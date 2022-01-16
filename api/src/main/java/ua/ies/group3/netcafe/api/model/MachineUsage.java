@@ -1,5 +1,6 @@
 package ua.ies.group3.netcafe.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -7,22 +8,50 @@ import java.util.List;
 
 @Document("machineUsages")
 public class MachineUsage {
+    @Schema(description = "Identifier")
     @Id
     private String id;
 
+    @Schema(description = "Machine ID")
     private long machineId;
+
+    @Schema(description = "User ID")
     private long userId;
+
+    @Schema(description = "Timestamp")
     private long timestampStart;
+
+    @Schema(description = "CPU usage")
     private double cpuUsage;
+
+    @Schema(description = "GPU usage")
     private double gpuUsage;
+
+    @Schema(description = "Network upload usage")
     private double networkUpUsage;
+
+    @Schema(description = "Network download usage")
     private double networkDownUsage;
+
+    @Schema(description = "Power usage")
     private double powerUsage;
+
+    @Schema(description = "Disk usage")
     private double diskUsage;
+
+    @Schema(description = "RAM usage")
     private double ramUsage;
+
+    @Schema(description = "Uptime")
     private int uptime;
+
+    @Schema(description = "List of the IDs of software in use")
     private List<Integer> softwareUsage;
+
+    @Schema(description = "CPU temperature")
     private double cpuTemp;
+
+    @Schema(description = "GPU temperature")
     private double gpuTemp;
 
     public MachineUsage(long machineId, long userId, long timestampStart, double cpuUsage,
