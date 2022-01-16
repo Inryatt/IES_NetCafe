@@ -1,4 +1,4 @@
-package ua.ies.group3.netcafe.api.controller;
+package ua.ies.group3.netcafe.api.auxiliarymodel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

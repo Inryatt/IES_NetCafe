@@ -1,22 +1,16 @@
 package ua.ies.group3.netcafe.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.ies.group3.netcafe.api.auxiliarymodel.AlarmSeen;
 import ua.ies.group3.netcafe.api.exception.ResourceNotFoundException;
 import ua.ies.group3.netcafe.api.model.*;
-import ua.ies.group3.netcafe.api.repository.MachineUsageRepository;
 import ua.ies.group3.netcafe.api.service.*;
 
 import javax.validation.Valid;
