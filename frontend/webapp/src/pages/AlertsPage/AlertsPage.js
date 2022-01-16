@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AlertNotif from "../../components/AlertNotif/AlertNotif";
 
 
@@ -47,16 +47,38 @@ const staticPrevAlerts = [
 
 const AlertsPage = () => {
 
-    const [newAlerts, setNewAlerts] = useState(staticNewAlerts)
-    const [prevAlerts, setPrevAlerts] = useState(staticPrevAlerts)
+    const [newAlerts, setNewAlerts] = useState([])
+    const [prevAlerts, setPrevAlerts] = useState([])
+
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+        .then(response => response.json())
+        .then(data => {
+            let tempNewAlerts = []
+            let tempPrevAlerts = []
+
+            for (let alarm of data) {
+                if (alarm.seen)
+                    tempPrevAlerts.push(alarm)
+                else
+                    tempNewAlerts.push(alarm)
+            }
+            setNewAlerts(tempNewAlerts)
+            setPrevAlerts(tempPrevAlerts)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }, [])
 
 
     return (
         <div className="mt-3 text-start">
             <h3>New</h3>
-            {newAlerts.map(alert => <AlertNotif alert={alert}/>)}
+            {newAlerts.length > 0 ? newAlerts.map(alert => <AlertNotif alert={alert}/>) : <p>No new alerts</p> }
             <h3 className="mt-4">Previous</h3>
-            {prevAlerts.map(alert => <AlertNotif alert={alert}/>)}
+            {prevAlerts.length > 0 ? prevAlerts.map(alert => <AlertNotif alert={alert}/>) : <p>No old alerts</p> }
         </div>
     )
 }
