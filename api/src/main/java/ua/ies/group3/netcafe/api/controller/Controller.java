@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +48,13 @@ public class Controller {
 
     // Location
 
+    @Operation(summary = "Get all locations.")
     @GetMapping("/locations")
     public List<Location> getAllLocations() {
         return locationService.findAllLocations();
     }
 
+    @Operation(summary = "Get a location by ID.")
     @GetMapping("/locations/{id}")
     public ResponseEntity<Location> findLocationById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         Location location = locationService.findLocationById(id)
@@ -59,6 +62,7 @@ public class Controller {
         return ResponseEntity.ok(location);
     }
 
+    @Operation(summary = "Add a location.")
     @PostMapping("/locations")
     public Location addLocation(@Valid @RequestBody Location location) {
         return locationService.saveLocation(location);
@@ -67,11 +71,13 @@ public class Controller {
 
     // Machine
 
+    @Operation(summary = "Get all machines.")
     @GetMapping("/machines")
     public List<Machine> findAllMachines() {
         return machineService.findAllMachines();
     }
 
+    @Operation(summary = "Get a machine by ID.")
     @GetMapping("/machines/{id}")
     public ResponseEntity<Machine> findMachineById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         Machine machine = machineService.findMachineById(id)
@@ -80,30 +86,14 @@ public class Controller {
     }
 
 
+    @Operation(summary = "Add a machine.")
     @PostMapping("/machines")
     public Machine addMachine(@Valid @RequestBody Machine machine) {
         return machineService.saveMachine(machine);
     }
 
-    @PatchMapping(path = "/machines/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Machine> updateMachine(@PathVariable Long id, @RequestBody JsonPatch patch) throws ResourceNotFoundException {
-        Machine machine = machineService.findMachineById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
-        try {
-            Machine machinePatched = applyPatchToMachine(patch, machine);
-            machineService.saveMachine(machinePatched);
-            return ResponseEntity.ok(machinePatched);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
-    private Machine applyPatchToMachine(JsonPatch patch, Machine targetMachine) throws JsonPatchException, JsonProcessingException {
-        JsonNode patched = patch.apply(objectMapper.convertValue(targetMachine, JsonNode.class));
-        return objectMapper.treeToValue(patched, Machine.class);
-    }
-
-
+    @Operation(summary = "Get the machines of a location through its ID.")
     @GetMapping("/locations/{id}/machines")
     public List<Machine> findLocationMachines(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         Location location = locationService.findLocationById(id)
@@ -114,11 +104,13 @@ public class Controller {
 
     // Software
 
+    @Operation(summary = "Get all software.")
     @GetMapping("/softwares")
     public List<Software> findAllSoftwares() {
         return softwareService.findAllSoftwares();
     }
 
+    @Operation(summary = "Get a software by ID.")
     @GetMapping("/softwares/{id}")
     public ResponseEntity<Software> findSoftwareById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         Software software = softwareService.findSoftwareById(id)
@@ -126,6 +118,7 @@ public class Controller {
         return ResponseEntity.ok(software);
     }
 
+    @Operation(summary = "Add a software.")
     @PostMapping("/softwares")
     public Software addSoftware(@Valid @RequestBody Software software) {
         return softwareService.saveSoftware(software);
@@ -134,11 +127,13 @@ public class Controller {
 
     // User
 
+    @Operation(summary = "Get all users.")
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.findAllUsers();
     }
 
+    @Operation(summary = "Get a user by ID.")
     @GetMapping("/users/{id}")
     public ResponseEntity<User> findUserById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         User user = userService.findUserById(id)
@@ -146,6 +141,7 @@ public class Controller {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Add a user.")
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
         return userService.saveUser(user);
@@ -154,6 +150,7 @@ public class Controller {
 
     // Session
 
+    @Operation(summary = "Get sessions matching the filters.")
     @GetMapping("/sessions")
     public List<Session> findSessions(@RequestParam(name = "machine", required = false) Long machineId,
                                       @RequestParam(name = "user", required = false) Long userId) {
@@ -171,6 +168,7 @@ public class Controller {
 
     // Machine Usage
 
+    @Operation(summary = "Get machine usages matching the filters.")
     @GetMapping("/usages")
     public List<MachineUsage> findUsages(@RequestParam(name = "machine", required = false) Long machineId,
                                          @RequestParam(name = "ts-start", required = false) Long tsStart,
@@ -187,6 +185,7 @@ public class Controller {
 
     // Alarms
 
+    @Operation(summary = "Get alarms matching the filters.")
     @GetMapping("/alarms")
     public List<Alarm> getAlarms(@RequestParam(name = "machine", required = false) Long machineId,
                                  @RequestParam(name = "ts-start", required = false) Long tsStart,
@@ -200,18 +199,38 @@ public class Controller {
         return alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd);
     }
 
+    @Operation(summary = "Update the seen status of an alarm.")
     @PostMapping("/alarms")
     public Alarm setAlarmSeen(@Valid @RequestBody AlarmSeen alarmSeen) {
         return alarmService.setAlarmSeen(alarmSeen.getId(), alarmSeen.isSeen());
     }
-    // test session gets
-    @PostMapping("/test-sessions")
-    public Session addSession(@Valid @RequestBody Session session) {
-        return sessionService.saveSession(session);
-    }
 
-    @PostMapping("/test-usages")
-    public MachineUsage addMachineUsage(@Valid @RequestBody MachineUsage machineUsage) {
-        return machineUsageService.saveMachineUsage(machineUsage);
-    }
+    // test session gets
+//    @PostMapping("/test-sessions")
+//    public Session addSession(@Valid @RequestBody Session session) {
+//        return sessionService.saveSession(session);
+//    }
+//
+//    @PostMapping("/test-usages")
+//    public MachineUsage addMachineUsage(@Valid @RequestBody MachineUsage machineUsage) {
+//        return machineUsageService.saveMachineUsage(machineUsage);
+//    }
+
+//    @PatchMapping(path = "/machines/{id}", consumes = "application/json-patch+json")
+//    public ResponseEntity<Machine> updateMachine(@PathVariable Long id, @RequestBody JsonPatch patch) throws ResourceNotFoundException {
+//        Machine machine = machineService.findMachineById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Machine not found for this id: " + id));
+//        try {
+//            Machine machinePatched = applyPatchToMachine(patch, machine);
+//            machineService.saveMachine(machinePatched);
+//            return ResponseEntity.ok(machinePatched);
+//        } catch (JsonPatchException | JsonProcessingException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
+//    private Machine applyPatchToMachine(JsonPatch patch, Machine targetMachine) throws JsonPatchException, JsonProcessingException {
+//        JsonNode patched = patch.apply(objectMapper.convertValue(targetMachine, JsonNode.class));
+//        return objectMapper.treeToValue(patched, Machine.class);
+//    }
 }
