@@ -12,7 +12,7 @@ else:
     channel = connection.channel()
     channel.queue_declare(queue="machine-usage")
 
-users = {i:True for i in range(1, 6)}
+users = {i:True for i in range(0, 5)}
 # base_url = "http://api:8080/api/machines/"
 base_url = "http://localhost:8080/api/machines/"
 
@@ -91,11 +91,11 @@ class Machine():
         elif rng<alert_p+sus_p:
             pass
             possible_events=['torrent_up','torrent_down','crypto_mining','sus_program']
-            ev = rm.randint(0,4)
+            ev = rm.randint(0,3)
             ev=possible_events[ev]
             if ev=='torrent_up':
                  self.event_status.append(
-                     'network_up',rm.random()*100
+                     ('network_up',rm.random()*100)
                  )
             if rng < alert_p:
                 # add a random event
@@ -104,20 +104,20 @@ class Machine():
                 self.event_status.append(
                 (possible_events[rm.randint(0, len(possible_events)-1)], rm.random()*30))
             elif ev == 'torrent_down':
-                self.event_status.append(
-                     'network_down',rm.random()*100
+                self.sus_eventstatus.append(
+                     ('network_down',rm.random()*100)
                  )
 
             elif ev == 'crypto_mining':
                 self.event_status = []
-                self.event_status.append(
-                     'gpu_temp',rm.random()*10
+                self.sus_eventstatus.append(
+                     ('gpu_temp',rm.random()*10)
                  )
-                self.event_status.append(
-                     'cpu_temp',rm.random()*10
+                self.sus_eventstatus.append(
+                     ('cpu_temp',rm.random()*10)
                  )
-                self.event_status.append(
-                     'gpu',rm.random()*40
+                self.sus_eventstatus.append(
+                     ('gpu',rm.random()*40)
                  )
             else: #sus program open
                 sus_programs=[
@@ -146,8 +146,6 @@ class Machine():
 
                 self.programs.append(sus_programs[ev])
                 
-                
-            #TODO: implement sus events
         else:
             self.crash()
 
@@ -157,13 +155,15 @@ class Machine():
             # already on
             pass
         else:
+            found =False
             for user in users:
                 if users[user]:
                     self.current_user = user
                     users[user] = False
+                    found =True
                     break
-                else:
-                    return      # no free users
+            if not found:
+                return     # no free users
             self.start_time = time.time()
 
             #print("set status to 1")
@@ -186,7 +186,7 @@ class Machine():
             self.programs.pop(0)  # close last running
 
     def open_program(self):
-        if len(self.programs) > 4:  # Too many programs running, replace event with close
+        if len([ p for p in self.programs if p['type']!= "malware"]) > 4:  # Too many programs running, replace event with close
             self.close_program()
         else:
             used_types = [prog["type"] for prog in self.programs]
@@ -222,12 +222,12 @@ class Machine():
             # Ongoing event:
             # Delete some randomly (30% chance)
             self.event_status = [
-                ev for ev in self.event_status if rm.random() < 0.8]
+                ev for ev in self.event_status if rm.random() < 1]
             for ev in self.event_status:
                 self.usage[ev[0]] += ev[1]
         
         if self.sus_eventstatus:
-            for ev in self.event_status:
+            for ev in self.sus_eventstatus:
                 self.usage[ev[0]] += ev[1]*np.log(self.usage[ev[0]]) if self.usage[ev[0]]> 1 else ev[1]
         if not self.sus_eventstatus and not self.event_status:
             for prog in self.programs:
@@ -303,6 +303,7 @@ class Machine():
 
         user: {self.current_user}
         ongoing events: {self.event_status}
+        sus ongoing events: {self.sus_eventstatus}
         """)
 
 
@@ -392,8 +393,8 @@ def main():
                           routing_key='routing.key',
                           body=machine.export_data())
             print("sent machine")
-        print(users)
-        time.sleep(1)
+            print(users)
+        time.sleep(0.3)
 
     # For testing purposes
     # machineList[0].test_loop()
