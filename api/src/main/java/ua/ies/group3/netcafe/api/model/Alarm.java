@@ -1,5 +1,6 @@
 package ua.ies.group3.netcafe.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,14 +8,26 @@ import javax.persistence.Id;
 
 @Document("alarms")
 public class Alarm {
+    @Schema(description = "Identifier")
     @Id
     private String id;
 
+    @Schema(description = "Machine ID")
     private long machineId;
+
+    @Schema(description = "User ID")
     private long userId;
+
+    @Schema(description = "Message content")
     private String message;
+
+    @Schema(description = "Seen status")
     private boolean seen;
+
+    @Schema(description = "Alert type (INFO / WARNING / EMERGENCY)")
     private String type;
+
+    @Schema(description = "Timestamp")
     private long timestamp;
 
     @PersistenceConstructor

@@ -3,6 +3,7 @@ package ua.ies.group3.netcafe.api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
+import ua.ies.group3.netcafe.api.exception.ResourceNotFoundException;
 import ua.ies.group3.netcafe.api.model.Alarm;
 import ua.ies.group3.netcafe.api.repository.AlarmRepository;
 
@@ -27,15 +28,16 @@ public class AlarmService {
         return alarmRepository.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd);
     }
 
-    public Alarm setAlarmSeen(String alarmId, boolean bool) {
-        Optional<Alarm> alarmOptional = alarmRepository.findById(alarmId);
-        if (alarmOptional.isPresent()) {
-            Alarm alarm = alarmOptional.get();
-            alarm.setSeen(bool);
-            saveAlarm(alarm);
-            return alarm;
-        }
-        return null;
+    public Optional<Alarm> findById(String id) {
+        return alarmRepository.findById(id);
+    }
+
+    public Alarm setAlarmSeen(String alarmId, boolean bool) throws ResourceNotFoundException {
+        Alarm alarm = findById(alarmId)
+                .orElseThrow(() -> new ResourceNotFoundException("Alarm with ID " + alarmId + " not found."));
+        alarm.setSeen(bool);
+        saveAlarm(alarm);
+        return alarm;
     }
 
     public Alarm saveAlarm(Alarm alarm) {
