@@ -39,9 +39,34 @@ const CustomNavbar = () => {
         })
     }, [])
 
+    const dismissAlert = (alert_id) => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: alert_id, seen: true})})
+        .then(
+            fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+            .then(response => response.json())
+            .then(data => {
+                let tempNewAlerts = []
+                for (let alarm of data) {
+                    if (!alarm.seen)
+                        tempNewAlerts.push(alarm)
+                }
+                setNewAlerts(tempNewAlerts)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        )
+    }
 
     const presentAlerts = (alerts) => {
-        if (alerts.length > 3) {
+        if (alerts.length == 0)
+            return <p>No new alerts</p>
+        else if (alerts.length > 3) {
             let alertSlice = alerts.slice(0, 3)
             return (
                 <>
@@ -50,6 +75,7 @@ const CustomNavbar = () => {
                         <AlertNotif 
                             alert={alarm}
                             isSmall={true}
+                            dismissHandler={dismissAlert}
                         />
                     )
                 }
@@ -64,7 +90,6 @@ const CustomNavbar = () => {
                 />
             )
     }
-
 
     const popover = (
         <Popover id="popover-basic">
