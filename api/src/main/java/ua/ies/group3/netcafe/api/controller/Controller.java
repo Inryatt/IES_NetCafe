@@ -14,6 +14,8 @@ import ua.ies.group3.netcafe.api.model.*;
 import ua.ies.group3.netcafe.api.service.*;
 
 import javax.validation.Valid;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -211,14 +213,25 @@ public class Controller {
     public List<MachineUsage> findUsages(
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd) {
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "limit", required = false) Integer limit) {
         if (tsStart == null)
             tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
+        List<MachineUsage> all_usages;
         if (machineId == null)
-            return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
-        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+            all_usages = machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
+        all_usages = machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+
+        // return all_usages;
+        List<MachineUsage> filtered_usages = new ArrayList<>();
+
+        for (int i = 0; i < all_usages.size(); i += limit) {
+            filtered_usages.add(all_usages.get(i));
+        }
+
+        return filtered_usages;
     }
 
 

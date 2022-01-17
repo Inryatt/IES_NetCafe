@@ -73,6 +73,7 @@ const HistoryPage = () => {
                             machineData.length > 0 ?
                             <MachineUse
                                 machineData={machineData}
+                                selLocation={selLocation}
                             />
                             :
                             <div>
