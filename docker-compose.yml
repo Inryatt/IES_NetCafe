@@ -47,9 +47,18 @@ services:
     depends_on:
        rabbitmq:
          condition: service_healthy
+       api:
+         condition: service_healthy
     container_name: 'datagen'
     build: ./datagen/.
     command: python3 -u /usr/datagen/src/datagen.py
+  db_init:
+     depends_on:
+       api:
+         condition: service_healthy
+     container_name: 'init_db'
+     build: ./db_initializer/.
+     command: python3 -u /usr/initialize_db.py
   # py_parser:
   #   container_name: 'py_parser'
   #   depends_on:
