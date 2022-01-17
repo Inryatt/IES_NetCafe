@@ -64,7 +64,9 @@ const CustomNavbar = () => {
     }
 
     const presentAlerts = (alerts) => {
-        if (alerts.length > 3) {
+        if (alerts.length == 0)
+            return <p>No new alerts</p>
+        else if (alerts.length > 3) {
             let alertSlice = alerts.slice(0, 3)
             return (
                 <>

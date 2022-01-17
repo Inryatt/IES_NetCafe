@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import { Col, Form, Row } from "react-bootstrap";
 import CustomGraph from "../../../components/CustomGraph/CustomGraph";
 
@@ -39,13 +38,11 @@ export const options = {
 const MachineUse = ({machineData}) => {
 
     const [selMachine, setSelMachine] = useState(-1)
-    const [data, setData] = useState()
     const [dateFrom, setDateFrom] = useState()
     const [dateTo, setDateTo] = useState()
-    const [labels, setLabels] = useState([])
-    const [datasets, setDatasets] = useState([])
     const [contents, setContents] = useState([])
     const [customColor, setCustomColor] = useState()
+    const [selectedStat, setSelectedStat] = useState("cpuUsage")
 
     const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
     // colors need to have the syntax rgb(x,y,z) (used for inserting the alpha channel later)
@@ -99,7 +96,7 @@ const MachineUse = ({machineData}) => {
                     label: machine.name,
                     coords: usages.map(usage => ({
                         x: convertTimestamp(usage.timestampStart),
-                        y: usage.cpuUsage
+                        y: usage[selectedStat]
                     }))
                 })
             }
@@ -110,12 +107,15 @@ const MachineUse = ({machineData}) => {
                 //label: selMachine.name,
                 coords: tempUsage.map(usage => ({
                     x: convertTimestamp(usage.timestampStart),
-                    y: usage.cpuUsage
+                    y: usage[selectedStat]
+                    // y: usage[selectedStat] + (selectedStat === "cpuTemp" || selectedStat === "gpuTemp" ? "ºC"
+                    //     : selectedStat === "networkUpUsage" || selectedStat === "networkDownUsage" ? " MB/s"
+                    //     : selectedStat === "powerUsage" ? " W" : "%")
                 }))
             })
         }
         setContents(tempcontents)
-    }, [machineData, selMachine, dateFrom, dateTo])
+    }, [machineData, selMachine, dateFrom, dateTo, selectedStat])
 
     useEffect(() => {
 
@@ -123,6 +123,17 @@ const MachineUse = ({machineData}) => {
 
     return (
         <>
+            <Form.Select className="my-3" onChange={(e) => setSelectedStat(e.target.value)}>
+                <option value={"cpuUsage"}>CPU Usage %</option>
+                <option value={"cpuTemp"}>CPU Temperature</option>
+                <option value={"gpuUsage"}>GPU Usage %</option>
+                <option value={"gpuTemp"}>GPU Temperature</option>
+                <option value={"networkUpUsage"}>Network Upload Rate</option>
+                <option value={"networkDownUsage"}>Network Download Rate</option>
+                <option value={"ramUsage"}>RAM Usage %</option>
+                <option value={"diskUsage"}>Disk Usage %</option>
+                <option value={"powerUsage"}>Power Usage</option>
+            </Form.Select>
             <CustomGraph 
                 contents={contents}
                 setDateTo={setDateTo}
@@ -135,74 +146,9 @@ const MachineUse = ({machineData}) => {
                 setCustomColor={setCustomColor}
                 title="Machines in Use Chart"
             />
-            
+            <br/>
         </>
     )
 }
 
 export default MachineUse
-
-
-
-
-
-// import React from 'react';
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from 'chart.js';
-// import { Line } from 'react-chartjs-2';
-// import faker from 'faker';
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
-
-// export const options = {
-//   responsive: true,
-//   plugins: {
-//     legend: {
-//       position: 'top' as const,
-//     },
-//     title: {
-//       display: true,
-//       text: 'Chart.js Line Chart',
-//     },
-//   },
-// };
-
-// const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-// export const data = {
-//   labels,
-//   datasets: [
-//     {
-//       label: 'Dataset 1',
-//       data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-//       borderColor: 'rgb(255, 99, 132)',
-//       backgroundColor: 'rgba(255, 99, 132, 0.5)',
-//     },
-//     {
-//       label: 'Dataset 2',
-//       data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-//       borderColor: 'rgb(53, 162, 235)',
-//       backgroundColor: 'rgba(53, 162, 235, 0.5)',
-//     },
-//   ],
-// };
-
-// export function App() {
-//   return <Line options={options} data={data} />;
-// }
