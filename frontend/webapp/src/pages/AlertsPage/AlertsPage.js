@@ -72,11 +72,39 @@ const AlertsPage = () => {
         })
     }, [])
 
+    const dismissAlert = (alert_id) => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: alert_id, seen: true})})
+        .then(
+            fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+            .then(response => response.json())
+            .then(data => {
+                let tempNewAlerts = []
+                let tempPrevAlerts = []
+
+                for (let alarm of data) {
+                    if (alarm.seen)
+                        tempPrevAlerts.push(alarm)
+                    else
+                        tempNewAlerts.push(alarm)
+                }
+                setNewAlerts(tempNewAlerts)
+                setPrevAlerts(tempPrevAlerts)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        )
+    }
 
     return (
         <div className="mt-3 text-start">
             <h3>New</h3>
-            {newAlerts.length > 0 ? newAlerts.map(alert => <AlertNotif alert={alert}/>) : <p>No new alerts</p> }
+            {newAlerts.length > 0 ? newAlerts.map(alert => <AlertNotif alert={alert} dismissHandler={dismissAlert}/>) : <p>No new alerts</p> }
             <h3 className="mt-4">Previous</h3>
             {prevAlerts.length > 0 ? prevAlerts.map(alert => <AlertNotif alert={alert}/>) : <p>No old alerts</p> }
         </div>
