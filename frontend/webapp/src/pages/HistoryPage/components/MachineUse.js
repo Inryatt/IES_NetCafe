@@ -38,7 +38,7 @@ export const options = {
 
 const MachineUse = ({machineData, selLocation}) => {
 
-    const [selMachine, setSelMachine] = useState(-1)
+    const [selMachine, setSelMachine] = useState(0)
     const [data, setData] = useState()
     const [dateFrom, setDateFrom] = useState()
     const [dateTo, setDateTo] = useState()
@@ -47,6 +47,7 @@ const MachineUse = ({machineData, selLocation}) => {
     const [contents, setContents] = useState([])
     const [customColor, setCustomColor] = useState()
     const [refreshFlag, setRefreshFlag] = useState(false)
+    const [changedLocation, setChangedLocation] = useState(true)
 
 
     const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
@@ -54,13 +55,13 @@ const MachineUse = ({machineData, selLocation}) => {
     // colors will loop if doesn't have enough colors for all machines
 
     const convertTimestamp = (timestamp) => {
-        return timestamp
+        // return timestamp
         const date = new Date(timestamp * 1000)
         return `${date.getDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
     }
 
     const sortFunction = (a,b) => {
-        return a > b;
+        // return a > b;
 
         let arrayA = a.split("/| ")
         let arrayB = b.split("/| ")
@@ -120,8 +121,27 @@ const MachineUse = ({machineData, selLocation}) => {
             }
         }
         else { // specific machine
-            let tempMachine = await getMachineById(selMachine)
-            tempUsage = await getUsagesById(selMachine, dateFrom, dateTo)
+            // let selectedMachine = selMachine
+
+            // if (selectedMachine == undefined && machineData.length > 0) {
+            //     selectedMachine = machineData[0]
+            // }
+
+            let trueSelMachine = selMachine
+            if (selMachine == 0 && machineData.length > 0) {
+                trueSelMachine = machineData[0].id
+                // return
+            }
+            if (trueSelMachine == 0) {
+                return
+            }
+
+            console.log("true", trueSelMachine)
+
+            let tempMachine = await getMachineById(trueSelMachine)
+            tempUsage = await getUsagesById(trueSelMachine, dateFrom, dateTo)
+
+            console.log("tempusage", tempUsage)
             tempcontents.push({
                 label: tempMachine.name,
                 coords: tempUsage.map(usage => ({
@@ -131,11 +151,13 @@ const MachineUse = ({machineData, selLocation}) => {
             })
         }
         setContents(tempcontents)
-    }, [refreshFlag, selLocation, selMachine, dateFrom, dateTo])
+        setChangedLocation(false)
+    }, [refreshFlag, selMachine, dateFrom, dateTo, changedLocation])
 
-    // useEffect(() => {
-
-    // }, [customColor])
+    useEffect(() => {
+        setSelMachine(0)
+        setChangedLocation(true)
+    }, [selLocation])
 
     useEffect(() => {
         setInterval(() => setRefreshFlag(prevVal => !prevVal), 3000);
@@ -148,8 +170,10 @@ const MachineUse = ({machineData, selLocation}) => {
                 setDateTo={setDateTo}
                 setDateFrom={setDateFrom}
                 sortFunction={sortFunction}
-                hasSelectMachine={true}
+                hasMachine={true}
                 setSelMachine={setSelMachine}
+                selMachine={selMachine}
+                hasSelMachine={selMachine != 0}
                 machineData={machineData}
                 color={contents.length > 1 ? undefined : customColor}
                 setCustomColor={setCustomColor}
