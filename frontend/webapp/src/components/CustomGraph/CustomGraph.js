@@ -25,7 +25,7 @@ Legend
 
 
 const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
-    color, setCustomColor=() => {}, hasSelectMachine=false, setSelMachine, machineData}) => {
+    color, setCustomColor=() => {}, hasMachine, hasSelMachine=false, setSelMachine, machineData}) => {
     /* content --> [{
         label: text
         coords: [
@@ -48,7 +48,7 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
 
     const options = {
         responsive: true,
-        // pointRadius: 0,
+        pointRadius: 2,
         tension: 0.1,
         plugins: {
           legend: {
@@ -131,12 +131,12 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
                 <Line options={options} data={data} />
             }
             {
-                hasSelectMachine &&
+                hasMachine &&
                 <Form.Select onChange={(e) => {
                     setSelMachine(e.target.value)
                     setCustomColor(colors[e.target.value])
                 }}>
-                    <option value={-1}>All</option>
+                    {/* <option value={-1}>All</option> */}
                     {
                         machineData.map((mach, idx) => (
                             <option key={idx} value={mach.id}>ID:{mach.id} - {mach.name}</option>
