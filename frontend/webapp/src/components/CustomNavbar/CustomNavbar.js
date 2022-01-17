@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar, OverlayTrigger, Popover, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import AlertNotif from "../AlertNotif/AlertNotif";
@@ -21,60 +21,81 @@ const staticNewAlerts = [
 ]
 
 const CustomNavbar = () => {
+    const [newAlerts, setNewAlerts] = useState([])
 
-    const staticNewAlerts = [
-        {
-            location: "Aveiro",
-            machine: 2,
-            message: "Very high CPU temperature",
-            timestamp: "15:34 3/12/2021",
-            urgent: true
-        },
-        {
-            location: "Leiria",
-            machine: 1,
-            message: "Computer running slower than usual",
-            timestamp: "18:13 2/12/2021",
-            urgent: false
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+        .then(response => response.json())
+        .then(data => {
+            let tempNewAlerts = []
+            for (let alarm of data) {
+                if (!alarm.seen)
+                    tempNewAlerts.push(alarm)
+            }
+            setNewAlerts(tempNewAlerts)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }, [])
+
+    const dismissAlert = (alert_id) => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: alert_id, seen: true})})
+        .then(
+            fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+            .then(response => response.json())
+            .then(data => {
+                let tempNewAlerts = []
+                for (let alarm of data) {
+                    if (!alarm.seen)
+                        tempNewAlerts.push(alarm)
+                }
+                setNewAlerts(tempNewAlerts)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        )
+    }
+
+    const presentAlerts = (alerts) => {
+        if (alerts.length == 0)
+            return <p>No new alerts</p>
+        else if (alerts.length > 3) {
+            let alertSlice = alerts.slice(0, 3)
+            return (
+                <>
+                {
+                    alertSlice.map((alarm) =>
+                        <AlertNotif 
+                            alert={alarm}
+                            isSmall={true}
+                            dismissHandler={dismissAlert}
+                        />
+                    )
+                }
+                <p>Plus {alerts.length - 3} other alerts</p>
+                </>)
         }
-    ]
-    
-    const staticPrevAlerts = [
-        {
-            location: "Leiria",
-            machine: 1,
-            message: "Very high CPU temperature",
-            timestamp: "14:50 1/12/2021",
-            urgent: true
-        },
-        {
-            location: "Aveiro",
-            machine: 2,
-            message: "Computer running slower than usual",
-            timestamp: "10:42 28/11/2021",
-            urgent: false
-        },
-        {
-            location: "Aveiro",
-            machine: 2,
-            message: "Computer running slower than usual",
-            timestamp: "13:41 24/11/2021",
-            urgent: false
-        }
-    ]
+        else
+            return alerts.map((alarm) =>
+                <AlertNotif 
+                    alert={alarm}
+                    isSmall={true}
+                />
+            )
+    }
 
     const popover = (
         <Popover id="popover-basic">
           {/* <Popover.Header as="h3">Popover right</Popover.Header> */}
           <Popover.Body>
-            <AlertNotif 
-                alert={staticNewAlerts[0]}
-                isSmall={true}
-            />
-            <AlertNotif 
-                alert={staticNewAlerts[1]}
-                isSmall={true}
-            />
+            {presentAlerts(newAlerts)}
             <br/>
             <Button variant="success" onClick={() => navigate("/notifications")}>To Notifications Page</Button>
           </Popover.Body>

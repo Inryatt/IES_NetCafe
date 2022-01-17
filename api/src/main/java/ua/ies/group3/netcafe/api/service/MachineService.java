@@ -50,10 +50,11 @@ public class MachineService {
                 machine.setCurrentUser(user);
                 List<Integer> softwareIds = usage.getSoftwareUsage();
                 List<Software> softwares = new ArrayList<>();
-                for (Integer softwareId : softwareIds) {
-                    Optional<Software> softwareOptional = softwareService.findSoftwareById(softwareId);
-                    softwareOptional.ifPresent(softwares::add);
-                }
+                if (softwareIds != null)
+                    for (Integer softwareId : softwareIds) {
+                        Optional<Software> softwareOptional = softwareService.findSoftwareById(softwareId);
+                        softwareOptional.ifPresent(softwares::add);
+                    }
                 machine.setSoftwares(softwares);
                 machine.setTimestamp(usage.getTimestampStart());
                 machine.setCpuUsage(usage.getCpuUsage());
