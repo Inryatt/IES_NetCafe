@@ -40,21 +40,37 @@ const CustomNavbar = () => {
     }, [])
 
 
-    const popover = (
-        <Popover id="popover-basic">
-          {/* <Popover.Header as="h3">Popover right</Popover.Header> */}
-          <Popover.Body>
-            {
-                newAlerts.length > 0 ?
-                    newAlerts.map((alarm) => {
+    const presentAlerts = (alerts) => {
+        if (alerts.length > 3) {
+            let alertSlice = alerts.slice(0, 3)
+            return (
+                <>
+                {
+                    alertSlice.map((alarm) =>
                         <AlertNotif 
                             alert={alarm}
                             isSmall={true}
                         />
-                    })
-                :
-                    <p>No new alerts</p>
-            }
+                    )
+                }
+                <p>Plus {alerts.length - 3} other alerts</p>
+                </>)
+        }
+        else
+            return alerts.map((alarm) =>
+                <AlertNotif 
+                    alert={alarm}
+                    isSmall={true}
+                />
+            )
+    }
+
+
+    const popover = (
+        <Popover id="popover-basic">
+          {/* <Popover.Header as="h3">Popover right</Popover.Header> */}
+          <Popover.Body>
+            {presentAlerts(newAlerts)}
             <br/>
             <Button variant="success" onClick={() => navigate("/notifications")}>To Notifications Page</Button>
           </Popover.Body>

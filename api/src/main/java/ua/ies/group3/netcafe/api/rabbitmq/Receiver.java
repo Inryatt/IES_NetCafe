@@ -47,8 +47,8 @@ public class Receiver {
         latch.countDown();
     }
 
-    private final double MAX_CPU_TEMP = 100;
-    private final double MAX_GPU_TEMP = 100;
+    private final double MAX_CPU_TEMP = 90;
+    private final double MAX_GPU_TEMP = 90;
 
     public Alarm createAlarmIfNeeded(MachineUsage usage) {
         boolean saveAlarm = false;
