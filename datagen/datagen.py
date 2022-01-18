@@ -8,13 +8,13 @@ import pika
 if len(sys.argv)>1 and sys.argv[1]=='test':
     pass
 else:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
     channel.queue_declare(queue="machine-usage")
 
 users = {i:True for i in range(0, 5)}
-# base_url = "http://api:8080/api/machines/"
-base_url = "http://localhost:8080/api/machines/"
+base_url = "http://api:8080/api/machines/"
+#base_url = "http://localhost:8080/api/machines/"
 
 
 with open("software_list.json") as f:
@@ -74,7 +74,9 @@ class Machine():
             self.usage['gpu_temp'] = 23 + rm.random()*3
 
             self.programs = []
+            users[self.current_user] = True
             self.current_user = None
+        
             self.event_status = []
             self.sus_eventstatus = []
             self.status=2 # Crash
@@ -125,8 +127,7 @@ class Machine():
                         "id":999,
                         "name":"WannaCry",
                         "type":"Malware"
-                    },
-                     {
+                    },                     {
                         "id":998,
                         "name":"MimiKatz",
                         "type":"Malware"
@@ -139,6 +140,11 @@ class Machine():
                      {
                         "id":996,
                         "name":"Async_RAT",
+                        "type":"Malware"
+                    },
+                    {
+                        "id":995,
+                        "name":"stage1.exe",
                         "type":"Malware"
                     }
                 ]
@@ -307,7 +313,8 @@ class Machine():
         status: {self.status}   | 0 -> Off
                     | 1 -> On
                     | 2 -> Unavailable
-
+        
+        id: {self.id}
         cpu: {self.usage['cpu']}%
         gpu: {self.usage['gpu']}%
         ram: {self.usage['ram']}%
@@ -401,7 +408,7 @@ def main():
         for machine in machineList:
             machine.machine_loop()
             #print(f"machine {machine.id} status {machine.status}")
-            #machine.print_usage()
+            machine.print_usage()
             if machine.status == 1:
                 machine.print_usage()
             if len(sys.argv)>1 and sys.argv[1]=='test':
