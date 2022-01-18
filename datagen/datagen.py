@@ -74,7 +74,9 @@ class Machine():
             self.usage['gpu_temp'] = 23 + rm.random()*3
 
             self.programs = []
+            users[self.current_user] = True
             self.current_user = None
+        
             self.event_status = []
             self.sus_eventstatus = []
             self.status=2 # Crash
@@ -311,7 +313,8 @@ class Machine():
         status: {self.status}   | 0 -> Off
                     | 1 -> On
                     | 2 -> Unavailable
-
+        
+        id: {self.id}
         cpu: {self.usage['cpu']}%
         gpu: {self.usage['gpu']}%
         ram: {self.usage['ram']}%
@@ -405,7 +408,7 @@ def main():
         for machine in machineList:
             machine.machine_loop()
             #print(f"machine {machine.id} status {machine.status}")
-            #machine.print_usage()
+            machine.print_usage()
             if machine.status == 1:
                 machine.print_usage()
             if len(sys.argv)>1 and sys.argv[1]=='test':

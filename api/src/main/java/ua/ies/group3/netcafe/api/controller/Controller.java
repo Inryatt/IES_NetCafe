@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @CrossOrigin(origins = "*")// "http://frontend:3000")
 @RequestMapping("/api")
