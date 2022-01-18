@@ -31,9 +31,19 @@ const DashboardPage = () => {
 
     const fetchLocationMachines = async () => {
         //console.log("fetching...")
-        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`)
+        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`,{
+		headers:{
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+		
+			"Origin":"frontend:3000"
+		}
+
+	})
         .then(response => response.json())
         .then(data => {
+	    console.log("CORS TEST",data)
             setMachineData(data);
             if (selMachine) {
                 setSelMachine(machineData.find(machine => machine.id == selMachine.id))
@@ -46,16 +56,24 @@ const DashboardPage = () => {
 
     // get list of locations on page load
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/locations`)
+        fetch(`${process.env.REACT_APP_API_URL}/locations`,{
+		headers:{
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+			"Origin":"frontend:3000"
+		}
+	})
         .then(response => response.json())
         .then(data => {
+	    console.log("CORS TEST DOIS");
             setLocations(data);
             setSelLocation(data[0]);
         })
         .catch(err => {
             console.log(err)
         })
-
+	console.log("cors test ");
         // a hack for getting periodic refreshes
         setInterval(() => setRefreshFlag(prevVal => !prevVal), 3000);
     }, [])
