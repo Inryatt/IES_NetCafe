@@ -2,6 +2,11 @@
 
 Title: NetCafe
 
+### Deployed App
+
+http://40.91.235.192:3000/dashboard
+(Cannot be accessed inside eduroam or on Firefox -- Tested in Chrome)
+
 ##### Description
 
 Web application for management of an Internet Café franchise (featuring multiple locations).
