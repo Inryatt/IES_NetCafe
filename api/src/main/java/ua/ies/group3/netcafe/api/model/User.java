@@ -1,24 +1,31 @@
 package ua.ies.group3.netcafe.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
 public class User {
+    @Schema(description = "Identifier")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Schema(description = "Real name")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Schema(description = "Email address")
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Schema(description = "Birthdate")
     @Column(name = "birthdate", nullable = false)
     private Date birthdate;
 
+    @Schema(description = "Registration date")
     @Column(name = "registerDate", nullable = false)
     private Date registerDate;
 

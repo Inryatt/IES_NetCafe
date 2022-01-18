@@ -1,6 +1,7 @@
 package ua.ies.group3.netcafe.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,89 +9,111 @@ import java.util.List;
 @Entity
 @Table(name = "machines")
 public class Machine {
+    @Schema(description = "Identifier")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     // Specifications
+    @Schema(description = "CPU name")
     @Column(name = "cpu", nullable = false)
-    private String cpu; // CPU Name
+    private String cpu;
 
+    @Schema(description = "GPU name")
     @Column(name = "gpu", nullable = false)
-    private String gpu; // GPU Name
+    private String gpu;
 
+    @Schema(description = "RAM name")
     @Column(name = "ram", nullable = false)
-    private String ram; // RAM Name
+    private String ram;
 
+    @Schema(description = "Disk name")
     @Column(name = "disk", nullable = false)
-    private String disk; // Disk Name
+    private String disk;
 
+    @Schema(description = "Operating system name")
     @Column(name = "os", nullable = false)
-    private String os; // Operating System Name
+    private String os;
 
+    @Schema(description = "Machine name")
     @Column(name = "name", nullable = false)
-    private String name; // Machine Name
+    private String name;
 
     // Location and position
+
+    @Schema(description = "Location (cafe)")
     @ManyToOne(optional = false)
     @JoinColumn(name = "locationId", nullable = false)
     @JsonIgnoreProperties({"name", "map"})
     private Location location;
 
+    @Schema(description = "Horizontal map coordinate")
     @Column(name = "xCoord", nullable = false)
     private double xCoord;
 
+    @Schema(description = "Vertical map coordinate")
     @Column(name = "yCoord", nullable = false)
     private double yCoord;
 
     // Current Usage Information
+    @Schema(description = "Current user")
     @OneToOne
     @JsonIgnoreProperties({"name", "email", "birthdate", "registerDate"})
     // @JoinColumn(name = "currentUserId")
     private User currentUser;
 
+    @Schema(description = "Usage: software currently in use")
     @OneToMany
     @JsonIgnoreProperties({"name", "type"})
     // @JoinColumn(name = "softwareId")
     private List<Software> softwares;
 
+    @Schema(description = "Usage: timestamp")
     @Column(name = "timestamp")
     private long timestamp;
 
+    @Schema(description = "Usage: CPU usage")
     @Column(name = "cpuUsage")
     private double cpuUsage;
 
+    @Schema(description = "Usage: GPU usage")
     @Column(name = "gpuUsage")
     private double gpuUsage;
 
+    @Schema(description = "Usage: Disk usage")
     @Column(name = "diskUsage")
     private double diskUsage;
 
+    @Schema(description = "Usage: RAM usage")
     @Column(name = "ramUsage")
     private double ramUsage;
 
-//    @Column(name = "networkUsage")
-//    private double networkUsage;
-
+    @Schema(description = "Usage: network download usage")
     @Column(name = "networkDownUsage")
     private double networkDownUsage;
 
+    @Schema(description = "Usage: network upload usage")
     @Column(name = "networkUpUsage")
     private double networkUpUsage;
 
+    @Schema(description = "Usage: power usage")
     @Column(name = "powerUsage")
     private double powerUsage;
 
+    @Schema(description = "Usage: CPU temperature")
     @Column(name = "cpuTemp")
     private double cpuTemp;
 
+    @Schema(description = "Usage: GPU temperature")
     @Column(name = "gpuTemp")
     private double gpuTemp;
 
+    @Schema(description = "Usage: uptime (seconds)")
     @Column(name = "uptime")
-    private int uptime; // In seconds
+    private int uptime;
 
-    @Column(name = "status") // 0 - off, 1 - on, 2 - unavailable
+    @Schema(description = "Machine status (0 - off, 1 - on, 2 - unavailable)")
+    @Column(name = "status")
     private int status;
 
     // Getters and Setters
@@ -286,12 +309,4 @@ public class Machine {
     public void setStatus(int status) {
         this.status = status;
     }
-
-    //    public double getNetworkUsage() {
-//        return networkUsage;
-//    }
-//
-//    public void setNetworkUsage(double networkUsage) {
-//        this.networkUsage = networkUsage;
-//    }
 }
