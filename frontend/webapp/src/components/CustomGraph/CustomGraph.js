@@ -24,8 +24,8 @@ Legend
 );
 
 
-const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction, 
-    color, setCustomColor=() => {}, hasSelectMachine=false, setSelMachine, machineData}) => {
+const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
+    color, setCustomColor=() => {}, hasMachine, hasSelMachine=false, setSelMachine, machineData}) => {
     /* content --> [{
         label: text
         coords: [
@@ -41,12 +41,15 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
     }]
 
     */
+    // console.log(contents)
 
     const colors = ["rgb(255, 99, 132)", "rgb(53, 162, 235)", "rgb(99, 200, 132)"]
     const [data, setData] = useState()
 
     const options = {
         responsive: true,
+        pointRadius: 2,
+        tension: 0.1,
         plugins: {
           legend: {
             position: 'top',
@@ -69,29 +72,42 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
             datasets.push(
                 {
                     label: content.label,
-                    data: content.coords.map(coord => ({
-                        y: coord.y,
-                        x: coord.x
-                    })),
+                    data: content.coords.map(coord => {
+                        if (content.label.includes("HP")) {
+                            // console.log(coord)
+                        }
+
+                        return ({
+                            label: content.label,
+                            y: coord.y,
+                            x: coord.x
+                        })
+                    }),
                     borderColor: color ? color : tempcolor,
                     backgroundColor: color ? color.substring(0, color.length-1) + ", 0.5)" : tempcolor.substring(0, tempcolor.length-1) + ", 0.5)",
                 }
             )
         }
 
+        console.log(datasets)
+
         for (let content of contents) {
             for (let coord of content.coords) {
-                if (!labels.includes(coord.x))
+                if (!labels.includes(coord.x)) {
+                    if (coord.x == 1642431114) {
+                        // console.log("added sussy 114")
+                    }
                     labels.push(coord.x)
+                }
             }
         }
 
-        if (sortFunction) {
-            labels.sort(sortFunction)
-        }
-        else {
-            labels.sort()
-        }
+        // if (sortFunction) {
+        //     labels.sort(sortFunction)
+        // }
+        // else {
+        //     labels.sort()
+        // }
 
         setData({
             labels,
@@ -115,15 +131,15 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
                 <Line options={options} data={data} />
             }
             {
-                hasSelectMachine &&
+                hasMachine &&
                 <Form.Select onChange={(e) => {
                     setSelMachine(e.target.value)
                     setCustomColor(colors[e.target.value])
                 }}>
-                    <option value={-1}>All</option>
+                    {/* <option value={-1}>All</option> */}
                     {
                         machineData.map((mach, idx) => (
-                            <option key={idx} value={idx}>{mach.name}</option>
+                            <option key={idx} value={mach.id}>ID:{mach.id} - {mach.name}</option>
                         ))
                     }
                 </Form.Select>

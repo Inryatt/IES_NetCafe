@@ -152,6 +152,7 @@ class Machine():
                 
         else:
             self.crash()
+            pass
 
     def turn_on(self):
         #print(f"current status: {self.status}")
@@ -188,6 +189,9 @@ class Machine():
             self.usage["network_up"] = 0
             self.usage['cpu_temp'] = 20 + rm.random()*3
             self.usage['gpu_temp'] = 23 + rm.random()*3
+            self.programs = []
+            self.event_status = []
+            self.sus_eventstatus = []
         elif self.status==2:
             users[self.current_user] = True
             self.current_user= None
@@ -283,7 +287,12 @@ class Machine():
             #self.print_usage()
             
             rng = rm.random()
-            pass_p = 0.75
+            #rng = 1
+            #pass_p = 0.75
+            #open_p = 0.1
+            #event_p = 0.05
+            #close_p = 0.1
+            pass_p = 0.70
             open_p = 0.1
             event_p = 0.05
             close_p = 0.1
@@ -341,8 +350,8 @@ class Machine():
 
     def export_data(self):
         obj = {
-            'machine_id':self.id,
-            'timestamp':self.start_time,
+            'machineId':self.id,
+            'timestampStart':int(time.time()),
             'cpuUsage':self.usage['cpu'],
             'gpuUsage':self.usage['gpu'],
             'ramUsage':self.usage['ram'],
@@ -353,7 +362,7 @@ class Machine():
             'gpuTemp':round(self.usage['gpu_temp'],2),
             'softwares':[{'id':prog['id']} for prog in self.programs],
             'status':self.status,
-            'currentUser':self.current_user
+            'userId':self.current_user
         }
         
         return json.dumps(obj)
@@ -397,8 +406,8 @@ def main():
             machine.machine_loop()
             #print(f"machine {machine.id} status {machine.status}")
             #machine.print_usage()
-            #if machine.status == 1:
-            #    machine.print_usage()
+            if machine.status == 1:
+                machine.print_usage()
             if len(sys.argv)>1 and sys.argv[1]=='test':
                 machine.print_usage()
             else:
@@ -407,7 +416,7 @@ def main():
                           body=machine.export_data())
             print("sent machine")
             print(users)
-        time.sleep(0.3)
+        time.sleep(1)
 
     # For testing purposes
     # machineList[0].test_loop()
