@@ -4,7 +4,8 @@ import requests
 import os
 def main():
     #api_url = 'http://172.18.0.5:8080/api/'
-    api_url = 'http://api:8080/api/'
+    # api_url = 'http://api:8080/api/'
+    api_url = 'http://localhost:8080/api/'
     
     #print(os.popen("ls -la").read())
     with open('user_list.json', 'rb') as user_list:

@@ -8,13 +8,14 @@ import pika
 if len(sys.argv)>1 and sys.argv[1]=='test':
     pass
 else:
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue="machine-usage")
 
 users = {i:True for i in range(0, 5)}
-base_url = "http://api:8080/api/machines/"
-#base_url = "http://localhost:8080/api/machines/"
+# base_url = "http://api:8080/api/machines/"
+base_url = "http://localhost:8080/api/machines/"
 
 
 with open("software_list.json") as f:
@@ -363,7 +364,8 @@ class Machine():
             'networkDownUsage':self.usage['network_down'],
             'cpuTemp':round(self.usage['cpu_temp'],2),
             'gpuTemp':round(self.usage['gpu_temp'],2),
-            'softwares':[{'id':prog['id']} for prog in self.programs],
+            # 'softwareUsage':[{'id':prog['id']} for prog in self.programs],
+            'softwareUsage': [prog['id'] for prog in self.programs],
             'status':self.status,
             'userId':self.current_user
         }

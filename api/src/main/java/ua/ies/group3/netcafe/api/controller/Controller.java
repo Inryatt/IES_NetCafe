@@ -207,6 +207,33 @@ public class Controller {
 
     // Machine Usage
 
+//    @Operation(summary = "Get machine usages matching the filters.")
+//    @ApiResponse(responseCode = "200", description = "Machine usages found.")
+//    @GetMapping("/usages")
+//    public List<MachineUsage> findUsages(
+//            @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
+//            @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
+//            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
+//            @Parameter(description = "End timestamp filter") @RequestParam(name = "limit", required = false) Integer limit) {
+//        if (tsStart == null)
+//            tsStart = -Long.MAX_VALUE;
+//        if (tsEnd == null)
+//            tsEnd = Long.MAX_VALUE;
+//        List<MachineUsage> all_usages;
+//        if (machineId == null)
+//            all_usages = machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
+//        all_usages = machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+//
+//        // return all_usages;
+//        List<MachineUsage> filtered_usages = new ArrayList<>();
+//
+//        for (int i = 0; i < all_usages.size(); i += limit) {
+//            filtered_usages.add(all_usages.get(i));
+//        }
+//
+//        return filtered_usages;
+//    }
+
     @Operation(summary = "Get machine usages matching the filters.")
     @ApiResponse(responseCode = "200", description = "Machine usages found.")
     @GetMapping("/usages")
@@ -214,24 +241,17 @@ public class Controller {
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
             @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "limit", required = false) Integer limit) {
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "round", required = false) Integer round) {
         if (tsStart == null)
             tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
-        List<MachineUsage> all_usages;
         if (machineId == null)
-            all_usages = machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
-        all_usages = machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
-
-        // return all_usages;
-        List<MachineUsage> filtered_usages = new ArrayList<>();
-
-        for (int i = 0; i < all_usages.size(); i += limit) {
-            filtered_usages.add(all_usages.get(i));
-        }
-
-        return filtered_usages;
+            machineId = -1L;
+        if (round == null)
+            round = -1;
+        System.out.println("machineId: " + machineId + ", tsStart: " + tsStart + ", tsEnd: " + tsEnd + ", round: " + round);
+        return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
     }
 
 

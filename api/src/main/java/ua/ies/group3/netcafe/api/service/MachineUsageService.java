@@ -22,19 +22,15 @@ public class MachineUsageService {
         return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartBetweenOrderByTimestampStart(machineId, timestampStart, timestampEnd);
     }
 
-//    public List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart, long timestampEnd) {
-//        return machineUsageRepository.findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(timestampStart, timestampEnd);
-//    }
-//
-//    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId, long timestampStart, long timestampEnd) {
-//        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(machineId, timestampStart, timestampEnd);
-//    }
-
     public List<MachineUsage> findAllMachineUsages() {
         return machineUsageRepository.findAll();
     }
 
     public MachineUsage saveMachineUsage(MachineUsage machineUsage) {
         return machineUsageRepository.save(machineUsage);
+    }
+
+    public List<MachineUsage> findMachineUsagesAggregate(long machineId, long tsStart, long tsEnd, int round) {
+        return machineUsageRepository.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
     }
 }
