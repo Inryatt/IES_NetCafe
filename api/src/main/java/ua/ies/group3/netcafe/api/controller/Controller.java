@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.ies.group3.netcafe.api.auxiliarymodel.AlarmSeen;
@@ -240,37 +243,51 @@ public class Controller {
     public List<MachineUsage> findUsages(
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "round", required = false) Integer round) {
-        if (tsStart == null)
-            tsStart = -Long.MAX_VALUE;
-        if (tsEnd == null)
-            tsEnd = Long.MAX_VALUE;
-        if (machineId == null)
-            machineId = -1L;
-        if (round == null)
-            round = -1;
-        System.out.println("machineId: " + machineId + ", tsStart: " + tsStart + ", tsEnd: " + tsEnd + ", round: " + round);
-        return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
-    }
-
-
-    // Alarms
-
-    @Operation(summary = "Get alarms matching the filters.")
-    @ApiResponse(responseCode = "200", description = "Alarms found.")
-    @GetMapping("/alarms")
-    public ResponseEntity<List<Alarm>> getAlarms(
-            @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
-            @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
             @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd) {
         if (tsStart == null)
             tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
-            return ResponseEntity.ok(alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd));
-        return ResponseEntity.ok(alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd));
+            return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
+        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+    }
+
+
+    // Alarms
+
+    //    @Operation(summary = "Get alarms matching the filters.")
+//    @ApiResponse(responseCode = "200", description = "Alarms found.")
+//    @GetMapping("/alarms")
+//    public ResponseEntity<List<Alarm>> getAlarms(
+//            @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
+//            @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
+//            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd) {
+//        if (tsStart == null)
+//            tsStart = -Long.MAX_VALUE;
+//        if (tsEnd == null)
+//            tsEnd = Long.MAX_VALUE;
+//        if (machineId == null)
+//            return ResponseEntity.ok(alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd));
+//        return ResponseEntity.ok(alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd));
+//    }
+    @Operation(summary = "Get alarms matching the filters.")
+    @ApiResponse(responseCode = "200", description = "Alarms found.")
+    @GetMapping("/alarms")
+    public ResponseEntity<Page<Alarm>> getAlarms(
+            @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
+            @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
+            @Parameter(description = "Pagination: page number") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Pagination: page size") @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (tsStart == null)
+            tsStart = -Long.MAX_VALUE;
+        if (tsEnd == null)
+            tsEnd = Long.MAX_VALUE;
+        if (machineId == null)
+            return ResponseEntity.ok(alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd, pageable));
+        return ResponseEntity.ok(alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd, pageable));
     }
 
     @Operation(summary = "Update the seen status of an alarm.")

@@ -81,7 +81,7 @@ public class Receiver {
 
         if (saveAlarm) {
             message.setLength(message.length() - 1); // Remove last newline
-            alarmService.saveAlarm(new Alarm(
+            return alarmService.saveAlarm(new Alarm(
                     usage.getMachineId(),
                     usage.getUserId(),
                     message.toString(),

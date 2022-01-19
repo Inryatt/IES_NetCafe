@@ -29,8 +29,4 @@ public class MachineUsageService {
     public MachineUsage saveMachineUsage(MachineUsage machineUsage) {
         return machineUsageRepository.save(machineUsage);
     }
-
-    public List<MachineUsage> findMachineUsagesAggregate(long machineId, long tsStart, long tsEnd, int round) {
-        return machineUsageRepository.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
-    }
 }
