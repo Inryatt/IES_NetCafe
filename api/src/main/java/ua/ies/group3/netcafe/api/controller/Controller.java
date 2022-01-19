@@ -251,7 +251,8 @@ public class Controller {
         if (round == null)
             round = -1;
         System.out.println("machineId: " + machineId + ", tsStart: " + tsStart + ", tsEnd: " + tsEnd + ", round: " + round);
-        return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
+        // return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
+        return machineUsageService.findMachineUsageWithRound(machineId, tsStart, tsEnd, round);
     }
 
 
