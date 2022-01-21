@@ -21,6 +21,14 @@ public class Location {
     @Column(name = "map", nullable = false, length = 1000000)
     private String map;
 
+    @Schema(description = "Current location temperature (ºC)")
+    @Column(name = "temperature")
+    private Double temperature;
+
+    @Schema(description = "Current location humidity (0 to 1)")
+    @Column(name = "humidity")
+    private Double humidity;
+
     public long getId() {
         return id;
     }
@@ -43,5 +51,21 @@ public class Location {
 
     public void setMap(String map) {
         this.map = map;
+    }
+
+    public Double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Double temperature) {
+        this.temperature = temperature;
+    }
+
+    public Double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(Double humidity) {
+        this.humidity = humidity;
     }
 }
