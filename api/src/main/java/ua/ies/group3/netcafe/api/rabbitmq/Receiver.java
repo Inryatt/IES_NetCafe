@@ -7,6 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import ua.ies.group3.netcafe.api.enums.AlarmTypes;
 import ua.ies.group3.netcafe.api.model.Alarm;
@@ -42,7 +43,10 @@ public class Receiver {
         System.out.println("Received Machine Usage\n" + machineUsage);
         machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
         sessionService.updateSession(machineUsage);         // MongoDB Session
-        System.out.println("Saving machine MySQL\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
+        try {
+            System.out.println("MySQL saving machine\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
+        } catch (DataIntegrityViolationException ignored) {
+        }
         createAlarmIfNeeded(machineUsage);
         latch.countDown();
     }
@@ -86,7 +90,7 @@ public class Receiver {
                     usage.getUserId(),
                     message.toString(),
                     type.toString(),
-                    usage.getTimestampStart()
+                    usage.getTimestamp()
             ));
         }
         return null;

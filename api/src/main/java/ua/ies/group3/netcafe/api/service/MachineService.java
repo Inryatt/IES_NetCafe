@@ -56,7 +56,7 @@ public class MachineService {
                         softwareOptional.ifPresent(softwares::add);
                     }
                 machine.setSoftwares(softwares);
-                machine.setTimestamp(usage.getTimestampStart());
+                machine.setTimestamp(usage.getTimestamp());
                 machine.setCpuUsage(usage.getCpuUsage());
                 machine.setGpuUsage(usage.getGpuUsage());
                 machine.setDiskUsage(usage.getDiskUsage());
@@ -72,7 +72,7 @@ public class MachineService {
             }
             machine.setCurrentUser(null);
             machine.setSoftwares(new ArrayList<>());
-            machine.setTimestamp(usage.getTimestampStart());
+            machine.setTimestamp(usage.getTimestamp());
             machine.setCpuUsage(0);
             machine.setGpuUsage(0);
             machine.setDiskUsage(0);

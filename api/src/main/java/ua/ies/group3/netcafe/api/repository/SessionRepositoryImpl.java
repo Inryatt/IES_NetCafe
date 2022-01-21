@@ -35,7 +35,7 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
             Session newSession = new Session(
                     machineUsage.getMachineId(),
                     machineUsage.getUserId(),
-                    machineUsage.getTimestampStart(),
+                    machineUsage.getTimestamp(),
                     null,
                     1,
                     machineUsage.getCpuUsage(),
@@ -57,7 +57,7 @@ public class SessionRepositoryImpl implements SessionRepositoryCustom {
             // Machine turned off, previous session over.
             if (machineUsage.getUserId() == 0) {
                 System.out.println("Machine usage represents machine turned off (user ID: 0)");
-                update.set("timestampEnd", machineUsage.getTimestampStart());
+                update.set("timestampEnd", machineUsage.getTimestamp());
             // User still using it
             } else {
                 System.out.println("Updating session with new machine usage information.");

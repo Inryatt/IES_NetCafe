@@ -355,7 +355,7 @@ class Machine():
     def export_data(self):
         obj = {
             'machineId':self.id,
-            'timestampStart':int(time.time()),
+            'timestamp':int(time.time()),
             'cpuUsage':self.usage['cpu'],
             'gpuUsage':self.usage['gpu'],
             'ramUsage':self.usage['ram'],

@@ -15,12 +15,12 @@ public class MachineUsageService {
     @Autowired
     private MachineUsageRepository machineUsageRepository;
 
-    public List<MachineUsage> findMachineUsageByTimestampStartBetween(long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByTimestampStartBetweenOrderByTimestampStart(timestampStart, timestampEnd);
+    public List<MachineUsage> findMachineUsageByTimestampBetween(long timestampStart, long timestampEnd) {
+        return machineUsageRepository.findMachineUsageByTimestampBetweenOrderByTimestamp(timestampStart, timestampEnd);
     }
 
-    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartBetween(long machineId, long timestampStart, long timestampEnd) {
-        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampStartBetweenOrderByTimestampStart(machineId, timestampStart, timestampEnd);
+    public List<MachineUsage> findMachineUsageByMachineIdAndTimestampBetween(long machineId, long timestampStart, long timestampEnd) {
+        return machineUsageRepository.findMachineUsageByMachineIdAndTimestampBetweenOrderByTimestamp(machineId, timestampStart, timestampEnd);
     }
 
     public List<MachineUsage> findAllMachineUsages() {
@@ -30,10 +30,10 @@ public class MachineUsageService {
     public List<MachineUsage> findMachineUsageWithRound(long machineId, long timestampStart, long timestampEnd, int round) {
         List<MachineUsage> usages;
         if (machineId != -1) {
-            usages = findMachineUsageByMachineIdAndTimestampStartBetween(machineId, timestampStart, timestampEnd);
+            usages = findMachineUsageByMachineIdAndTimestampBetween(machineId, timestampStart, timestampEnd);
         }
         else {
-            return findMachineUsageByTimestampStartBetween(timestampStart, timestampEnd);
+            return findMachineUsageByTimestampBetween(timestampStart, timestampEnd);
         }
 
         // Default case, doesn't need to iterate everything
@@ -56,7 +56,7 @@ public class MachineUsageService {
             }
 
             else {
-                usage.setTimestampStart(roundTimestamp(usage, round));
+                usage.setTimestamp(roundTimestamp(usage, round));
                 aggregation.add(usage);
                 aggregation_counter.add(1);
             }
@@ -69,7 +69,7 @@ public class MachineUsageService {
     }
 
     public static long roundTimestamp(MachineUsage usage, int round) {
-        return (usage.getTimestampStart()/round)*round;
+        return (usage.getTimestamp()/round)*round;
     }
 
     public static void updateAverage(MachineUsage lastUsage, MachineUsage usage, Integer counter) {

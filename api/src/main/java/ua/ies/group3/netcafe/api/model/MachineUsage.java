@@ -19,7 +19,7 @@ public class MachineUsage {
     private long userId;
 
     @Schema(description = "Timestamp")
-    private long timestampStart;
+    private long timestamp;
 
     @Schema(description = "CPU usage")
     private double cpuUsage;
@@ -54,13 +54,13 @@ public class MachineUsage {
     @Schema(description = "GPU temperature")
     private double gpuTemp;
 
-    public MachineUsage(long machineId, long userId, long timestampStart, double cpuUsage,
+    public MachineUsage(long machineId, long userId, long timestamp, double cpuUsage,
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
                         double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage,
                         double cpuTemp, double gpuTemp) {
         this.machineId = machineId;
         this.userId = userId;
-        this.timestampStart = timestampStart;
+        this.timestamp = timestamp;
         this.cpuUsage = cpuUsage;
         this.gpuUsage = gpuUsage;
         this.networkUpUsage = networkUpUsage;
@@ -98,12 +98,12 @@ public class MachineUsage {
         this.userId = userId;
     }
 
-    public long getTimestampStart() {
-        return timestampStart;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimestampStart(long timestampStart) {
-        this.timestampStart = timestampStart;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public double getCpuUsage() {
@@ -200,7 +200,7 @@ public class MachineUsage {
                 "id='" + id + '\'' +
                 ", machineId=" + machineId +
                 ", userId=" + userId +
-                ", timestampStart=" + timestampStart +
+                ", timestamp=" + timestamp +
                 ", cpuUsage=" + cpuUsage +
                 ", gpuUsage=" + gpuUsage +
                 ", networkUpUsage=" + networkUpUsage +
