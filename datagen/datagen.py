@@ -421,7 +421,7 @@ def main():
                           body=machine.export_data())
             print("sent machine")
             print(users)
-        time.sleep(5)
+        time.sleep(1)
 
     # For testing purposes
     # machineList[0].test_loop()
