@@ -10,12 +10,5 @@ public interface MachineUsageRepository extends MongoRepository<MachineUsage, St
 
     List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartBetweenOrderByTimestampStart(long machineId, long timestampStart, long timestampEnd);
 
-//    List<MachineUsage> findMachineUsageByTimestampStartIsAfterAndTimestampStartIsBefore(long timestampStart,
-//                                                                                      long timestampEnd);
-//
-//    List<MachineUsage> findMachineUsageByMachineIdAndTimestampStartIsAfterAndTimestampStartIsBefore(long machineId,
-//                                                                                                  long timestampStart,
-//                                                                                                  long timestampEnd);
-
     long count();
 }
