@@ -16,7 +16,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     @Modifying
     @Query("update Machine m " +
-            "set m.timestamp = :timestampStart," +
+            "set m.timestamp = :timestamp," +
             "m.cpuUsage = :cpuUsage," +
             "m.gpuUsage = :gpuUsage," +
             "m.diskUsage = :diskUsage," +
@@ -28,7 +28,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             "where m.id = :machineId")
     void updateMachine(
             @Param("machineId") long machineId,
-            @Param("timestampStart") long timestampStart,
+            @Param("timestamp") long timestamp,
             @Param("cpuUsage") double cpuUsage,
             @Param("gpuUsage") double gpuUsage,
             @Param("diskUsage") double diskUsage,
