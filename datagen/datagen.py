@@ -8,14 +8,14 @@ import pika
 if len(sys.argv)>1 and sys.argv[1]=='test':
     pass
 else:
-    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue="machine-usage")
 
 users = {i:True for i in range(0, 5)}
-# base_url = "http://api:8080/api/machines/"
-base_url = "http://localhost:8080/api/machines/"
+base_url = "http://api:8080/api/machines/"
+# base_url = "http://localhost:8080/api/machines/"
 
 
 with open("software_list.json") as f:
