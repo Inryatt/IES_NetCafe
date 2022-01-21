@@ -243,14 +243,19 @@ public class Controller {
     public List<MachineUsage> findUsages(
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd) {
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
+            @Parameter(description = "End timestamp filter") @RequestParam(name = "round", required = false) Integer round) {
         if (tsStart == null)
             tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
-            return machineUsageService.findMachineUsageByTimestampStartBetween(tsStart, tsEnd);
-        return machineUsageService.findMachineUsageByMachineIdAndTimestampStartBetween(machineId, tsStart, tsEnd);
+            machineId = -1L;
+        if (round == null)
+            round = -1;
+        System.out.println("machineId: " + machineId + ", tsStart: " + tsStart + ", tsEnd: " + tsEnd + ", round: " + round);
+        // return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
+        return machineUsageService.findMachineUsageWithRound(machineId, tsStart, tsEnd, round);
     }
 
 
