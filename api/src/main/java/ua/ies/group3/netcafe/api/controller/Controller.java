@@ -244,7 +244,7 @@ public class Controller {
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
             @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
-            @Parameter(description = "End timestamp filter") @RequestParam(name = "round", required = false) Integer round) {
+            @Parameter(description = "Timestamp round-merge parameter") @RequestParam(name = "round", required = false) Integer round) {
         if (tsStart == null)
             tsStart = -Long.MAX_VALUE;
         if (tsEnd == null)
@@ -254,7 +254,6 @@ public class Controller {
         if (round == null)
             round = -1;
         System.out.println("machineId: " + machineId + ", tsStart: " + tsStart + ", tsEnd: " + tsEnd + ", round: " + round);
-        // return machineUsageService.findMachineUsagesAggregate(machineId, tsStart, tsEnd, round);
         return machineUsageService.findMachineUsageWithRound(machineId, tsStart, tsEnd, round);
     }
 
@@ -276,6 +275,7 @@ public class Controller {
 //            return ResponseEntity.ok(alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd));
 //        return ResponseEntity.ok(alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd));
 //    }
+
     @Operation(summary = "Get alarms matching the filters.")
     @ApiResponse(responseCode = "200", description = "Alarms found.")
     @GetMapping("/alarms")
