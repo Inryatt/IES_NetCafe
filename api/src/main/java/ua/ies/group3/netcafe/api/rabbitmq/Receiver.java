@@ -43,12 +43,22 @@ public class Receiver {
     public void receiveMessage(byte[] message) {
         String msg = new String(message, StandardCharsets.UTF_8);
         Gson g = new Gson();
-        // MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
-
-        Message mesg = g.fromJson(msg, Message.class);
-        if (mesg.isMachine()) {
-            MachineUsage machineUsage = mesg.generateMachine();
-            System.out.println("Received Machine Usage\n" + machineUsage);
+        
+	MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
+	Location base_location = g.fromJson(msg,Location.class);
+	
+        System.out.println("TEMPERATURAAAAAAAAAAAAAAAA: "+base_location.getTemperature());
+	
+        System.out.println("NOT TEMPERATURAAAAAAAAAAAAAAAA: "+machineUsage.getMachineId());
+	//Message mesg = g.fromJson(msg, Message.class);
+	//
+	
+	//System.out.println(Double.valueOf(base_location.getTemperature()));
+        
+	if (base_location.getTemperature() ==null) {
+            //MachineUsage machineUsage = mesg.generateMachine();
+            
+	    System.out.println("Received Machine Usage\n" + machineUsage);
             machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
             sessionService.updateSession(machineUsage);         // MongoDB Session
             try {
@@ -57,18 +67,28 @@ public class Receiver {
             }
             createAlarmIfNeeded(machineUsage);
             latch.countDown();
+	    System.out.println("Received machine usage");
+	    return;
         }
-        else if (mesg.isLocation()) {
+
+
+	
+        if (machineUsage.getMachineId()==0) {
+
             List<Location> locations = locationService.findAllLocations();
             for (Location location : locations) {
-                location.setHumidity(mesg.getHumidity());
-                location.setTemperature(mesg.getTemperature());
+                location.setHumidity(base_location.getHumidity());
+                location.setTemperature(base_location.getTemperature());
                 locationService.saveLocation(location);
-            }
-        }
-        else {
+            	System.out.println("Location updated:"+location);
+	    }
+	    System.out.println("Locations updated");
+        	return;
+
+	}
+        
             System.out.println("Message not identified.");
-        }
+        
     }
 
     private final double MAX_CPU_TEMP = 90;

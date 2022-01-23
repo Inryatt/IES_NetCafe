@@ -266,7 +266,8 @@ class Machine():
             return
 
     def fluctuate_usage(self):
-        for spec in self.usage[:-1]:
+        tmp_us=['cpu','gpu','ram','cpu_temp','gpu_temp','network_up','network_down','disk']
+        for spec in tmp_us:
             rng = (rm.random()*10-5)+np.log(len(self.programs) * \
                 rm.random()*3)  # [-5,5]
             self.usage[spec] += rng
@@ -373,13 +374,14 @@ class Machine():
             'ramUsage':self.usage['ram'],
             'diskUsage':self.usage['disk'],
             'networkUpUsage':self.usage['network_up'],
+            'powerUsage':self.usage['power'],
             'networkDownUsage':self.usage['network_down'],
             'cpuTemp':round(self.usage['cpu_temp'],2),
             'gpuTemp':round(self.usage['gpu_temp'],2),
             # 'softwareUsage':[{'id':prog['id']} for prog in self.programs],
             'softwareUsage': [prog['id'] for prog in self.programs],
             'status':self.status,
-            'userId':self.current_user,
+            'userId':self.current_user
 #           'power':self.usage['power']
         }
         
@@ -423,17 +425,17 @@ def main():
         for machine in machineList:
             machine.machine_loop()
             #print(f"machine {machine.id} status {machine.status}")
-            machine.print_usage()
-            if machine.status == 1:
-                machine.print_usage()
+            #machine.print_usage()
+            #if machine.status == 1:
+            #    machine.print_usage()
             if len(sys.argv)>1 and sys.argv[1]=='test':
                 machine.print_usage()
             else:
                 channel.basic_publish(exchange='machine-usage-exchange',
                           routing_key='routing.key',
                           body=machine.export_data())
-            print("sent machine")
-            print(users)
+            #print("sent machine")
+            #print(users)
         time.sleep(1)
 
     # For testing purposes

@@ -49,10 +49,12 @@ public class Message {
         this.cpuTemp = cpuTemp;
         this.gpuTemp = gpuTemp;
         this.isMachine = true;
+    	System.out.println("Got Machine!");
     }
 
     public Message(double temperature, double humidity) {
         this.temperature = temperature;
+	System.out.println("Got message!");
         this.humidity = humidity;
         this.isLocation = true;
     }

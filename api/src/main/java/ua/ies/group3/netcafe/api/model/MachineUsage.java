@@ -13,7 +13,7 @@ public class MachineUsage {
     private String id;
 
     @Schema(description = "Machine ID")
-    private long machineId;
+    private long  machineId;
 
     @Schema(description = "User ID")
     private long userId;
@@ -54,7 +54,7 @@ public class MachineUsage {
     @Schema(description = "GPU temperature")
     private double gpuTemp;
 
-    public MachineUsage(long machineId, long userId, long timestamp, double cpuUsage,
+    public MachineUsage( long machineId, long userId, long timestamp, double cpuUsage,
                         double gpuUsage, double networkUpUsage, double networkDownUsage, double powerUsage,
                         double diskUsage, double ramUsage, int uptime, List<Integer> softwareUsage,
                         double cpuTemp, double gpuTemp) {
