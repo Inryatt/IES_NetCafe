@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import ua.ies.group3.netcafe.api.enums.AlarmTypes;
 import ua.ies.group3.netcafe.api.model.Alarm;
+import ua.ies.group3.netcafe.api.model.Location;
 import ua.ies.group3.netcafe.api.model.MachineUsage;
 import ua.ies.group3.netcafe.api.service.*;
 
@@ -36,19 +37,38 @@ public class Receiver {
     @Autowired
     private SoftwareService softwareService;
 
+    @Autowired
+    private LocationService locationService;
+
     public void receiveMessage(byte[] message) {
         String msg = new String(message, StandardCharsets.UTF_8);
         Gson g = new Gson();
-        MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
-        System.out.println("Received Machine Usage\n" + machineUsage);
-        machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
-        sessionService.updateSession(machineUsage);         // MongoDB Session
-        try {
-            System.out.println("MySQL saving machine\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
-        } catch (DataIntegrityViolationException ignored) {
+        // MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
+
+        Message mesg = g.fromJson(msg, Message.class);
+        if (mesg.isMachine()) {
+            MachineUsage machineUsage = mesg.generateMachine();
+            System.out.println("Received Machine Usage\n" + machineUsage);
+            machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
+            sessionService.updateSession(machineUsage);         // MongoDB Session
+            try {
+                System.out.println("MySQL saving machine\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
+            } catch (DataIntegrityViolationException ignored) {
+            }
+            createAlarmIfNeeded(machineUsage);
+            latch.countDown();
         }
-        createAlarmIfNeeded(machineUsage);
-        latch.countDown();
+        else if (mesg.isLocation()) {
+            List<Location> locations = locationService.findAllLocations();
+            for (Location location : locations) {
+                location.setHumidity(mesg.getHumidity());
+                location.setTemperature(mesg.getTemperature());
+                locationService.saveLocation(location);
+            }
+        }
+        else {
+            System.out.println("Message not identified.");
+        }
     }
 
     private final double MAX_CPU_TEMP = 90;
