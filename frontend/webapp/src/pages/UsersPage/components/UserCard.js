@@ -16,12 +16,6 @@ const UserCard = ({user}) => {
 
                 <dt className="col-3">Registered:</dt>
                 <dd className="col-9">{user.registerDate}</dd>
-
-                <dt className="col-3">Last access:</dt>
-                <dd className="col-9">{user.lastAccess}</dd>
-
-                <dt className="col-3">Average Monthly Spending:</dt>
-                <dd className="col-9">{user.avgMonSpend} €</dd>
             </dl>
         </div>
     )

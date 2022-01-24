@@ -119,7 +119,7 @@ const DashboardPage = () => {
                             <StatCard
                                 statName="Temperatura"
                                 value={locationStats.temperature ? locationStats.temperature : 'n/a'}
-                                unit={locationStats.humidity ? '€' : ''}
+                                unit={locationStats.humidity ? 'ºC' : ''}
                                 colorStyle="#00cc00"
                             />
                         </Col>
@@ -127,7 +127,7 @@ const DashboardPage = () => {
                             <StatCard
                                 statName="Humidade"
                                 value={locationStats.humidity ? locationStats.humidity : 'n/a'}
-                                unit={locationStats.humidity ? 'W' : ''}
+                                unit={locationStats.humidity ? '%' : ''}
                                 colorStyle="#e6e600"
                             />
                         </Col>
