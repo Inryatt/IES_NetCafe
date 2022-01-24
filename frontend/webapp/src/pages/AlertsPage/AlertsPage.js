@@ -1,76 +1,49 @@
 import React, { useEffect, useState } from "react";
-import AlertNotif from "../../components/AlertNotif/AlertNotif";
-
-
-// static values for prototyping
-const staticNewAlerts = [
-    {
-        location: "Aveiro",
-        machine: 2,
-        message: "Critical Hardware Failure (SSD)",
-        timestamp: "15:34 3/12/2021",
-        urgent: true
-    },
-    {
-        location: "Leiria",
-        machine: 1,
-        message: "Underperforming: SSD",
-        timestamp: "18:13 2/12/2021",
-        urgent: false
-    }
-]
-
-const staticPrevAlerts = [
-    {
-        location: "Leiria",
-        machine: 1,
-        message: "Very high GPU temperature (97ºC)",
-        timestamp: "14:50 1/12/2021",
-        urgent: true
-    },
-    {
-        location: "Aveiro",
-        machine: 2,
-        message: "Underperforming: GPU",
-        timestamp: "10:42 28/11/2021",
-        urgent: false
-    },
-    {
-        location: "Aveiro",
-        machine: 2,
-        message: "Underperforming: CPU",
-        timestamp: "13:41 24/11/2021",
-        urgent: false
-    }
-]
+import PagedAlerts from "./PagedAlerts/PagedAlerts";
 
 
 const AlertsPage = () => {
 
     const [newAlerts, setNewAlerts] = useState([])
     const [prevAlerts, setPrevAlerts] = useState([])
+    const [refreshFlag, setRefreshFlag] = useState(false)
 
+    const PAGE_SIZE = 10
+    const [curNewPage, setCurNewPage] = useState(1)
+    const [newTotalPages, setNewTotalPages] = useState(1)
+    const [curPrevPage, setPrevCurPage] = useState(1)
+    const [prevTotalPages, setPrevTotalPages] = useState(1)
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+        setInterval(() => setRefreshFlag(prevVal => !prevVal), 3000);
+    })
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curNewPage-1}&size=${PAGE_SIZE}`)
         .then(response => response.json())
         .then(data => {
             let tempNewAlerts = []
             let tempPrevAlerts = []
 
-            for (let alarm of data) {
+            for (let alarm of data.content) {
                 if (alarm.seen)
                     tempPrevAlerts.push(alarm)
                 else
                     tempNewAlerts.push(alarm)
             }
+
+            console.log("data: ", data)
+
+            setNewTotalPages(data.totalPages)
+            setPrevTotalPages(data.totalPages)
             setNewAlerts(tempNewAlerts)
             setPrevAlerts(tempPrevAlerts)
         })
         .catch(err => {
             console.log(err)
         })
-    }, [])
+    }, [refreshFlag, curNewPage, curPrevPage])
+
 
     const dismissAlert = (alert_id) => {
         fetch(`${process.env.REACT_APP_API_URL}/alarms`, {
@@ -104,9 +77,9 @@ const AlertsPage = () => {
     return (
         <div className="mt-3 text-start">
             <h3>New</h3>
-            {newAlerts.length > 0 ? newAlerts.map(alert => <AlertNotif alert={alert} dismissHandler={dismissAlert}/>) : <p>No new alerts</p> }
+            <PagedAlerts alerts={newAlerts} totalPages={newTotalPages} curPage={curNewPage} changePageHandler={setCurNewPage} dismissHandler={dismissAlert} ></PagedAlerts>
             <h3 className="mt-4">Previous</h3>
-            {prevAlerts.length > 0 ? prevAlerts.map(alert => <AlertNotif alert={alert}/>) : <p>No old alerts</p> }
+            <PagedAlerts alerts={prevAlerts} totalPages={prevTotalPages} curPage={curPrevPage} changePageHandler={setPrevCurPage}></PagedAlerts>
         </div>
     )
 }

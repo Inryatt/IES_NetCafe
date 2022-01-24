@@ -111,7 +111,7 @@ const MachineUse = ({machineData, selLocation}) => {
                 tempcontents.push({
                     label: machine.name,
                     coords: usages.map(usage => ({
-                        x: convertTimestamp(usage.timestampStart),
+                        x: convertTimestamp(usage.timestamp),
                         y: usage[selectedStat]
                     }))
                 })
@@ -142,7 +142,7 @@ const MachineUse = ({machineData, selLocation}) => {
             tempcontents.push({
                 label: tempMachine.name,
                 coords: tempUsage.map(usage => ({
-                    x: convertTimestamp(usage.timestampStart),
+                    x: convertTimestamp(usage.timestamp),
                     y: usage[selectedStat]
                     // y: usage[selectedStat] + (selectedStat === "cpuTemp" || selectedStat === "gpuTemp" ? "ºC"
                     //     : selectedStat === "networkUpUsage" || selectedStat === "networkDownUsage" ? " MB/s"
