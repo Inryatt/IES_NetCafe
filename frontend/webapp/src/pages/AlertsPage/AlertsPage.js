@@ -19,25 +19,21 @@ const AlertsPage = () => {
     })
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curNewPage-1}&size=${PAGE_SIZE}`)
+        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curNewPage-1}&size=${PAGE_SIZE}&seen=${false}`)
         .then(response => response.json())
         .then(data => {
-            let tempNewAlerts = []
-            let tempPrevAlerts = []
-
-            for (let alarm of data.content) {
-                if (alarm.seen)
-                    tempPrevAlerts.push(alarm)
-                else
-                    tempNewAlerts.push(alarm)
-            }
-
-            console.log("data: ", data)
-
             setNewTotalPages(data.totalPages)
+            setNewAlerts(data.content)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curPrevPage-1}&size=${PAGE_SIZE}&seem=${true}`)
+        .then(response => response.json())
+        .then(data => {
             setPrevTotalPages(data.totalPages)
-            setNewAlerts(tempNewAlerts)
-            setPrevAlerts(tempPrevAlerts)
+            setPrevAlerts(data.content)
         })
         .catch(err => {
             console.log(err)

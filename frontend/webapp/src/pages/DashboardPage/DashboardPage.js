@@ -15,35 +15,22 @@ const DashboardPage = () => {
     const [refreshFlag, setRefreshFlag] = useState(false)
     const [prevLocation, setPrevLocation] = useState()
 
-    // static values for prototype
-    const locationStats = {
-        "Aveiro": {
-            daily_income: 384,
-            daily_power_comp: 8200,
-            other_stat: 3
-        },
-        "Leiria": {
-            daily_income: 210,
-            daily_power_comp: 3720,
-            other_stat: 1
-        }
-    }
+    const [locationStats, setLocationStats] = useState({temperature: null, humidity: null})
 
     const fetchLocationMachines = async () => {
         //console.log("fetching...")
         fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/machines`,{
-		headers:{
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin': '*',
-		
-			"Origin":"frontend:3000"
-		}
+            headers:{
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            
+                "Origin":"frontend:3000"
+            }
 
-	})
+	    })
         .then(response => response.json())
         .then(data => {
-	    console.log("CORS TEST",data)
             setMachineData(data);
             if (selMachine) {
                 setSelMachine(machineData.find(machine => machine.id == selMachine.id))
@@ -54,26 +41,49 @@ const DashboardPage = () => {
         })
     }
 
+    const fetchLocationStats = () => {
+        fetch(`${process.env.REACT_APP_API_URL}/locations/${selLocation.id}/`,{
+            headers:{
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            
+                "Origin":"frontend:3000"
+            }
+
+	    })
+        .then(response => response.json())
+        .then(data => {
+            setLocationStats({
+                temperature: data.temperature,
+                humidity: data.humidity
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+
     // get list of locations on page load
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/locations`,{
-		headers:{
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin': '*',
-			"Origin":"frontend:3000"
-		}
-	})
+            headers:{
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                "Origin":"frontend:3000"
+            }
+	    })
         .then(response => response.json())
         .then(data => {
-	    console.log("CORS TEST DOIS");
             setLocations(data);
             setSelLocation(data[0]);
         })
         .catch(err => {
             console.log(err)
         })
-	console.log("cors test ");
+
         // a hack for getting periodic refreshes
         setInterval(() => setRefreshFlag(prevVal => !prevVal), 3000);
     }, [])
@@ -86,6 +96,7 @@ const DashboardPage = () => {
         }
         setPrevLocation(selLocation);
         fetchLocationMachines();
+        fetchLocationStats();
     }, [selLocation, refreshFlag])
 
     const locationSelectHandler = (loc) => {
@@ -104,28 +115,20 @@ const DashboardPage = () => {
                 <Col xs={12} md={9}>
                     <Row className="my-3">
                         <h2 className="mb-3">{selLocation.name}</h2>
-                        <Col xs={12} md={4}>
+                        <Col xs={12} md={6}>
                             <StatCard
-                                statName="Daily Income"
-                                value={locationStats[selLocation.name].daily_income}
-                                unit="€"
+                                statName="Temperatura"
+                                value={locationStats.temperature ? locationStats.temperature : 'n/a'}
+                                unit={locationStats.humidity ? '€' : ''}
                                 colorStyle="#00cc00"
                             />
                         </Col>
-                        <Col xs={12} md={4}>
+                        <Col xs={12} md={6}>
                             <StatCard
-                                statName="Daily Power Consumption"
-                                value={locationStats[selLocation.name].daily_power_comp}
-                                unit="W"
+                                statName="Humidade"
+                                value={locationStats.humidity ? locationStats.humidity : 'n/a'}
+                                unit={locationStats.humidity ? 'W' : ''}
                                 colorStyle="#e6e600"
-                            />
-                        </Col>
-                        <Col xs={12} md={4}>
-                            <StatCard
-                                statName="Some Other Stat"
-                                value={locationStats[selLocation.name].other_stat}
-                                unit=" Cookies"
-                                colorStyle="#0066ff"
                             />
                         </Col>
                     </Row>
