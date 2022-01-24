@@ -283,6 +283,7 @@ public class Controller {
             @Parameter(description = "Machine ID filter") @RequestParam(name = "machine", required = false) Long machineId,
             @Parameter(description = "Start timestamp filter") @RequestParam(name = "ts-start", required = false) Long tsStart,
             @Parameter(description = "End timestamp filter") @RequestParam(name = "ts-end", required = false) Long tsEnd,
+            @Parameter(description = "Seen filter") @RequestParam(name = "seen", required = false) Boolean seen,
             @Parameter(description = "Pagination: page number") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Pagination: page size") @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -291,8 +292,18 @@ public class Controller {
         if (tsEnd == null)
             tsEnd = Long.MAX_VALUE;
         if (machineId == null)
-            return ResponseEntity.ok(alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd, pageable));
-        return ResponseEntity.ok(alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd, pageable));
+            return ResponseEntity.ok(
+                    seen == null ?
+                            alarmService.findAlarmsByTimestampBetween(tsStart, tsEnd, pageable)
+                            :
+                            alarmService.findAlarmsByTimestampBetweenAndSeen(tsStart, tsEnd, seen, pageable)
+            );
+        return ResponseEntity.ok(
+                seen == null ?
+                        alarmService.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd, pageable)
+                        :
+                        alarmService.findAlarmsByMachineIdAndTimestampBetweenAndSeen(machineId, tsStart, tsEnd, seen, pageable)
+        );
     }
 
     @Operation(summary = "Update the seen status of an alarm.")

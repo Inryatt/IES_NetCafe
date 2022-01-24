@@ -57,4 +57,16 @@ public class AlarmService {
     public Page<Alarm> findAlarmsByMachineIdAndTimestampBetween(long machineId, long tsStart, long tsEnd, Pageable pageable) {
         return alarmRepository.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd, pageable);
     }
+
+    public Page<Alarm> findAlarmsByTimestampBetweenAndSeen(long tsStart, long tsEnd, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByTimestampBetweenAndSeen(tsStart, tsEnd, seen, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineIdAndSeen(long machineId, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineIdAndSeen(machineId, seen, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineIdAndTimestampBetweenAndSeen(long machineId, long tsStart, long tsEnd, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineIdAndTimestampBetweenAndSeen(machineId, tsStart, tsEnd, seen, pageable);
+    }
 }
