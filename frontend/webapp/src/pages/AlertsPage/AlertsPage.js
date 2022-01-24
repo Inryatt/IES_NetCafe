@@ -75,7 +75,7 @@ const AlertsPage = () => {
     }
 
     return (
-        <div className="mt-3 text-start">
+        <div className="my-3 text-start">
             <h3>New</h3>
             <PagedAlerts alerts={newAlerts} totalPages={newTotalPages} curPage={curNewPage} changePageHandler={setCurNewPage} dismissHandler={dismissAlert} ></PagedAlerts>
             <h3 className="mt-4">Previous</h3>

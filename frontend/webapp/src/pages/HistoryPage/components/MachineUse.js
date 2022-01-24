@@ -74,7 +74,7 @@ const MachineUse = ({machineData, selLocation}) => {
 
     const getUsagesById = async (machineId=null, dateFrom, dateTo) => {
         let usages
-        await fetch(`${process.env.REACT_APP_API_URL}/usages?${machineId ? 'machine='+machineId+'&' :''}${dateFrom ? 'ts-start='+dateFrom+'&' :''}${dateTo ? 'ts-end='+dateTo+'&':''}${'limit=1'}`)
+        await fetch(`${process.env.REACT_APP_API_URL}/usages?${machineId ? 'machine='+machineId+'&' :''}${dateFrom ? 'ts-start='+dateFrom+'&' :''}${dateTo ? 'ts-end='+dateTo+'&':''}${'limit=10'}`)
         .then(response => response.json())
         .then(data => {
             usages = data
