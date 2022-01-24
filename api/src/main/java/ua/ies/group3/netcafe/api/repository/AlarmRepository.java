@@ -20,4 +20,10 @@ public interface AlarmRepository extends MongoRepository<Alarm, String>  {
     Page<Alarm> findAlarmsByMachineId(long machineId, Pageable pageable);
 
     Page<Alarm> findAlarmsByMachineIdAndTimestampBetween(long machineId, long tsStart, long tsEnd, Pageable pageable);
+
+    Page<Alarm> findAlarmsByTimestampBetweenAndSeen(long tsStart, long tsEnd, boolean seen, Pageable pageable);
+
+    Page<Alarm> findAlarmsByMachineIdAndSeen(long machineId, boolean seen, Pageable pageable);
+
+    Page<Alarm> findAlarmsByMachineIdAndTimestampBetweenAndSeen(long machineId, long tsStart, long tsEnd, boolean seen, Pageable pageable);
 }

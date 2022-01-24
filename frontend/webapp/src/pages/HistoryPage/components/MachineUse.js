@@ -74,7 +74,7 @@ const MachineUse = ({machineData, selLocation}) => {
 
     const getUsagesById = async (machineId=null, dateFrom, dateTo) => {
         let usages
-        await fetch(`${process.env.REACT_APP_API_URL}/usages?${machineId ? 'machine='+machineId+'&' :''}${dateFrom ? 'ts-start='+dateFrom+'&' :''}${dateTo ? 'ts-end='+dateTo+'&':''}${'limit=1'}`)
+        await fetch(`${process.env.REACT_APP_API_URL}/usages?${machineId ? 'machine='+machineId+'&' :''}${dateFrom ? 'ts-start='+dateFrom+'&' :''}${dateTo ? 'ts-end='+dateTo+'&':''}${'limit=10'}`)
         .then(response => response.json())
         .then(data => {
             usages = data
@@ -111,7 +111,7 @@ const MachineUse = ({machineData, selLocation}) => {
                 tempcontents.push({
                     label: machine.name,
                     coords: usages.map(usage => ({
-                        x: convertTimestamp(usage.timestampStart),
+                        x: convertTimestamp(usage.timestamp),
                         y: usage[selectedStat]
                     }))
                 })
@@ -142,7 +142,7 @@ const MachineUse = ({machineData, selLocation}) => {
             tempcontents.push({
                 label: tempMachine.name,
                 coords: tempUsage.map(usage => ({
-                    x: convertTimestamp(usage.timestampStart),
+                    x: convertTimestamp(usage.timestamp),
                     y: usage[selectedStat]
                     // y: usage[selectedStat] + (selectedStat === "cpuTemp" || selectedStat === "gpuTemp" ? "ºC"
                     //     : selectedStat === "networkUpUsage" || selectedStat === "networkDownUsage" ? " MB/s"

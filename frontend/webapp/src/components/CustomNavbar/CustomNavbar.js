@@ -3,36 +3,24 @@ import { Container, Nav, Navbar, OverlayTrigger, Popover, Button, Row, Col } fro
 import { useNavigate } from "react-router-dom";
 import AlertNotif from "../AlertNotif/AlertNotif";
 
-const staticNewAlerts = [
-    {
-        location: "Aveiro",
-        machine: 2,
-        message: "Critical Hardware Failure (SSD)",
-        timestamp: "15:34 3/12/2021",
-        urgent: true
-    },
-    {
-        location: "Leiria",
-        machine: 1,
-        message: "Underperforming: SSD",
-        timestamp: "18:13 2/12/2021",
-        urgent: false
-    }
-]
 
 const CustomNavbar = () => {
     const [newAlerts, setNewAlerts] = useState([])
+    const [totalAlerts, setTotalAlerts] = useState(0)
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=0&size=3&seen=false`,{
+            headers:{
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                "Origin":"frontend:3000"
+            }
+	    })
         .then(response => response.json())
         .then(data => {
-            let tempNewAlerts = []
-            for (let alarm of data) {
-                if (!alarm.seen)
-                    tempNewAlerts.push(alarm)
-            }
-            setNewAlerts(tempNewAlerts)
+            setNewAlerts(data.content)
+            setTotalAlerts(data.totalElements)
         })
         .catch(err => {
             console.log(err)
@@ -47,15 +35,18 @@ const CustomNavbar = () => {
             },
             body: JSON.stringify({id: alert_id, seen: true})})
         .then(
-            fetch(`${process.env.REACT_APP_API_URL}/alarms`)
+            fetch(`${process.env.REACT_APP_API_URL}/alarms?page=0&size=3&seen=false`,{
+                headers:{
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    "Origin":"frontend:3000"
+                }
+            })
             .then(response => response.json())
             .then(data => {
-                let tempNewAlerts = []
-                for (let alarm of data) {
-                    if (!alarm.seen)
-                        tempNewAlerts.push(alarm)
-                }
-                setNewAlerts(tempNewAlerts)
+                setNewAlerts(data.content)
+                setTotalAlerts(data.totalElements)
             })
             .catch(err => {
                 console.log(err)
@@ -79,7 +70,7 @@ const CustomNavbar = () => {
                         />
                     )
                 }
-                <p>Plus {alerts.length - 3} other alerts</p>
+                <p>Plus {totalAlerts > 2 ? totalAlerts - 3 : 0 } other alerts</p>
                 </>)
         }
         else
