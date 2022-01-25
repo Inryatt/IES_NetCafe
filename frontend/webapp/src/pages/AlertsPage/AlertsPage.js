@@ -29,7 +29,7 @@ const AlertsPage = () => {
             console.log(err)
         })
 
-        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curPrevPage-1}&size=${PAGE_SIZE}&seem=${true}`)
+        fetch(`${process.env.REACT_APP_API_URL}/alarms?page=${curPrevPage-1}&size=${PAGE_SIZE}&seen=${true}`)
         .then(response => response.json())
         .then(data => {
             setPrevTotalPages(data.totalPages)
