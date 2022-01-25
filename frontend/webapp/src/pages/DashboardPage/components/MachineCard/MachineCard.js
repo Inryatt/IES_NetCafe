@@ -1,4 +1,5 @@
 import React from "react";
+import SoftwareItem from "./SoftwareItem";
 
 
 const MachineCard = ({machine}) => {
@@ -67,6 +68,15 @@ const MachineCard = ({machine}) => {
                     <dt className="col-3">OS:</dt>
                     <dd className="col-9">{machine.os}</dd>
                 </dl>
+
+                <br/>
+                <p>Running Software:</p>
+                {
+                    machine.softwares.length > 0 ?
+                    machine.softwares.map((soft) => <SoftwareItem softwareId={soft.id}></SoftwareItem>)
+                    :
+                    <p>None</p>
+                }
             </div>
             :
             <h4 className="my-3">No machine selected</h4>

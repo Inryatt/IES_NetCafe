@@ -1,6 +1,8 @@
 package ua.ies.group3.netcafe.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 import ua.ies.group3.netcafe.api.exception.ResourceNotFoundException;
@@ -42,5 +44,29 @@ public class AlarmService {
 
     public Alarm saveAlarm(Alarm alarm) {
         return alarmRepository.save(alarm);
+    }
+
+    public Page<Alarm> findAlarmsByTimestampBetween(long tsStart, long tsEnd, Pageable pageable) {
+        return alarmRepository.findAlarmsByTimestampBetween(tsStart, tsEnd, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineId(long machineId, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineId(machineId, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineIdAndTimestampBetween(long machineId, long tsStart, long tsEnd, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineIdAndTimestampBetween(machineId, tsStart, tsEnd, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByTimestampBetweenAndSeen(long tsStart, long tsEnd, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByTimestampBetweenAndSeen(tsStart, tsEnd, seen, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineIdAndSeen(long machineId, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineIdAndSeen(machineId, seen, pageable);
+    }
+
+    public Page<Alarm> findAlarmsByMachineIdAndTimestampBetweenAndSeen(long machineId, long tsStart, long tsEnd, boolean seen, Pageable pageable) {
+        return alarmRepository.findAlarmsByMachineIdAndTimestampBetweenAndSeen(machineId, tsStart, tsEnd, seen, pageable);
     }
 }

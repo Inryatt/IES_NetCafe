@@ -19,9 +19,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 public class ApiApplication {
 
     static final String queueName = "machine-usage";
-
     static final String topicExchangeName = "machine-usage-exchange";
-
+    static final String routingKey = "routing.key";
 
     @Bean
     Queue queue() {
@@ -35,7 +34,7 @@ public class ApiApplication {
 
     @Bean
     Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("routing.key");
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
     @Bean

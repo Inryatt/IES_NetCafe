@@ -48,7 +48,7 @@ const CustomGraph = ({title, contents, setDateTo, setDateFrom, sortFunction,
 
     const options = {
         responsive: true,
-        pointRadius: 2,
+        pointRadius: 0,
         tension: 0.1,
         plugins: {
           legend: {

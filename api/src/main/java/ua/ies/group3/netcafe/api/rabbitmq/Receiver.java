@@ -7,9 +7,11 @@ import java.util.concurrent.CountDownLatch;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import ua.ies.group3.netcafe.api.enums.AlarmTypes;
 import ua.ies.group3.netcafe.api.model.Alarm;
+import ua.ies.group3.netcafe.api.model.Location;
 import ua.ies.group3.netcafe.api.model.MachineUsage;
 import ua.ies.group3.netcafe.api.service.*;
 
@@ -35,16 +37,58 @@ public class Receiver {
     @Autowired
     private SoftwareService softwareService;
 
+    @Autowired
+    private LocationService locationService;
+
     public void receiveMessage(byte[] message) {
         String msg = new String(message, StandardCharsets.UTF_8);
         Gson g = new Gson();
-        MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
-        System.out.println("Received Machine Usage\n" + machineUsage);
-        machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
-        sessionService.updateSession(machineUsage);         // MongoDB Session
-        System.out.println("Saving machine MySQL\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
-        createAlarmIfNeeded(machineUsage);
-        latch.countDown();
+        
+	MachineUsage machineUsage = g.fromJson(msg, MachineUsage.class);
+	Location base_location = g.fromJson(msg,Location.class);
+	
+        System.out.println("TEMPERATURAAAAAAAAAAAAAAAA: "+base_location.getTemperature());
+	
+        System.out.println("NOT TEMPERATURAAAAAAAAAAAAAAAA: "+machineUsage.getMachineId());
+	//Message mesg = g.fromJson(msg, Message.class);
+	//
+	
+	//System.out.println(Double.valueOf(base_location.getTemperature()));
+        
+	if (base_location.getTemperature() ==null) {
+            //MachineUsage machineUsage = mesg.generateMachine();
+            
+	    System.out.println("Received Machine Usage\n" + machineUsage);
+            machineUsageService.saveMachineUsage(machineUsage); // MongoDB MachineUsage
+            sessionService.updateSession(machineUsage);         // MongoDB Session
+            try {
+                System.out.println("MySQL saving machine\n" + machineService.updateMachine(machineUsage)); // MySQL Machine
+            } catch (DataIntegrityViolationException ignored) {
+            }
+            createAlarmIfNeeded(machineUsage);
+            latch.countDown();
+	    System.out.println("Received machine usage");
+	    return;
+        }
+
+
+	
+        if (machineUsage.getMachineId()==0) {
+
+            List<Location> locations = locationService.findAllLocations();
+            for (Location location : locations) {
+                location.setHumidity(base_location.getHumidity());
+                location.setTemperature(base_location.getTemperature());
+                locationService.saveLocation(location);
+            	System.out.println("Location updated:"+location);
+	    }
+	    System.out.println("Locations updated");
+        	return;
+
+	}
+        
+            System.out.println("Message not identified.");
+        
     }
 
     private final double MAX_CPU_TEMP = 90;
@@ -81,12 +125,12 @@ public class Receiver {
 
         if (saveAlarm) {
             message.setLength(message.length() - 1); // Remove last newline
-            alarmService.saveAlarm(new Alarm(
+            return alarmService.saveAlarm(new Alarm(
                     usage.getMachineId(),
                     usage.getUserId(),
                     message.toString(),
                     type.toString(),
-                    usage.getTimestampStart()
+                    usage.getTimestamp()
             ));
         }
         return null;

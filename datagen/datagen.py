@@ -9,12 +9,13 @@ if len(sys.argv)>1 and sys.argv[1]=='test':
     pass
 else:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue="machine-usage")
 
 users = {i:True for i in range(0, 5)}
 base_url = "http://api:8080/api/machines/"
-#base_url = "http://localhost:8080/api/machines/"
+# base_url = "http://localhost:8080/api/machines/"
 
 
 with open("software_list.json") as f:
@@ -59,6 +60,7 @@ class Machine():
         # Can be slightly above room temp
         self.usage['cpu_temp'] = base_temp + rm.random()*3
         self.usage['gpu_temp'] = base_temp + rm.random()*3
+        self.usage['power'] = 300
         self.start_time = time.time()
         self.programs = []
 
@@ -72,6 +74,7 @@ class Machine():
             self.usage["network_up"] = 0
             self.usage['cpu_temp'] = 20 + rm.random()*3
             self.usage['gpu_temp'] = 23 + rm.random()*3
+            self.usage['power'] = 0
 
             self.programs = []
             users[self.current_user] = True
@@ -120,6 +123,9 @@ class Machine():
                  )
                 self.sus_eventstatus.append(
                      ('gpu',rm.random()*40)
+                 )
+                self.sus_eventstatus.append(
+                     ('power',rm.random()*100+40)
                  )
             else: #sus program open
                 sus_programs=[
@@ -191,6 +197,8 @@ class Machine():
             self.usage["network_up"] = 0
             self.usage['cpu_temp'] = 20 + rm.random()*3
             self.usage['gpu_temp'] = 23 + rm.random()*3
+            self.usage['power'] = 0
+
             self.programs = []
             self.event_status = []
             self.sus_eventstatus = []
@@ -258,7 +266,8 @@ class Machine():
             return
 
     def fluctuate_usage(self):
-        for spec in self.usage:
+        tmp_us=['cpu','gpu','ram','cpu_temp','gpu_temp','network_up','network_down','disk']
+        for spec in tmp_us:
             rng = (rm.random()*10-5)+np.log(len(self.programs) * \
                 rm.random()*3)  # [-5,5]
             self.usage[spec] += rng
@@ -273,6 +282,10 @@ class Machine():
                     self.status=2
                 else:
                     self.usage[spec] = 100
+        if len(self.sus_eventstatus) ==0:
+            self.usage['power'] = len(self.programs)*10 + rm.randint(30,100)
+        else:
+            self.usage['power'] = self.usage['power'] + (rm.random()*30-10)
 
     def machine_loop(self):
         if self.status==0:
@@ -320,6 +333,7 @@ class Machine():
         ram: {self.usage['ram']}%
         cpu temp: {self.usage['cpu_temp']}ºC
         gpu temp: {self.usage['gpu_temp']}ºC
+        power: {self.usage['power']}W
 
         disk: {self.usage['disk']}%
         network (up): {self.usage['network_up']} MB/s
@@ -354,18 +368,21 @@ class Machine():
     def export_data(self):
         obj = {
             'machineId':self.id,
-            'timestampStart':int(time.time()),
+            'timestamp':int(time.time()),
             'cpuUsage':self.usage['cpu'],
             'gpuUsage':self.usage['gpu'],
             'ramUsage':self.usage['ram'],
             'diskUsage':self.usage['disk'],
             'networkUpUsage':self.usage['network_up'],
+            'powerUsage':self.usage['power'],
             'networkDownUsage':self.usage['network_down'],
             'cpuTemp':round(self.usage['cpu_temp'],2),
             'gpuTemp':round(self.usage['gpu_temp'],2),
-            'softwares':[{'id':prog['id']} for prog in self.programs],
+            # 'softwareUsage':[{'id':prog['id']} for prog in self.programs],
+            'softwareUsage': [prog['id'] for prog in self.programs],
             'status':self.status,
             'userId':self.current_user
+#           'power':self.usage['power']
         }
         
         return json.dumps(obj)
@@ -408,17 +425,17 @@ def main():
         for machine in machineList:
             machine.machine_loop()
             #print(f"machine {machine.id} status {machine.status}")
-            machine.print_usage()
-            if machine.status == 1:
-                machine.print_usage()
+            #machine.print_usage()
+            #if machine.status == 1:
+            #    machine.print_usage()
             if len(sys.argv)>1 and sys.argv[1]=='test':
                 machine.print_usage()
             else:
                 channel.basic_publish(exchange='machine-usage-exchange',
                           routing_key='routing.key',
                           body=machine.export_data())
-            print("sent machine")
-            print(users)
+            #print("sent machine")
+            #print(users)
         time.sleep(1)
 
     # For testing purposes
